@@ -19,7 +19,6 @@
 ;; version 0.2, 2014-02-18 lots more keywords, and stuff.
 ;; version 0.1, 2013-03-23 first version
 
-
 (require 'lisp-mode)
 (require 'xeu_elisp_util)
 
@@ -149,6 +148,12 @@
 
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
 (setq xem-emacs-words '(
+
+"frame-parameter"
+"frame-parameters"
+"modify-frame-parameters"
+"set-frame-parameter"
+"modify-all-frames-parameters"
 
 "set-buffer-modified-p"
 "file-readable-p"
@@ -302,7 +307,6 @@
 "with-output-to-temp-buffer"
 "setq-default"
 
-"shell-command-on-region"
 "parse-time-string"
 
 "bolp"
@@ -348,27 +352,43 @@
 
 ) )
 
-(defvar xem-emacs-user-words nil "list of keywords related to user's needs.")
-(setq xem-emacs-user-words '(
+(defvar xem-emacs-user-commands nil "list of keywords related to user's needs.")
+(setq xem-emacs-user-commands '(
+
+"repeat-complex-command"
+
+"clear-rectangle"
+"complete-symbol"
+"define-prefix-command"
+"delete-rectangle"
+"delete-whitespace-rectangle"
+"electric-indent-local-mode"
 "electric-indent-mode"
 "electric-layout-mode"
 "electric-pair-mode"
-"electric-indent-local-mode"
-"subword-mode"
-"prettify-symbols-mode"
-"linum-mode"
 "eval-buffer"
-"eval-region"
 "eval-defun"
 "eval-expression"
 "eval-last-sexp"
-"complete-symbol"
-
-"kbd"
-"define-prefix-command"
-"key-translation-map"
+"eval-region"
 "global-set-key"
-) )
+"kbd"
+"key-translation-map"
+"kill-rectangle"
+"linum-mode"
+"open-rectangle"
+"prettify-symbols-mode"
+"rectangle-mark-mode"
+"rectangle-number-lines"
+"replace-rectangle"
+"shell-command-on-region"
+"shell-command-on-region"
+"sort-lines"
+"subword-mode"
+"yank-rectangle"
+
+  )
+)
 
 (defvar xem-keyword-builtin nil "a list of elisp names")
 (setq xem-keyword-builtin '( "&optional") )
@@ -1136,7 +1156,7 @@
 ) )
 
 (defvar xem-elisp-all-keywords nil "list of all elisp keywords")
-(setq xem-elisp-all-keywords (append xem-elisp-lang-words xem-emacs-words xem-emacs-user-words xem-keyword-builtin xem-elisp-vars-1 xem-elisp-vars-2))
+(setq xem-elisp-all-keywords (append xem-elisp-lang-words xem-emacs-words xem-emacs-user-commands xem-keyword-builtin xem-elisp-vars-1 xem-elisp-vars-2))
 
 
 ;; syntax coloring related
@@ -1144,7 +1164,7 @@
 (setq xem-font-lock-keywords
       (let (
             (emacsWords (regexp-opt xem-emacs-words 'symbols) )
-            (emacsUserWords (regexp-opt xem-emacs-user-words 'symbols) )
+            (emacsUserWords (regexp-opt xem-emacs-user-commands 'symbols) )
             (emacsBuiltins (regexp-opt xem-keyword-builtin 'symbols) )
             (elispLangWords (regexp-opt xem-elisp-lang-words 'symbols) )
             (elispVars1 (regexp-opt xem-elisp-vars-1 'symbols) )
@@ -1165,8 +1185,7 @@
 (defun xem-complete-symbol ()
   "Perform keyword completion on current word.
 
-This uses `ido-mode' user interface style for completion.
-"
+This uses `ido-mode' user interface style for completion."
   (interactive)
   (let* (
          (bds (unit-at-cursor 'word))
@@ -1202,19 +1221,32 @@ punctuation, then do completion. Else do indent line."
          (looking-back "[-_a-zA-Z]")
          )
         (progn (message "doing complete") ; debug
-               (xem-complete-symbol) 
+               (xem-complete-symbol)
                )
-      (progn
+      (save-excursion
         (message "doing indent") ; debug
-        (xem-indent-line) 
+        (xem-goto-root-outer-bracket)
+        (indent-sexp (scan-sexps (point) 1) )
         ) ) ) )
 
 
-;; indent
+;; indent/reformat related
+
+(defun xem-goto-root-outer-bracket ()
+  "Move cursor to the beginning of outer-most bracket."
+  (interactive)
+  (let ((i 0))
+      (while 
+          (and (not (eq (nth 0 (syntax-ppss (point))) 0) )
+               (< i 20)
+ )
+        (setq i (1+ i))
+(up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
+))
+  )
 
 (defun xem-indent-line ()
-  "Indent lines from parent bracket to matching bracket.
-"
+  "Indent lines from parent bracket to matching bracket."
   (interactive)
   (save-excursion
     (backward-up-list)
@@ -1232,6 +1264,29 @@ punctuation, then do completion. Else do indent line."
       )
     ) )
 
+(defun xem-compact-parens ()
+  "Removing whitespaces in ending repetition of parenthesises.
+Removes whitespace from cursor point to end of code block (that is, 2 or more blank lines.).
+if there's a text selection, act on the region.
+Warning: This command does not preserve texts inside double quotes (strings) or in comments."
+  (interactive)
+  (let (inputStr resultText p1 p2)
+
+    (setq inputStr
+          (if (region-active-p)
+              (progn (setq p1 (region-beginning) ) (setq p2 (region-end) ))
+            (save-excursion
+              (setq p1 (point) )
+              (search-forward-regexp "\n\n" nil t)
+              (setq p2 (- (point) 2))
+              )))
+    (save-excursion 
+      (save-restriction 
+        (narrow-to-region p1 p2)
+        (goto-char (point-min))
+
+        (while (search-forward-regexp "[ \t\n]+)[ \t\n]+)" nil t) (replace-match "))"))
+        ))))
 
 
 ;; ;; syntax table
@@ -1253,7 +1308,9 @@ punctuation, then do completion. Else do indent line."
 (defvar xem-keymap nil "Keybinding for `xah-elisp-mode'")
 (progn
   (setq xem-keymap (make-sparse-keymap))
-  ;; (define-key xem-keymap (kbd "<tab>") 'xem-complete-or-indent)
+  (define-key xem-keymap (kbd "C-c C-7")  'xem-complete-or-indent)
+  (define-key xem-keymap (kbd "C-c C-8") 'xem-compact-parens)
+  (define-key xem-keymap (kbd "C-c C-9")  'xem-complete-symbol)
   )
 
 
@@ -1398,7 +1455,7 @@ eventual plan is:
       ;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
       )
     )
-  
+
   (run-mode-hooks 'xah-elisp-mode-hook)
   )
 

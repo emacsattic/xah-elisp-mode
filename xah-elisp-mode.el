@@ -14,13 +14,13 @@
 
 ;;; HISTORY
 
-;; version 0.3, major kinda rewrite. use at your own risk.
+;; version 0.3, 2014-06-10 major kinda rewrite. use at your own risk.
 ;; version 0.2.1, 2014-04-10 added keyword “remove”
 ;; version 0.2, 2014-02-18 lots more keywords, and stuff.
 ;; version 0.1, 2013-03-23 first version
 
 (require 'lisp-mode)
-(require 'xeu_elisp_util)
+;; (require 'xeu_elisp_util)
 
 (defvar xah-elisp-mode-hook nil "Standard hook for `xah-elisp-mode'")
 
@@ -1188,10 +1188,12 @@
 This uses `ido-mode' user interface style for completion."
   (interactive)
   (let* (
-         (bds (unit-at-cursor 'word))
-         (currentWord (elt bds 0) )
-         (p1 (elt bds 1) )
-         (p2 (elt bds 2) )
+         
+         (bds (bounds-of-thing-at-point 'symbol))
+         (p1 (car bds) )
+         (p2 (cdr bds) )
+         (currentWord (buffer-substring-no-properties p1 p2) )
+
          finalResult)
     (when (not currentWord) (setq currentWord ""))
     (setq finalResult
@@ -1236,7 +1238,7 @@ punctuation, then do completion. Else do indent line."
   "Move cursor to the beginning of outer-most bracket."
   (interactive)
   (let ((i 0))
-      (while 
+      (while
           (and (not (eq (nth 0 (syntax-ppss (point))) 0) )
                (< i 20)
  )
@@ -1265,28 +1267,25 @@ punctuation, then do completion. Else do indent line."
     ) )
 
 (defun xem-compact-parens ()
-  "Removing whitespaces in ending repetition of parenthesises.
-Removes whitespace from cursor point to end of code block (that is, 2 or more blank lines.).
-if there's a text selection, act on the region.
+  "Remove whitespaces in ending repetition of parenthesises.
+If there's a text selection, act on the region, else, on defun block.
 Warning: This command does not preserve texts inside double quotes (strings) or in comments."
   (interactive)
-  (let (inputStr resultText p1 p2)
-
-    (setq inputStr
-          (if (region-active-p)
-              (progn (setq p1 (region-beginning) ) (setq p2 (region-end) ))
-            (save-excursion
-              (setq p1 (point) )
-              (search-forward-regexp "\n\n" nil t)
-              (setq p2 (- (point) 2))
-              )))
-    (save-excursion 
-      (save-restriction 
+  (let (p1 p2)
+    (if (region-active-p)
+        (setq p1 (region-beginning) p2 (region-end))
+      (save-excursion
+        (beginning-of-defun)
+        (setq p1 (point))
+        (end-of-defun)
+        (setq p2 (point))))
+    (save-excursion
+      (save-restriction
         (narrow-to-region p1 p2)
         (goto-char (point-min))
-
-        (while (search-forward-regexp "[ \t\n]+)[ \t\n]+)" nil t) (replace-match "))"))
-        ))))
+        (while (search-forward-regexp ")[ \t\n]+)" nil t) (replace-match "))"))
+        (goto-char (point-min))
+        (while (search-forward-regexp ")[ \t\n]+)" nil t) (replace-match "))"))))))
 
 
 ;; ;; syntax table
@@ -1308,9 +1307,13 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
 (defvar xem-keymap nil "Keybinding for `xah-elisp-mode'")
 (progn
   (setq xem-keymap (make-sparse-keymap))
-  (define-key xem-keymap (kbd "C-c C-7")  'xem-complete-or-indent)
-  (define-key xem-keymap (kbd "C-c C-8") 'xem-compact-parens)
-  (define-key xem-keymap (kbd "C-c C-9")  'xem-complete-symbol)
+  (define-key xem-keymap (kbd "C-c C-<tab>")  'xem-complete-or-indent)
+  (define-key xem-keymap (kbd "C-c C-t") 'xem-compact-parens)
+  (define-key xem-keymap (kbd "C-c C-u")  'xem-complete-symbol)
+
+  (define-key xem-keymap (kbd "<menu> e <tab>")  'xem-complete-or-indent)
+  (define-key xem-keymap (kbd "<menu> e t")  'xem-compact-parens)
+  (define-key xem-keymap (kbd "<menu> e u")  'xem-complete-symbol)
   )
 
 
@@ -1418,16 +1421,15 @@ eventual plan is:
 • there shall be no command to indent code, except one that reformat code semantically, not by line. preferably transparent to user as she types. Code formatting shall never be programer's concern.
 • no reliance on emacs's syntax table
 • no reliance on emacs's comment-dwim
-• no reliance on yasnippet or anything completition backend.
+• no reliance on yasnippet or any third-party package.
 • everything shall be elisp only. not rely on shell tool or lang engines. (which can be later added)
 
 \\{xem-keymap}"
     (interactive)
 
-;; (emacs-lisp-mode)
   (kill-all-local-variables)
 
-  (setq mode-name "ξlisp")
+  (setq mode-name "Σlisp")
   (setq major-mode 'xah-elisp-mode)
   (setq font-lock-defaults '((xem-font-lock-keywords)))
 
@@ -1440,7 +1442,7 @@ eventual plan is:
   (setq-local comment-end "")
   (setq-local comment-start-skip ";+ *")
   (setq-local comment-add 1) ;default to `;;' in comment-region
-  (setq-local comment-column 1)
+  (setq-local comment-column 2)
 
   (setq-local indent-line-function 'lisp-indent-line)
   ;; (setq-local indent-region-function 'xem-indent-region)

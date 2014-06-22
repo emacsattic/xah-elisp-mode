@@ -178,6 +178,7 @@
 "scan-lists"
 "scan-sexps"
 "syntax-ppss"
+"forward-symbol"
 
 "set-default"
 
@@ -1171,27 +1172,6 @@
 (setq xem-elisp-all-keywords (append xem-elisp-lang-words xem-emacs-words xem-emacs-user-commands xem-keyword-builtin xem-elisp-vars-1 xem-elisp-vars-2))
 
 
-;; syntax coloring related
-
-(setq xem-font-lock-keywords
-      (let (
-            (emacsWords (regexp-opt xem-emacs-words 'symbols) )
-            (emacsUserWords (regexp-opt xem-emacs-user-commands 'symbols) )
-            (emacsBuiltins (regexp-opt xem-keyword-builtin 'symbols) )
-            (elispLangWords (regexp-opt xem-elisp-lang-words 'symbols) )
-            (elispVars1 (regexp-opt xem-elisp-vars-1 'symbols) )
-            (elispVars2 (regexp-opt xem-elisp-vars-2 'symbols) )
-            )
-        `(
-          (,emacsWords . font-lock-function-name-face)
-          (,emacsUserWords . font-lock-builtin-face)
-          (,emacsBuiltins . font-lock-type-face)
-          (,elispLangWords . font-lock-keyword-face)
-          (,elispVars1 . font-lock-variable-name-face)
-          (,elispVars2 . font-lock-variable-name-face)
-          ) ) )
-
-
 ;; completion
 
 (defun xem-complete-symbol ()
@@ -1200,20 +1180,60 @@
 This uses `ido-mode' user interface style for completion."
   (interactive)
   (let* (
-
          (bds (bounds-of-thing-at-point 'symbol))
-         (p1 (car bds) )
-         (p2 (cdr bds) )
-         (currentWord (buffer-substring-no-properties p1 p2) )
-
+         (p1 (car bds))
+         (p2 (cdr bds))
+         (currentWord (buffer-substring-no-properties p1 p2))
          finalResult)
     (when (not currentWord) (setq currentWord ""))
     (setq finalResult
-          (ido-completing-read "" xem-elisp-all-keywords nil nil currentWord )
-          )
+          (ido-completing-read "" xem-elisp-all-keywords nil nil currentWord ))
     (delete-region p1 p2)
     (insert finalResult)
+    (xem-expand-abbrev)
+))
+
+(defun xem-expand-abbrev (&optional φexpand-func)
+  "Expand emacs lisp function name before cursor into template."
+  (interactive)
+  (let (
+        p1 p2
+        ab-str
+        )
+
+    (save-excursion
+      (forward-symbol -1)
+      (setq p1 (point) )
+      (forward-symbol 1)
+      (setq p2 (point))
+      )
+
+    (setq ab-str (buffer-substring-no-properties p1 p2))
+    (if (abbrev-symbol ab-str)
+        (progn
+          (abbrev-insert (abbrev-symbol ab-str) ab-str p1 p2 )
+          (xem--abbrev-position-cursor)
+          )
+      (progn nil)
+      )
+
+;; (if φexpand-func
+;;     (progn (xem--abbrev-position-cursor))
+;;   (progn nil)
+;; )
+
+))
+
+(defun xem--abbrev-position-cursor ()
+  ""
+  (interactive)
+  (when (search-backward "▮" (max 1 (- (point) 300)) t )
+    ;; (delete-char 1)
+    ;; (delete-char -1)
+nil
     ))
+
+;; (put 'xem--abbrev-position-cursor 'no-self-insert t)
 
 (defun xem-complete-or-indent ()
   "Do keyword complete or indent line depending on context.
@@ -1246,17 +1266,22 @@ punctuation, then do completion. Else do indent line."
 
 ;; indent/reformat related
 
-(defun xem-goto-root-outer-bracket ()
+(defun xem-goto-root-outer-bracket (&optional φpos)
   "Move cursor to the beginning of outer-most bracket."
   (interactive)
-  (let ((i 0))
-      (while
-          (and (not (eq (nth 0 (syntax-ppss (point))) 0) )
-               (< i 20)
- )
-        (setq i (1+ i))
-(up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
-))
+  (let ((i 0)
+        (p1 (if φpos
+                φpos
+              (point)
+              ))
+        )
+    (while
+        (and (not (eq (nth 0 (syntax-ppss p1)) 0) )
+             (< i 20)
+             )
+      (setq i (1+ i))
+      (up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
+      ))
   )
 
 (defun xem-indent-line ()
@@ -1264,7 +1289,7 @@ punctuation, then do completion. Else do indent line."
   (interactive)
   (save-excursion
     (backward-up-list)
-    (indent-sexp)
+    (indent-sexp (line-end-position))
     )
   )
 
@@ -1283,6 +1308,7 @@ punctuation, then do completion. Else do indent line."
 If there's a text selection, act on the region, else, on defun block.
 Warning: This command does not preserve texts inside double quotes (strings) or in comments."
   (interactive)
+; todo don't do when in comment or string
   (let (p1 p2)
     (if (region-active-p)
         (setq p1 (region-beginning) p2 (region-end))
@@ -1300,480 +1326,443 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
         (while (search-forward-regexp ")[ \t\n]+)" nil t) (replace-match "))"))))))
 
 
-;; ;; syntax table
-;; (defvar xem-syntax-table nil "Syntax table for `xah-elisp-mode'.")
-;; (setq xem-syntax-table
-;;       (let ((synTable (make-syntax-table)))
-;;         (modify-syntax-entry ?\; "<" synTable)
-;;         (modify-syntax-entry ?\n ">" synTable)
-;;         (modify-syntax-entry ?` "'   " synTable)
-;;         (modify-syntax-entry ?' "'   " synTable)
-;;         (modify-syntax-entry ?, "'   " synTable)
-;;         (modify-syntax-entry ?@ "'   " synTable)
-
-;;         synTable))
-
-
-;; keybinding
-
-(defvar xem-keymap nil "Keybinding for `xah-elisp-mode'")
-(progn
-  (setq xem-keymap (make-sparse-keymap))
-  (define-key xem-keymap (kbd "C-c C-<tab>")  'xem-complete-or-indent)
-  (define-key xem-keymap (kbd "C-c C-t") 'xem-compact-parens)
-  (define-key xem-keymap (kbd "C-c C-u")  'xem-complete-symbol)
-
-  (define-key xem-keymap (kbd "<menu> e <tab>")  'xem-complete-or-indent)
-  (define-key xem-keymap (kbd "<menu> e t")  'xem-compact-parens)
-  (define-key xem-keymap (kbd "<menu> e u")  'xem-complete-symbol)
-  )
-
-
-;; abbrev and completion
-
-(defun xem--abbrev-position-cursor ()
-  ""
-  (interactive)
-  (when (search-backward "▮" (max 1 (- (point) 300)) t )
-    (delete-char 1)
-    ))
-
-(put 'xem--abbrev-position-cursor 'no-self-insert t) 
+;; abbrev
 
 (setq xem-abbrev-table nil)
 
 (define-abbrev-table 'xem-abbrev-table '(
 
- ;; single letter name has abbrev start with 8
- ("8d" "defun")
- ("8i" "insert")
- ("8l" "let")
- ("8m" "message")
- ("8p" "point")
- ("8s" "setq")
- ("8v" "vector")
- ("8w" "when")
+ ;;;; ido completion flex matching eliminate the need for short abbrevs
+ ;; ("d" "defun" nil :system t)
+ ;; ("i" "insert" nil :system t)
+ ;; ("l" "let" nil :system t)
+ ;; ("m" "message" nil :system t)
+ ;; ("p" "point" nil :system t)
+ ;; ("s" "setq" nil :system t)
+ ;; ("w" "when" nil :system t)
 
- ("ah" "add-hook")
- ("bc" "backward-char")
- ("bfn" "buffer-file-name")
- ("bmp" "buffer-modified-p")
- ("bol" "beginning-of-line")
- ("botap" "bounds-of-thing-at-point")
- ("bs" "buffer-substring")
- ("bsnp" "buffer-substring-no-properties")
- ("ca" "custom-autoload")
- ("cb" "current-buffer")
- ("cc" "condition-case")
- ("cd" "copy-directory")
- ("cdr" "cdr")
- ("cf" "copy-file")
- ("dc" "delete-char")
- ("dd" "delete-directory")
- ("df" "delete-file")
- ("dk" "define-key")
- ("dr" "delete-region")
- ("efn" "expand-file-name")
- ("eol" "end-of-line")
- ("fc" "forward-char")
- ("ff" "find-file")
- ("fl" "forward-line")
- ("fnd" "file-name-directory")
- ("fne" "file-name-extension")
- ("fnn" "file-name-nondirectory")
- ("fnse" "file-name-sans-extension")
- ("frn" "file-relative-name")
- ("gc" "goto-char")
- ("gnb" "generate-new-buffer")
- ("gsk" "global-set-key")
- ("ifc" "insert-file-contents")
- ("kb" "kill-buffer")
- ("la" "looking-at")
- ("lbp" "line-beginning-position")
- ("lep" "line-end-position")
- ("mb" "match-beginning")
- ("md" "make-directory")
- ("me" "match-end")
- ("mlv" "make-local-variable")
- ("ms" "match-string")
- ("nts" "number-to-string")
- ("ntr" "narrow-to-region")
- ("pm" "point-max")
- ("rap" "region-active-p")
- ("rb" "region-beginning")
- ("re" "region-end")
- ("rf" "rename-file")
- ("rm" "replace-match")
- ("rq" "regexp-quote")
- ("rr" "replace-regexp")
- ("rris" "replace-regexp-in-string")
- ("rsb" "re-search-backward")
- ("rsf" "re-search-forward")
- ("sb" "set-buffer")
- ("sbr" "search-backward-regexp")
- ("sc" "shell-command")
- ("scb" "skip-chars-backward")
- ("scf" "skip-chars-forward")
- ("se" "save-excursion")
- ("sf" "search-forward")
- ("sfm" "set-file-modes")
- ("sfr" "search-forward-regexp")
- ("sm" "string-match")
- ("sr" "save-restriction")
- ("ss" "split-string")
- ("stn" "string-to-number")
- ("str" "string")
- ("tap" "thing-at-point")
- ("wcb" "with-current-buffer")
- ("wg" "widget-get")
- ("yonp" "yes-or-no-p")
+ ;; ("ah" "add-hook" nil :system t)
+ ;; ("bc" "backward-char" nil :system t)
+ ;; ("bfn" "buffer-file-name" nil :system t)
+ ;; ("bmp" "buffer-modified-p" nil :system t)
+ ;; ("bol" "beginning-of-line" nil :system t)
+ ;; ("botap" "bounds-of-thing-at-point" nil :system t)
+ ;; ("bs" "buffer-substring" nil :system t)
+ ;; ("bsnp" "buffer-substring-no-properties" nil :system t)
+ ;; ("ca" "custom-autoload" nil :system t)
+ ;; ("cb" "current-buffer" nil :system t)
+ ;; ("cc" "condition-case" nil :system t)
+ ;; ("cd" "copy-directory" nil :system t)
+ ;; ("cdr" "cdr" nil :system t)
+ ;; ("cf" "copy-file" nil :system t)
+ ;; ("dc" "delete-char" nil :system t)
+ ;; ("dd" "delete-directory" nil :system t)
+ ;; ("df" "delete-file" nil :system t)
+ ;; ("dk" "define-key" nil :system t)
+ ;; ("dr" "delete-region" nil :system t)
+ ;; ("efn" "expand-file-name" nil :system t)
+ ;; ("eol" "end-of-line" nil :system t)
+ ;; ("fc" "forward-char" nil :system t)
+ ;; ("ff" "find-file" nil :system t)
+ ;; ("fl" "forward-line" nil :system t)
+ ;; ("fnd" "file-name-directory" nil :system t)
+ ;; ("fne" "file-name-extension" nil :system t)
+ ;; ("fnn" "file-name-nondirectory" nil :system t)
+ ;; ("fnse" "file-name-sans-extension" nil :system t)
+ ;; ("frn" "file-relative-name" nil :system t)
+ ;; ("gc" "goto-char" nil :system t)
+ ;; ("gnb" "generate-new-buffer" nil :system t)
+ ;; ("gsk" "global-set-key" nil :system t)
+ ;; ("ifc" "insert-file-contents" nil :system t)
+ ;; ("kb" "kill-buffer" nil :system t)
+ ;; ("la" "looking-at" nil :system t)
+ ;; ("lbp" "line-beginning-position" nil :system t)
+ ;; ("lep" "line-end-position" nil :system t)
+ ;; ("mb" "match-beginning" nil :system t)
+ ;; ("md" "make-directory" nil :system t)
+ ;; ("me" "match-end" nil :system t)
+ ;; ("mlv" "make-local-variable" nil :system t)
+ ;; ("ms" "match-string" nil :system t)
+ ;; ("nts" "number-to-string" nil :system t)
+ ;; ("ntr" "narrow-to-region" nil :system t)
+ ;; ("pm" "point-max" nil :system t)
+ ;; ("rap" "region-active-p" nil :system t)
+ ;; ("rb" "region-beginning" nil :system t)
+ ;; ("re" "region-end" nil :system t)
+ ;; ("rf" "rename-file" nil :system t)
+ ;; ("rm" "replace-match" nil :system t)
+ ;; ("rq" "regexp-quote" nil :system t)
+ ;; ("rr" "replace-regexp" nil :system t)
+ ;; ("rris" "replace-regexp-in-string" nil :system t)
+ ;; ("rsb" "re-search-backward" nil :system t)
+ ;; ("rsf" "re-search-forward" nil :system t)
+ ;; ("sb" "search-backward" nil :system t)
+ ;; ("sbr" "search-backward-regexp" nil :system t)
+ ;; ("sc" "shell-command" nil :system t)
+ ;; ("scb" "skip-chars-backward" nil :system t)
+ ;; ("scf" "skip-chars-forward" nil :system t)
+ ;; ("se" "save-excursion" nil :system t)
+ ;; ("sf" "search-forward" nil :system t)
+ ;; ("sfm" "set-file-modes" nil :system t)
+ ;; ("sfr" "search-forward-regexp" nil :system t)
+ ;; ("sm" "string-match" nil :system t)
+ ;; ("sr" "save-restriction" nil :system t)
+ ;; ("ss" "split-string" nil :system t)
+ ;; ("stn" "string-to-number" nil :system t)
+ ;; ("str" "string" nil :system t)
+ ;; ("tap" "thing-at-point" nil :system t)
+ ;; ("wcb" "with-current-buffer" nil :system t)
+ ;; ("wg" "widget-get" nil :system t)
+ ;; ("yonp" "yes-or-no-p" nil :system t)
 
-("add-hook" "(add-hook HOOK▮ FUNCTION)" xem--abbrev-position-cursor :system t)
+("add-hook" "(add-hook HOOK▮ FUNCTION)" nil :system t)
 
-("and" "(and ▮)" xem--abbrev-position-cursor :system t )
+("and" "(and ▮)" nil :system t )
 
-("append" "(append ▮)" xem--abbrev-position-cursor :system t)
+("append" "(append ▮)" nil :system t)
 
-("apply" "(apply ▮)" xem--abbrev-position-cursor :system t)
+("add-to-list" "(add-to-list LIST-VAR▮ ELEMENT &optional APPEND COMPARE-FN)" nil :system t)
 
-("aref" "(aref ARRAY▮ INDEX)" xem--abbrev-position-cursor :system t)
+("apply" "(apply ▮)" nil :system t)
 
-("aset" "(aset ARRAY▮ IDX NEWELT)" xem--abbrev-position-cursor :system t)
+("aref" "(aref ARRAY▮ INDEX)" nil :system t)
 
-("assoc" "(assoc KEY▮ LIST)" xem--abbrev-position-cursor :system t)
+("aset" "(aset ARRAY▮ IDX NEWELT)" nil :system t)
 
-("assq" "(assq KEY▮ LIST)" xem--abbrev-position-cursor :system t)
+("assoc" "(assoc KEY▮ LIST)" nil :system t)
 
-("autoload" "(autoload 'FUNCNAME▮ \"FILENAME\" &optional \"DOCSTRING\" INTERACTIVE TYPE)" xem--abbrev-position-cursor :system t)
+("assq" "(assq KEY▮ LIST)" nil :system t)
 
-("backward-char" "(backward-char ▮)" xem--abbrev-position-cursor :system t)
+("autoload" "(autoload 'FUNCNAME▮ \"FILENAME\" &optional \"DOCSTRING\" INTERACTIVE TYPE)" nil :system t)
 
-("beginning-of-line" "(beginning-of-line)" xem--abbrev-position-cursor :system t)
+("backward-char" "(backward-char ▮)" nil :system t)
 
-("boundp" "(boundp '▮)" xem--abbrev-position-cursor :system t)
+("beginning-of-line" "(beginning-of-line)" nil :system t)
+
+("boundp" "(boundp '▮)" nil :system t)
 
 ("bounds-of-thing-at-point" "(bounds-of-thing-at-point '▮) ; symbol, list, sexp, defun, filename, url, email, word, sentence, whitespace, line, page ...")
 
-("buffer-file-name" "(buffer-file-name)" xem--abbrev-position-cursor :system t)
+("buffer-file-name" "(buffer-file-name)" nil :system t)
 
-("buffer-modified-p" "(buffer-modified-p ▮)" xem--abbrev-position-cursor :system t)
+("buffer-modified-p" "(buffer-modified-p ▮)" nil :system t)
 
-("buffer-substring-no-properties" "(buffer-substring-no-properties START▮ END)" xem--abbrev-position-cursor :system t)
+("buffer-substring-no-properties" "(buffer-substring-no-properties START▮ END)" nil :system t)
 
-("buffer-substring" "(buffer-substring START▮ END)" xem--abbrev-position-cursor :system t)
+("buffer-substring" "(buffer-substring START▮ END)" nil :system t)
 
-("called-interactively-p" "(called-interactively-p 'interactive▮)" xem--abbrev-position-cursor :system t)
+("called-interactively-p" "(called-interactively-p 'interactive▮)" nil :system t)
 
-("car" "(car ▮)" xem--abbrev-position-cursor :system t)
+("car" "(car ▮)" nil :system t)
 
-("catch" "(catch TAG▮ BODY)" xem--abbrev-position-cursor :system t)
+("catch" "(catch TAG▮ BODY)" nil :system t)
 
-("cdr" "(cdr ▮)" xem--abbrev-position-cursor :system t)
+("cdr" "(cdr ▮)" nil :system t)
 
-("concat" "(concat ▮)" xem--abbrev-position-cursor :system t)
+("concat" "(concat ▮)" nil :system t)
 
 ("cond" "(cond
 (CONDITION▮ BODY)
 (CONDITION BODY)
-)" xem--abbrev-position-cursor :system t)
+)" nil :system t)
 
-("condition-case" "(condition-case ▮)" xem--abbrev-position-cursor :system t)
+("condition-case" "(condition-case ▮)" nil :system t)
 
-("cons" "(cons ▮)" xem--abbrev-position-cursor :system t)
+("cons" "(cons ▮)" nil :system t)
 
-("consp" "(consp ▮)" xem--abbrev-position-cursor :system t)
+("consp" "(consp ▮)" nil :system t)
 
-("copy-directory" "(copy-directory ▮ NEWNAME &optional KEEP-TIME PARENTS)" xem--abbrev-position-cursor :system t)
+("copy-directory" "(copy-directory ▮ NEWNAME &optional KEEP-TIME PARENTS)" nil :system t)
 
-("copy-file" "(copy-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME PRESERVE-UID-GID)" xem--abbrev-position-cursor :system t)
+("copy-file" "(copy-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME PRESERVE-UID-GID)" nil :system t)
 
-("current-buffer" "(current-buffer)" xem--abbrev-position-cursor :system t)
+("current-buffer" "(current-buffer)" nil :system t)
 
-("custom-autoload" "(custom-autoload ▮ SYMBOL LOAD &optional NOSET)" xem--abbrev-position-cursor :system t)
+("custom-autoload" "(custom-autoload ▮ SYMBOL LOAD &optional NOSET)" nil :system t)
 
-("defalias" "(defalias 'SYMBOL▮ 'DEFINITION &optional DOCSTRING)" xem--abbrev-position-cursor :system t)
+("defalias" "(defalias 'SYMBOL▮ 'DEFINITION &optional DOCSTRING)" nil :system t)
 
-("defconst" "(defconst ▮ INITVALUE \"DOCSTRING\")" xem--abbrev-position-cursor :system t)
+("defconst" "(defconst ▮ INITVALUE \"DOCSTRING\")" nil :system t)
 
-("defcustom" "(defcustom ▮ VALUE \"DOC\" &optional ARGS)" xem--abbrev-position-cursor :system t)
+("defcustom" "(defcustom ▮ VALUE \"DOC\" &optional ARGS)" nil :system t)
 
-("define-key" "(define-key KEYMAPNAME▮ (kbd \"M-b\") 'FUNCNAME)" xem--abbrev-position-cursor :system t)
+("define-key" "(define-key KEYMAPNAME▮ (kbd \"M-b\") 'FUNCNAME)" nil :system t)
 
-("defsubst" "(defsubst ▮)" xem--abbrev-position-cursor :system t)
+("defsubst" "(defsubst ▮)" nil :system t)
 
 ("defun" "(defun ▮ ()
   \"DOCSTRING\"
   (interactive)
   (let (var1)
-    
-  ))" xem--abbrev-position-cursor :system t)
 
-("defvar" "(defvar ▮ &optional INITVALUE \"DOCSTRING\")" xem--abbrev-position-cursor :system t)
+  ))" nil :system t)
 
-("delete-char" "(delete-char ▮)" xem--abbrev-position-cursor :system t)
+("defvar" "(defvar ▮ &optional INITVALUE \"DOCSTRING\")" nil :system t)
 
-("delete-directory" "(delete-directory ▮ &optional RECURSIVE)" xem--abbrev-position-cursor :system t)
+("delete-char" "(delete-char ▮)" nil :system t)
 
-("delete-file" "(delete-file ▮)" xem--abbrev-position-cursor :system t)
+("delete-directory" "(delete-directory ▮ &optional RECURSIVE)" nil :system t)
 
-("delete-region" "(delete-region ▮)" xem--abbrev-position-cursor :system t)
+("delete-file" "(delete-file ▮)" nil :system t)
 
-("directory-files" "(directory-files ▮ &optional FULL MATCH NOSORT)" xem--abbrev-position-cursor :system t)
+("delete-region" "(delete-region ▮)" nil :system t)
 
-("dolist" "(dolist ▮)" xem--abbrev-position-cursor :system t)
+("directory-files" "(directory-files ▮ &optional FULL MATCH NOSORT)" nil :system t)
 
-("dotimes" "(dotimes (VAR▮ COUNT [RESULT]) BODY)" xem--abbrev-position-cursor :system t)
+("dolist" "(dolist ▮)" nil :system t)
 
-("elt" "(elt SEQUENCE▮ N)" xem--abbrev-position-cursor :system t)
+("dotimes" "(dotimes (VAR▮ COUNT [RESULT]) BODY)" nil :system t)
 
-("end-of-line" "(end-of-line)" xem--abbrev-position-cursor :system t)
+("elt" "(elt SEQUENCE▮ N)" nil :system t)
 
-("end-of-line" "(eq ▮)" xem--abbrev-position-cursor :system t)
+("end-of-line" "(end-of-line ▮&optional N)" nil :system t)
 
-("equal" "(equal ▮)" xem--abbrev-position-cursor :system t)
+("eq" "(eq ▮)" nil :system t)
 
-("error" "(error \"%s\" ▮)" xem--abbrev-position-cursor :system t)
+("equal" "(equal ▮)" nil :system t)
 
-("expand-file-name" "(expand-file-name ▮ &optional relativedir)" xem--abbrev-position-cursor :system t)
+("error" "(error \"%s\" ▮)" nil :system t)
 
-("format" "(format \"▮\" &optional OBJECTS)" xem--abbrev-position-cursor :system t)
+("expand-file-name" "(expand-file-name ▮ &optional relativedir)" nil :system t)
 
-("fboundp" "(fboundp '▮)" xem--abbrev-position-cursor :system t)
+("format" "(format \"▮\" &optional OBJECTS)" nil :system t)
 
-("file-directory-p" "(file-directory-p ▮)" xem--abbrev-position-cursor :system t)
+("fboundp" "(fboundp '▮)" nil :system t)
 
-("file-exists-p" "(file-exists-p ▮)" xem--abbrev-position-cursor :system t)
+("file-directory-p" "(file-directory-p ▮)" nil :system t)
 
-("file-name-directory" "(file-name-directory ▮)" xem--abbrev-position-cursor :system t)
+("file-exists-p" "(file-exists-p ▮)" nil :system t)
 
-("file-name-extension" "(file-name-extension ▮ &optional PERIOD)" xem--abbrev-position-cursor :system t)
+("file-name-directory" "(file-name-directory ▮)" nil :system t)
 
-("file-name-nondirectory" "(file-name-nondirectory ▮)" xem--abbrev-position-cursor :system t)
+("file-name-extension" "(file-name-extension ▮ &optional PERIOD)" nil :system t)
 
-("file-name-sans-extension" "(file-name-sans-extension ▮)" xem--abbrev-position-cursor :system t)
+("file-name-nondirectory" "(file-name-nondirectory ▮)" nil :system t)
 
-("file-regular-p" "(file-regular-p ▮)" xem--abbrev-position-cursor :system t)
+("file-name-sans-extension" "(file-name-sans-extension ▮)" nil :system t)
 
-("file-relative-name" "(file-relative-name ▮)" xem--abbrev-position-cursor :system t)
+("file-regular-p" "(file-regular-p ▮)" nil :system t)
 
-("find-file" "(find-file ▮)" xem--abbrev-position-cursor :system t)
+("file-relative-name" "(file-relative-name ▮)" nil :system t)
 
-("format" "(format \"%s\" ▮)" xem--abbrev-position-cursor :system t)
+("find-file" "(find-file ▮)" nil :system t)
 
-("forward-char" "(forward-char ▮)" xem--abbrev-position-cursor :system t)
+("format" "(format \"%s\" ▮)" nil :system t)
 
-("forward-line" "(forward-line ▮)" xem--abbrev-position-cursor :system t)
+("forward-char" "(forward-char ▮)" nil :system t)
 
-("funcall" "(funcall ▮)" xem--abbrev-position-cursor :system t)
+("forward-line" "(forward-line ▮)" nil :system t)
 
-("function" "(function ▮)" xem--abbrev-position-cursor :system t)
+("funcall" "(funcall ▮)" nil :system t)
 
-("generate-new-buffer" "(generate-new-buffer ▮)" xem--abbrev-position-cursor :system t)
+("function" "(function ▮)" nil :system t)
 
-("get" "(get SYMBOL▮ PROPNAME)" xem--abbrev-position-cursor :system t)
+("generate-new-buffer" "(generate-new-buffer ▮)" nil :system t)
 
-("global-set-key" "(global-set-key (kbd \"C-▮\") 'COMMAND)" xem--abbrev-position-cursor :system t)
+("get" "(get SYMBOL▮ PROPNAME)" nil :system t)
 
-("goto-char" "(goto-char ▮)" xem--abbrev-position-cursor :system t)
+("global-set-key" "(global-set-key (kbd \"C-▮\") 'COMMAND)" nil :system t)
+
+("goto-char" "(goto-char ▮)" nil :system t)
 
 ("if" "(if ▮
     (progn )
   (progn )
-)" xem--abbrev-position-cursor :system t)
+)" nil :system t)
 
-("insert-file-contents" "(insert-file-contents ▮ &optional VISIT BEG END REPLACE)" xem--abbrev-position-cursor :system t)
+("insert-file-contents" "(insert-file-contents ▮ &optional VISIT BEG END REPLACE)" nil :system t)
 
-("insert" "(insert ▮)" xem--abbrev-position-cursor :system t)
+("insert" "(insert ▮)" nil :system t)
 
-("interactive" "(interactive)" xem--abbrev-position-cursor :system t)
+("interactive" "(interactive)" nil :system t)
 
-("kbd" "(kbd \"▮\")" xem--abbrev-position-cursor :system t)
+("kbd" "(kbd \"▮\")" nil :system t)
 
-("kill-buffer" "(kill-buffer ▮)" xem--abbrev-position-cursor :system t)
+("kill-buffer" "(kill-buffer ▮)" nil :system t)
 
-("lambda" "(lambda (▮) BODY)" xem--abbrev-position-cursor :system t)
+("lambda" "(lambda (▮) BODY)" nil :system t)
 
-("length" "(length ▮)" xem--abbrev-position-cursor :system t)
+("length" "(length ▮)" nil :system t)
 
 ("let" "(let (▮)
  x
-)" xem--abbrev-position-cursor :system t)
+)" nil :system t)
 
-("line-beginning-position" "(line-beginning-position)" xem--abbrev-position-cursor :system t)
+("line-beginning-position" "(line-beginning-position)" nil :system t)
 
-("line-end-position" "(line-end-position)" xem--abbrev-position-cursor :system t)
+("line-end-position" "(line-end-position)" nil :system t)
 
-("list" "(list ▮)" xem--abbrev-position-cursor :system t)
+("list" "(list ▮)" nil :system t)
 
-("looking-at" "(looking-at ▮)" xem--abbrev-position-cursor :system t)
+("looking-at" "(looking-at ▮)" nil :system t)
 
-("make-directory" "(make-directory ▮ &optional PARENTS)" xem--abbrev-position-cursor :system t)
+("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
 
-("make-local-variable" "(make-local-variable ▮)" xem--abbrev-position-cursor :system t)
+("make-local-variable" "(make-local-variable ▮)" nil :system t)
 
-("mapc" "(mapc '▮ SEQUENCE)" xem--abbrev-position-cursor :system t)
+("mapc" "(mapc '▮ SEQUENCE)" nil :system t)
 
-("mapcar" "(mapcar '▮ SEQUENCE)" xem--abbrev-position-cursor :system t)
+("mapcar" "(mapcar '▮ SEQUENCE)" nil :system t)
 
-("mapconcat" "(mapconcat FUNCTION▮ SEQUENCE SEPARATOR)" xem--abbrev-position-cursor :system t)
+("mapconcat" "(mapconcat FUNCTION▮ SEQUENCE SEPARATOR)" nil :system t)
 
-("match-beginning" "(match-beginning N▮)" xem--abbrev-position-cursor :system t)
+("match-beginning" "(match-beginning N▮)" nil :system t)
 
-("match-end" "(match-end N▮)" xem--abbrev-position-cursor :system t)
+("match-end" "(match-end N▮)" nil :system t)
 
-("match-string" "(match-string ▮)" xem--abbrev-position-cursor :system t)
+("match-string" "(match-string ▮)" nil :system t)
 
-("max" "(max ▮)" xem--abbrev-position-cursor :system t)
+("max" "(max ▮)" nil :system t)
 
-("member" "(member ▮ LIST)" xem--abbrev-position-cursor :system t)
+("member" "(member ▮ LIST)" nil :system t)
 
-("memq" "(memq ▮ LIST)" xem--abbrev-position-cursor :system t)
+("memq" "(memq ▮ LIST)" nil :system t)
 
-("message" "(message \"%s▮\" ARGS)" xem--abbrev-position-cursor :system t)
+("message" "(message \"%s▮\" ARGS)" nil :system t)
 
-("min" "(min ▮)" xem--abbrev-position-cursor :system t)
+("min" "(min ▮)" nil :system t)
 
-("narrow-to-region" "(narrow-to-region START▮ END)" xem--abbrev-position-cursor :system t)
+("narrow-to-region" "(narrow-to-region START▮ END)" nil :system t)
 
-("not" "(not ▮)" xem--abbrev-position-cursor :system t)
+("not" "(not ▮)" nil :system t)
 
-("nth" "(nth N▮ LIST)" xem--abbrev-position-cursor :system t)
+("nth" "(nth N▮ LIST)" nil :system t)
 
-("null" "(null ▮)" xem--abbrev-position-cursor :system t)
+("null" "(null ▮)" nil :system t)
 
-("number-to-string" "(number-to-string ▮)" xem--abbrev-position-cursor :system t)
+("number-to-string" "(number-to-string ▮)" nil :system t)
 
-("or" "(or ▮)" xem--abbrev-position-cursor :system t)
+("or" "(or ▮)" nil :system t)
 
-("point-max" "(point-max)" xem--abbrev-position-cursor :system t)
+("point-max" "(point-max)" nil :system t)
 
-("point-min" "(point-min)" xem--abbrev-position-cursor :system t)
+("point-min" "(point-min)" nil :system t)
 
-("point" "(point)" xem--abbrev-position-cursor :system t)
+("point" "(point)" nil :system t)
 
-("prin1" "(prin1 ▮)" xem--abbrev-position-cursor :system t)
+("prin1" "(prin1 ▮)" nil :system t)
 
-("princ" "(princ ▮)" xem--abbrev-position-cursor :system t)
+("princ" "(princ ▮)" nil :system t)
 
-("print" "(print ▮)" xem--abbrev-position-cursor :system t)
+("print" "(print ▮)" nil :system t)
 
-("progn" "(progn ▮)" xem--abbrev-position-cursor :system t)
+("progn" "(progn ▮)" nil :system t)
 
-("push" "(push ▮)" xem--abbrev-position-cursor :system t)
+("push" "(push ▮)" nil :system t)
 
-("put" "(put 'SYMBOL▮ PROPNAME VALUE)" xem--abbrev-position-cursor :system t)
+("put" "(put 'SYMBOL▮ PROPNAME VALUE)" nil :system t)
 
-("random" "(random ▮)" xem--abbrev-position-cursor :system t)
+("random" "(random ▮)" nil :system t)
 
-("rassoc" "(rassoc KEY▮ LIST)" xem--abbrev-position-cursor :system t)
+("rassoc" "(rassoc KEY▮ LIST)" nil :system t)
 
-("re-search-backward" "(re-search-backward REGEXP▮ &optional BOUND NOERROR COUNT)" xem--abbrev-position-cursor :system t)
+("re-search-backward" "(re-search-backward REGEXP▮ &optional BOUND NOERROR COUNT)" nil :system t)
 
-("re-search-forward" "(re-search-forward REGEXP▮ &optional BOUND NOERROR COUNT)" xem--abbrev-position-cursor :system t)
+("re-search-forward" "(re-search-forward REGEXP▮ &optional BOUND NOERROR COUNT)" nil :system t)
 
-("read-directory-name" "(read-directory-name \"▮\" &optional DIR DEFAULT-DIRNAME MUSTMATCH INITIAL)" xem--abbrev-position-cursor :system t)
+("read-directory-name" "(read-directory-name \"▮\" &optional DIR DEFAULT-DIRNAME MUSTMATCH INITIAL)" nil :system t)
 
-("read-file-name" "(read-file-name \"▮\" &optional DIR DEFAULT-FILENAME MUSTMATCH INITIAL PREDICATE)" xem--abbrev-position-cursor :system t)
+("read-file-name" "(read-file-name \"▮\" &optional DIR DEFAULT-FILENAME MUSTMATCH INITIAL PREDICATE)" nil :system t)
 
-("read-regexp" "(read-regexp \"▮\" &optional DEFAULT-VALUE)" xem--abbrev-position-cursor :system t)
+("read-regexp" "(read-regexp \"▮\" &optional DEFAULT-VALUE)" nil :system t)
 
-("read-string" "(read-string \"▮\" &optional INITIAL-INPUT HISTORY DEFAULT-VALUE INHERIT-INPUT-METHOD)" xem--abbrev-position-cursor :system t)
+("read-string" "(read-string \"▮\" &optional INITIAL-INPUT HISTORY DEFAULT-VALUE INHERIT-INPUT-METHOD)" nil :system t)
 
-("regexp-opt" "(regexp-opt STRINGS▮ &optional PAREN)" xem--abbrev-position-cursor :system t)
+("regexp-opt" "(regexp-opt STRINGS▮ &optional PAREN)" nil :system t)
 
-("regexp-quote" "(regexp-quote ▮)" xem--abbrev-position-cursor :system t)
+("regexp-quote" "(regexp-quote ▮)" nil :system t)
 
-("region-active-p" "(region-active-p)" xem--abbrev-position-cursor :system t)
+("region-active-p" "(region-active-p)" nil :system t)
 
-("region-beginning" "(region-beginning)" xem--abbrev-position-cursor :system t)
+("region-beginning" "(region-beginning)" nil :system t)
 
-("region-end" "(region-end)" xem--abbrev-position-cursor :system t)
+("region-end" "(region-end)" nil :system t)
 
-("rename-file" "(rename-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS)" xem--abbrev-position-cursor :system t)
+("rename-file" "(rename-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS)" nil :system t)
 
-("repeat" "(repeat ▮)" xem--abbrev-position-cursor :system t)
+("repeat" "(repeat ▮)" nil :system t)
 
-("replace-match" "(replace-match NEWTEXT▮ &optional FIXEDCASE LITERAL STRING SUBEXP)" xem--abbrev-position-cursor :system t)
+("replace-match" "(replace-match NEWTEXT▮ &optional FIXEDCASE LITERAL STRING SUBEXP)" nil :system t)
 
-("replace-regexp-in-string" "(replace-regexp-in-string REGEXP▮ REP STRING &optional FIXEDCASE LITERAL SUBEXP START)" xem--abbrev-position-cursor :system t)
+("replace-regexp-in-string" "(replace-regexp-in-string REGEXP▮ REP STRING &optional FIXEDCASE LITERAL SUBEXP START)" nil :system t)
 
-("replace-regexp" "(replace-regexp REGEXP▮ TO-STRING &optional DELIMITED START END)" xem--abbrev-position-cursor :system t)
+("replace-regexp" "(replace-regexp REGEXP▮ TO-STRING &optional DELIMITED START END)" nil :system t)
 
-("require" "(require ▮)" xem--abbrev-position-cursor :system t)
+("require" "(require ▮)" nil :system t)
 
-("reverse" "(reverse ▮)" xem--abbrev-position-cursor :system t)
+("reverse" "(reverse ▮)" nil :system t)
 
-("save-buffer" "(save-buffer ▮)" xem--abbrev-position-cursor :system t)
+("save-buffer" "(save-buffer ▮)" nil :system t)
 
-("save-excursion" "(save-excursion ▮)" xem--abbrev-position-cursor :system t)
+("save-excursion" "(save-excursion ▮)" nil :system t)
 
-("save-restriction" "(save-restriction ▮)" xem--abbrev-position-cursor :system t)
+("save-restriction" "(save-restriction ▮)" nil :system t)
 
-("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND NOERROR COUNT)" xem--abbrev-position-cursor :system t)
+("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
 
-("search-backward" "(search-backward \"▮\" &optional BOUND NOERROR COUNT)" xem--abbrev-position-cursor :system t)
+("search-backward" "(search-backward \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
 
-("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND NOERROR COUNT)" xem--abbrev-position-cursor :system t)
+("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
 
-("search-forward" "(search-forward \"▮\" &optional BOUND NOERROR COUNT)" xem--abbrev-position-cursor :system t)
+("search-forward" "(search-forward \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
 
-("set-buffer" "(set-buffer ▮)" xem--abbrev-position-cursor :system t)
+("set-buffer" "(set-buffer ▮)" nil :system t)
 
-("set-file-modes" "(set-file-modes ▮ MODE)" xem--abbrev-position-cursor :system t)
+("set-file-modes" "(set-file-modes ▮ MODE)" nil :system t)
 
-("set-mark" "(set-mark ▮)" xem--abbrev-position-cursor :system t)
+("set-mark" "(set-mark ▮)" nil :system t)
 
-("set" "(set ▮)" xem--abbrev-position-cursor :system t)
+("set" "(set ▮)" nil :system t)
 
-("setq" "(setq ▮)" xem--abbrev-position-cursor :system t)
+("setq" "(setq ▮)" nil :system t)
 
-("shell-command" "(shell-command ▮ &optional OUTPUT-BUFFER ERROR-BUFFER)" xem--abbrev-position-cursor :system t)
+("shell-command" "(shell-command ▮ &optional OUTPUT-BUFFER ERROR-BUFFER)" nil :system t)
 
-("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" xem--abbrev-position-cursor :system t)
+("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" nil :system t)
 
-("skip-chars-forward" "(skip-chars-forward \"▮\" &optional LIM)" xem--abbrev-position-cursor :system t)
+("skip-chars-forward" "(skip-chars-forward \"▮\" &optional LIM)" nil :system t)
 
-("split-string" "(split-string ▮ &optional SEPARATORS OMIT-NULLS)" xem--abbrev-position-cursor :system t)
+("split-string" "(split-string ▮ &optional SEPARATORS OMIT-NULLS)" nil :system t)
 
-("string-match-p" "(string-match-p \"REGEXP▮\" \"STRING\" &optional START)" xem--abbrev-position-cursor :system t)
+("string-match-p" "(string-match-p \"REGEXP▮\" \"STRING\" &optional START)" nil :system t)
 
-("string-match" "(string-match \"REGEXP▮\" \"STRING\" &optional START)" xem--abbrev-position-cursor :system t)
+("string-match" "(string-match \"REGEXP▮\" \"STRING\" &optional START)" nil :system t)
 
-("string-to-number" "(string-to-number \"▮\")" xem--abbrev-position-cursor :system t)
+("string-to-number" "(string-to-number \"▮\")" nil :system t)
 
-("string" "(string ▮)" xem--abbrev-position-cursor :system t)
+("string" "(string ▮)" nil :system t)
 
-("string=" "(string= ▮)" xem--abbrev-position-cursor :system t)
+("string=" "(string= ▮)" nil :system t)
 
-("stringp" "(stringp ▮)" xem--abbrev-position-cursor :system t)
+("stringp" "(stringp ▮)" nil :system t)
 
-("substring-no-properties" "(substring-no-properties ▮ FROM TO)" xem--abbrev-position-cursor :system t)
+("substring-no-properties" "(substring-no-properties ▮ FROM TO)" nil :system t)
 
-("substring" "(substring STRING▮ FROM &optional TO)" xem--abbrev-position-cursor :system t)
+("substring" "(substring STRING▮ FROM &optional TO)" nil :system t)
 
 ("thing-at-point" "(thing-at-point '▮) ; symbol, list, sexp, defun, filename, url, email, word, sentence, whitespace, line, page ...")
 
-("throw" "(throw TAG▮ VALUE)" xem--abbrev-position-cursor :system t)
+("throw" "(throw TAG▮ VALUE)" nil :system t)
 
-("unless" "(unless ▮)" xem--abbrev-position-cursor :system t)
+("unless" "(unless ▮)" nil :system t)
 
-("vector" "(vector ▮)" xem--abbrev-position-cursor :system t)
+("vector" "(vector ▮)" nil :system t)
 
-("when" "(when ▮)" xem--abbrev-position-cursor :system t)
+("when" "(when ▮)" nil :system t)
 
-("while" "(while ▮)" xem--abbrev-position-cursor :system t)
+("while" "(while ▮)" nil :system t)
 
-("widget-get" "(widget-get ▮)" xem--abbrev-position-cursor :system t)
+("widget-get" "(widget-get ▮)" nil :system t)
 
-("with-current-buffer" "(with-current-buffer ▮)" xem--abbrev-position-cursor :system t)
+("with-current-buffer" "(with-current-buffer ▮)" nil :system t)
 
-("with-temp-buffer" "(with-temp-buffer ▮)" xem--abbrev-position-cursor :system t)
+("with-temp-buffer" "(with-temp-buffer ▮)" nil :system t)
 
-("with-temp-file" "(with-temp-file FILE▮)" xem--abbrev-position-cursor :system t)
+("with-temp-file" "(with-temp-file FILE▮)" nil :system t)
 
-("write-file" "(write-file FILENAME▮ &optional CONFIRM)" xem--abbrev-position-cursor :system t)
+("write-file" "(write-file FILENAME▮ &optional CONFIRM)" nil :system t)
 
-("write-region" "(write-region (point-min) (point-max) FILENAME &optional APPEND VISIT LOCKNAME MUSTBENEW)" xem--abbrev-position-cursor :system t)
+("write-region" "(write-region (point-min) (point-max) FILENAME &optional APPEND VISIT LOCKNAME MUSTBENEW)" nil :system t)
 
 ;; #name: process marked files in dired
 ;; # --
@@ -1877,22 +1866,87 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
 ;;   )
 ;; )
 
-("y-or-n-p" "(y-or-n-p \"PROMPT▮ \")" xem--abbrev-position-cursor :system t)
+("y-or-n-p" "(y-or-n-p \"PROMPT▮ \")" nil :system t)
 
-("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" xem--abbrev-position-cursor :system t)
+("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" nil :system t)
 
  )
 
 "abbrev table for `xah-elisp-mode'"
-:regexp "\\_<\\([_-A-Za-z]+\\)"
+:regexp "\\_<\\([_-0-9A-Za-z]+\\)"
   )
+
+
+;; syntax coloring related
+
+(setq xem-font-lock-keywords
+      (let (
+            (emacsWords (regexp-opt xem-emacs-words 'symbols) )
+            (emacsUserWords (regexp-opt xem-emacs-user-commands 'symbols) )
+            (emacsBuiltins (regexp-opt xem-keyword-builtin 'symbols) )
+            (elispLangWords (regexp-opt xem-elisp-lang-words 'symbols) )
+            (elispVars1 (regexp-opt xem-elisp-vars-1 'symbols) )
+            (elispVars2 (regexp-opt xem-elisp-vars-2 'symbols) )
+            )
+        `(
+          (,emacsWords . font-lock-function-name-face)
+          (,emacsUserWords . font-lock-builtin-face)
+          (,emacsBuiltins . font-lock-type-face)
+          (,elispLangWords . font-lock-keyword-face)
+          (,elispVars1 . font-lock-variable-name-face)
+          (,elispVars2 . font-lock-variable-name-face)
+          ) ) )
+
+
+;; ;; syntax table
+;; (defvar xem-syntax-table nil "Syntax table for `xah-elisp-mode'.")
+;; (setq xem-syntax-table
+;;       (let ((synTable (make-syntax-table)))
+;;         (modify-syntax-entry ?\; "<" synTable)
+;;         (modify-syntax-entry ?\n ">" synTable)
+;;         (modify-syntax-entry ?` "'   " synTable)
+;;         (modify-syntax-entry ?' "'   " synTable)
+;;         (modify-syntax-entry ?, "'   " synTable)
+;;         (modify-syntax-entry ?@ "'   " synTable)
+
+;;         synTable))
+
+
+;; keybinding
+
+(when (string-equal system-type "windows-nt")
+  (define-key key-translation-map (kbd "<apps>") (kbd "<menu>")))
+
+(defvar xem-keymap nil "Keybinding for `xah-elisp-mode'")
+(progn
+  (setq xem-keymap (make-sparse-keymap))
+  (define-key xem-keymap (kbd "C-c C-i")  'xem-complete-or-indent)
+  (define-key xem-keymap (kbd "C-c C-p") 'xem-compact-parens)
+  (define-key xem-keymap (kbd "C-c C-c")  'xem-complete-symbol)
+
+  (define-key xem-keymap (kbd "C-C C-l") 'xem-indent-line)
+  (define-key xem-keymap (kbd "C-C C-r") 'xem-indent-region)
+  (define-key xem-keymap (kbd "C-C C-e") 'xem-expand-abbrev)
+
+  (define-key xem-keymap (kbd "<menu> e i") 'xem-complete-or-indent)
+  (define-key xem-keymap (kbd "<menu> e p") 'xem-compact-parens)
+  (define-key xem-keymap (kbd "<menu> e c") 'xem-complete-symbol)
+
+  (define-key xem-keymap (kbd "<menu> e l") 'xem-indent-line)
+  (define-key xem-keymap (kbd "<menu> e r") 'xem-indent-region)
+
+  (define-key xem-keymap (kbd "<menu> e e") 'xem-expand-abbrev)
+
+  )
+
+
 
 ;; define the mode
 (defun xah-elisp-mode ()
-    "A major mode for emacs lisp.
+  "A major mode for emacs lisp.
 
 \\{xem-keymap}"
-    (interactive)
+  (interactive)
 
   (kill-all-local-variables)
 
@@ -1903,7 +1957,7 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
   (set-syntax-table emacs-lisp-mode-syntax-table)
   (use-local-map xem-keymap)
   (setq local-abbrev-table xem-abbrev-table)
-  (setq abbrev-mode t)
+  ;; (setq abbrev-mode t) ; local
 
   (setq-local comment-start ";")
   (setq-local comment-end "")
@@ -1911,8 +1965,8 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
   (setq-local comment-add 1) ;default to `;;' in comment-region
   (setq-local comment-column 2)
 
-  (setq-local indent-line-function 'lisp-indent-line)
-  ;; (setq-local indent-region-function 'xem-indent-region)
+  (setq-local indent-line-function 'xem-indent-line)
+  (setq-local indent-region-function 'xem-indent-region)
   (setq-local tab-always-indent 'complete)
 
   (add-hook 'completion-at-point-functions 'xem-complete-symbol nil 'local)
@@ -1924,6 +1978,15 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
       ;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
       )
     )
+
+  ;; (if  (and  (string-equal emacs-major-version 24)
+  ;;            (string-equal emacs-minor-version 4)
+  ;;            )
+  ;;     (progn
+  ;;       (setq  abbrev-expand-function 'xem-expand-abbrev)
+  ;;       )
+  ;;   (progn (add-to-list abbrev-expand-functions 'xem-expand-abbrev ))
+  ;;   )
 
   (run-mode-hooks 'xah-elisp-mode-hook)
   )

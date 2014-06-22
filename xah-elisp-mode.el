@@ -12,6 +12,20 @@
 ;; Major mode for editing emacs lisp. Beta stage.
 ;; home page: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
+;; FEATURES:
+
+;; • syntax coloring of almost all emacs lisp words, colored according to their purpose.
+;; • completion with ido interface. (not dependent on `auto-complete-mode'.)
+;; • Function template. (not dependent on `yas-minor-mode'.)
+;; and other experimental features.
+
+;; eventual plan is:
+;; • there shall be no command to indent code, except one that reformat code semantically, not by line. preferably transparent to user as she types. Code formatting shall never be programer's concern.
+;; • no reliance on emacs's syntax table
+;; • no reliance on emacs's comment-dwim
+
+;;; History:
+
 ;; version 0.4, 2014-06-22 now features completion and function abbrev/template. (without auto-complete-mode nor yasnippet)
 ;; version 0.3, 2014-06-10 major kinda rewrite. use at your own risk.
 ;; version 0.2.1, 2014-04-10 added keyword “remove”
@@ -1877,16 +1891,6 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
 (defun xah-elisp-mode ()
     "A major mode for emacs lisp.
 
-Emacs lisp keywords are colored.
-and other experimental features.
-
-eventual plan is:
-• there shall be no command to indent code, except one that reformat code semantically, not by line. preferably transparent to user as she types. Code formatting shall never be programer's concern.
-• no reliance on emacs's syntax table
-• no reliance on emacs's comment-dwim
-• no reliance on yasnippet or any third-party package.
-• everything shall be elisp only. not rely on shell tool or lang engines. (which can be later added)
-
 \\{xem-keymap}"
     (interactive)
 
@@ -1910,8 +1914,6 @@ eventual plan is:
   (setq-local indent-line-function 'lisp-indent-line)
   ;; (setq-local indent-region-function 'xem-indent-region)
   (setq-local tab-always-indent 'complete)
-
-  (yas-minor-mode 0) ; todo. temp
 
   (add-hook 'completion-at-point-functions 'xem-complete-symbol nil 'local)
 

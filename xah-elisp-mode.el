@@ -148,7 +148,7 @@
 "vconcat"
 "remove"
 "car-safe"
-) )
+))
 
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
 (setq xem-emacs-words '(
@@ -355,7 +355,7 @@
 "remove-from-invisibility-spec"
 "invisible-p"
 
-) )
+))
 
 (defvar xem-emacs-user-commands nil "list of keywords related to user's needs.")
 (setq xem-emacs-user-commands '(
@@ -392,11 +392,10 @@
 "subword-mode"
 "yank-rectangle"
 
-  )
-)
+  ))
 
 (defvar xem-keyword-builtin nil "a list of elisp names")
-(setq xem-keyword-builtin '( "&optional") )
+(setq xem-keyword-builtin '( "&optional"))
 
 (defvar xem-elisp-vars-1 nil "a list elisp variables names")
 (setq xem-elisp-vars-1 '(
@@ -1158,7 +1157,7 @@
 
 "buffer-invisibility-spec"
 
-) )
+))
 
 (defvar xem-elisp-all-keywords nil "list of all elisp keywords")
 (setq xem-elisp-all-keywords (append xem-elisp-lang-words xem-emacs-words xem-emacs-user-commands xem-keyword-builtin xem-elisp-vars-1 xem-elisp-vars-2))
@@ -1216,8 +1215,7 @@ Returns true if there's a expansion, else false."
         (forward-symbol -1)
         (setq p1 (point))
         (forward-symbol 1)
-        (setq p2 (point))
-        )
+        (setq p2 (point)))
 
       (setq ab-str (buffer-substring-no-properties p1 p2))
       (if (abbrev-symbol ab-str)
@@ -1225,8 +1223,7 @@ Returns true if there's a expansion, else false."
             (abbrev-insert (abbrev-symbol ab-str) ab-str p1 p2 )
             (xem--abbrev-position-cursor p1)
             t)
-        (progn nil))
-      )))
+        (progn nil)))))
 
 (put 'xem-expand-abbrev 'no-self-insert t)
 
@@ -1264,23 +1261,25 @@ If char before point is letters and char after point is whitespace or punctuatio
 (defun xem-prettify-root-sexp ()
   "Prettify format current root sexp group.
 Root sexp group is the outmost sexp unit."
-  (interactive "r")
+  (interactive)
   (save-excursion
     (let ( ξp1 ξp2)
       (xem-goto-outmost-bracket)
       (setq  ξp1 (point))
       (setq  ξp2 (scan-sexps (point) 1))
-      (indent-sexp ξp2 )
-      (xem-compact-parens-region ξp1 ξp2))))
+      (save-restriction 
+        (narrow-to-region ξp1 ξp2)
+        (indent-sexp (point-max))
+        (xem-compact-parens-region 1 (point-max))))))
 
 (defun xem-goto-outmost-bracket (&optional φpos)
   "Move cursor to the beginning of outer-most bracket, with respect to φpos."
   (interactive)
   (let ((i 0)
-        (p1 (if φpos
+        (ξp1 (if φpos
                 φpos
               (point))))
-    (goto-char p1)
+    (goto-char ξp1)
     (while
         (and (not (eq (nth 0 (syntax-ppss (point))) 0))
              (< i 20))
@@ -1296,16 +1295,13 @@ If there's a text selection, act on the region, else, on defun block."
        (list (region-beginning) (region-end))
      (save-excursion
        (xem-goto-outmost-bracket)
-       (list (point) (scan-sexps (point) 1))
-       ))
-   )
-  (let (p1 p2)
+       (list (point) (scan-sexps (point) 1)))))
+  (let ((p1 φp1) (p2 φp2))
     (when (null φp1)
       (save-excursion
         (xem-goto-outmost-bracket)
         (setq p1 (point))
-        (setq p2 (scan-sexps (point) 1)))
-      )
+        (setq p2 (scan-sexps (point) 1))))
     (xem-compact-parens-region p1 p2)))
 
 (defun xem-compact-parens-region (p1 p2)
@@ -1942,7 +1938,7 @@ Also, do use:
 
 and
 
-URL: `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 
 \\{xem-keymap}"
   (interactive)

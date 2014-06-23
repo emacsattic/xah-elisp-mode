@@ -1176,22 +1176,26 @@
 
 (defun xem-complete-symbol ()
   "Perform keyword completion on current word.
-
-This uses `ido-mode' user interface style for completion."
+This uses `ido-mode' user interface for completion."
   (interactive)
   (let* (
          (bds (bounds-of-thing-at-point 'symbol))
          (p1 (car bds))
          (p2 (cdr bds))
-         (currentWord (buffer-substring-no-properties p1 p2))
+         (currentWord
+          (if  (or (null p1) (null p2) (equal p1 p2))
+              ""
+            (buffer-substring-no-properties p1 p2)))
          finalResult)
     (when (not currentWord) (setq currentWord ""))
     (setq finalResult
           (ido-completing-read "" xem-elisp-all-keywords nil nil currentWord ))
     (delete-region p1 p2)
     (insert finalResult)
-    (xem-expand-abbrev)
-))
+    (if (xem-expand-abbrev)
+        (progn nil)
+      (progn (forward-symbol -1) (insert "(") (forward-symbol 1) (insert " )")
+             (backward-char 1)))))
 
 (defun xem-expand-abbrev (&optional φexpand-func)
   "Expand emacs lisp function name before cursor into template."
@@ -1203,26 +1207,23 @@ This uses `ido-mode' user interface style for completion."
 
     (save-excursion
       (forward-symbol -1)
-      (setq p1 (point) )
+      (setq p1 (point))
       (forward-symbol 1)
-      (setq p2 (point))
-      )
+      (setq p2 (point)))
 
     (setq ab-str (buffer-substring-no-properties p1 p2))
     (if (abbrev-symbol ab-str)
         (progn
           (abbrev-insert (abbrev-symbol ab-str) ab-str p1 p2 )
-          (xem--abbrev-position-cursor)
-          )
-      (progn nil)
-      )
+          (xem--abbrev-position-cursor))
+      (progn nil))
 
 ;; (if φexpand-func
 ;;     (progn (xem--abbrev-position-cursor))
 ;;   (progn nil)
 ;; )
 
-))
+    ))
 
 (defun xem--abbrev-position-cursor ()
   ""
@@ -1234,6 +1235,9 @@ nil
     ))
 
 ;; (put 'xem--abbrev-position-cursor 'no-self-insert t)
+
+
+;; indent/reformat related
 
 (defun xem-complete-or-indent ()
   "Do keyword complete or indent line depending on context.
@@ -1247,51 +1251,44 @@ punctuation, then do completion. Else do indent line."
   ;; space▮space → do indent
   ;; space▮char → do indent
   ;; char▮space → do completion
-  ;; char▮char → do indent
+  ;; char ▮char → do indent
   (if (region-active-p)
       (xem-indent-region (region-beginning) (region-end))
     (if (and
-         (looking-at "[\n[:blank:][:punct:]]")
-         (looking-back "[-_a-zA-Z]")
-         )
-        (progn (message "doing complete") ; debug
-               (xem-complete-symbol)
-               )
-      (save-excursion
-        (message "doing indent") ; debug
-        (xem-goto-root-outer-bracket)
-        (indent-sexp (scan-sexps (point) 1) )
-        ) ) ) )
+         (looking-at "[\n[:blank:][:punct:]]") ; todo if at end of buffer
+         (looking-back "[-_a-zA-Z]"))
+        (xem-complete-symbol)
+      (xem-prettify-root-sexp))))
 
-
-;; indent/reformat related
+(defun xem-prettify-root-sexp ()
+  "Indent …."
+  (interactive "r")
+  (save-excursion
+    (xem-goto-outmost-bracket)
+    (indent-sexp (scan-sexps (point) 1) )
+    ))
 
-(defun xem-goto-root-outer-bracket (&optional φpos)
+(defun xem-goto-outmost-bracket (&optional φpos)
   "Move cursor to the beginning of outer-most bracket."
   (interactive)
   (let ((i 0)
         (p1 (if φpos
                 φpos
-              (point)
-              ))
-        )
+              (point))))
+    (goto-char p1)
     (while
-        (and (not (eq (nth 0 (syntax-ppss p1)) 0) )
-             (< i 20)
-             )
-      (setq i (1+ i))
+        (and (not (eq (nth 0 (syntax-ppss (point))) 0))
+             (< i 20))
       (up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
-      ))
-  )
+      (setq i (1+ i))
+      )))
 
 (defun xem-indent-line ()
   "Indent lines from parent bracket to matching bracket."
   (interactive)
   (save-excursion
     (backward-up-list)
-    (indent-sexp (line-end-position))
-    )
-  )
+    (indent-sexp (line-end-position))))
 
 (defun xem-indent-region (p1 p2)
   "Indent region."
@@ -1299,31 +1296,38 @@ punctuation, then do completion. Else do indent line."
   (let (p3 p4)
     (save-excursion
       (goto-char p1)
-      (indent-sexp p2)
-      )
-    ) )
+      (indent-sexp p2))))
 
 (defun xem-compact-parens ()
   "Remove whitespaces in ending repetition of parenthesises.
-If there's a text selection, act on the region, else, on defun block.
-Warning: This command does not preserve texts inside double quotes (strings) or in comments."
+If there's a text selection, act on the region, else, on defun block."
   (interactive)
-; todo don't do when in comment or string
   (let (p1 p2)
     (if (region-active-p)
         (setq p1 (region-beginning) p2 (region-end))
       (save-excursion
-        (beginning-of-defun)
+        (xem-goto-outmost-bracket)
         (setq p1 (point))
-        (end-of-defun)
-        (setq p2 (point))))
-    (save-excursion
-      (save-restriction
+        (setq p2 (scan-sexps (point) 1))))
+    (xem-compact-parens-region p1 p2)))
+
+(defun xem-compact-parens-region (p1 p2)
+  "Remove whitespaces in ending repetition of parenthesises in region."
+  (interactive "r")
+  (let (ξsyntax-state)
+    (save-restriction
         (narrow-to-region p1 p2)
         (goto-char (point-min))
-        (while (search-forward-regexp ")[ \t\n]+)" nil t) (replace-match "))"))
-        (goto-char (point-min))
-        (while (search-forward-regexp ")[ \t\n]+)" nil t) (replace-match "))"))))))
+        (while (search-forward-regexp ")[ \t\n]+)" nil t)
+       (setq ξsyntax-state (syntax-ppss (match-beginning 0)))
+          (if (or (nth 3 ξsyntax-state ) (nth 4 ξsyntax-state))
+              (progn (search-forward ")"))
+            (progn (replace-match "))")
+ (backward-char 1))))
+
+        ;; (goto-char (point-min))
+        ;; (while (search-forward-regexp ")[ \t\n]+)" nil t) (replace-match "))"))
+)))
 
 
 ;; abbrev
@@ -1333,87 +1337,87 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
 (define-abbrev-table 'xem-abbrev-table '(
 
  ;;;; ido completion flex matching eliminate the need for short abbrevs
- ;; ("d" "defun" nil :system t)
- ;; ("i" "insert" nil :system t)
- ;; ("l" "let" nil :system t)
- ;; ("m" "message" nil :system t)
- ;; ("p" "point" nil :system t)
- ;; ("s" "setq" nil :system t)
- ;; ("w" "when" nil :system t)
+ ("d" "defun" nil :system t)
+ ("i" "insert" nil :system t)
+ ("l" "let" nil :system t)
+ ("m" "message" nil :system t)
+ ("p" "point" nil :system t)
+ ("s" "setq" nil :system t)
+ ("w" "when" nil :system t)
 
- ;; ("ah" "add-hook" nil :system t)
- ;; ("bc" "backward-char" nil :system t)
- ;; ("bfn" "buffer-file-name" nil :system t)
- ;; ("bmp" "buffer-modified-p" nil :system t)
- ;; ("bol" "beginning-of-line" nil :system t)
- ;; ("botap" "bounds-of-thing-at-point" nil :system t)
- ;; ("bs" "buffer-substring" nil :system t)
- ;; ("bsnp" "buffer-substring-no-properties" nil :system t)
- ;; ("ca" "custom-autoload" nil :system t)
- ;; ("cb" "current-buffer" nil :system t)
- ;; ("cc" "condition-case" nil :system t)
- ;; ("cd" "copy-directory" nil :system t)
- ;; ("cdr" "cdr" nil :system t)
- ;; ("cf" "copy-file" nil :system t)
- ;; ("dc" "delete-char" nil :system t)
- ;; ("dd" "delete-directory" nil :system t)
- ;; ("df" "delete-file" nil :system t)
- ;; ("dk" "define-key" nil :system t)
- ;; ("dr" "delete-region" nil :system t)
- ;; ("efn" "expand-file-name" nil :system t)
- ;; ("eol" "end-of-line" nil :system t)
- ;; ("fc" "forward-char" nil :system t)
- ;; ("ff" "find-file" nil :system t)
- ;; ("fl" "forward-line" nil :system t)
- ;; ("fnd" "file-name-directory" nil :system t)
- ;; ("fne" "file-name-extension" nil :system t)
- ;; ("fnn" "file-name-nondirectory" nil :system t)
- ;; ("fnse" "file-name-sans-extension" nil :system t)
- ;; ("frn" "file-relative-name" nil :system t)
- ;; ("gc" "goto-char" nil :system t)
- ;; ("gnb" "generate-new-buffer" nil :system t)
- ;; ("gsk" "global-set-key" nil :system t)
- ;; ("ifc" "insert-file-contents" nil :system t)
- ;; ("kb" "kill-buffer" nil :system t)
- ;; ("la" "looking-at" nil :system t)
- ;; ("lbp" "line-beginning-position" nil :system t)
- ;; ("lep" "line-end-position" nil :system t)
- ;; ("mb" "match-beginning" nil :system t)
- ;; ("md" "make-directory" nil :system t)
- ;; ("me" "match-end" nil :system t)
- ;; ("mlv" "make-local-variable" nil :system t)
- ;; ("ms" "match-string" nil :system t)
- ;; ("nts" "number-to-string" nil :system t)
- ;; ("ntr" "narrow-to-region" nil :system t)
- ;; ("pm" "point-max" nil :system t)
- ;; ("rap" "region-active-p" nil :system t)
- ;; ("rb" "region-beginning" nil :system t)
- ;; ("re" "region-end" nil :system t)
- ;; ("rf" "rename-file" nil :system t)
- ;; ("rm" "replace-match" nil :system t)
- ;; ("rq" "regexp-quote" nil :system t)
- ;; ("rr" "replace-regexp" nil :system t)
- ;; ("rris" "replace-regexp-in-string" nil :system t)
- ;; ("rsb" "re-search-backward" nil :system t)
- ;; ("rsf" "re-search-forward" nil :system t)
- ;; ("sb" "search-backward" nil :system t)
- ;; ("sbr" "search-backward-regexp" nil :system t)
- ;; ("sc" "shell-command" nil :system t)
- ;; ("scb" "skip-chars-backward" nil :system t)
- ;; ("scf" "skip-chars-forward" nil :system t)
- ;; ("se" "save-excursion" nil :system t)
- ;; ("sf" "search-forward" nil :system t)
- ;; ("sfm" "set-file-modes" nil :system t)
- ;; ("sfr" "search-forward-regexp" nil :system t)
- ;; ("sm" "string-match" nil :system t)
- ;; ("sr" "save-restriction" nil :system t)
- ;; ("ss" "split-string" nil :system t)
- ;; ("stn" "string-to-number" nil :system t)
- ;; ("str" "string" nil :system t)
- ;; ("tap" "thing-at-point" nil :system t)
- ;; ("wcb" "with-current-buffer" nil :system t)
- ;; ("wg" "widget-get" nil :system t)
- ;; ("yonp" "yes-or-no-p" nil :system t)
+ ("ah" "add-hook" nil :system t)
+ ("bc" "backward-char" nil :system t)
+ ("bfn" "buffer-file-name" nil :system t)
+ ("bmp" "buffer-modified-p" nil :system t)
+ ("bol" "beginning-of-line" nil :system t)
+ ("botap" "bounds-of-thing-at-point" nil :system t)
+ ("bs" "buffer-substring" nil :system t)
+ ("bsnp" "buffer-substring-no-properties" nil :system t)
+ ("ca" "custom-autoload" nil :system t)
+ ("cb" "current-buffer" nil :system t)
+ ("cc" "condition-case" nil :system t)
+ ("cd" "copy-directory" nil :system t)
+ ("cdr" "cdr" nil :system t)
+ ("cf" "copy-file" nil :system t)
+ ("dc" "delete-char" nil :system t)
+ ("dd" "delete-directory" nil :system t)
+ ("df" "delete-file" nil :system t)
+ ("dk" "define-key" nil :system t)
+ ("dr" "delete-region" nil :system t)
+ ("efn" "expand-file-name" nil :system t)
+ ("eol" "end-of-line" nil :system t)
+ ("fc" "forward-char" nil :system t)
+ ("ff" "find-file" nil :system t)
+ ("fl" "forward-line" nil :system t)
+ ("fnd" "file-name-directory" nil :system t)
+ ("fne" "file-name-extension" nil :system t)
+ ("fnn" "file-name-nondirectory" nil :system t)
+ ("fnse" "file-name-sans-extension" nil :system t)
+ ("frn" "file-relative-name" nil :system t)
+ ("gc" "goto-char" nil :system t)
+ ("gnb" "generate-new-buffer" nil :system t)
+ ("gsk" "global-set-key" nil :system t)
+ ("ifc" "insert-file-contents" nil :system t)
+ ("kb" "kill-buffer" nil :system t)
+ ("la" "looking-at" nil :system t)
+ ("lbp" "line-beginning-position" nil :system t)
+ ("lep" "line-end-position" nil :system t)
+ ("mb" "match-beginning" nil :system t)
+ ("md" "make-directory" nil :system t)
+ ("me" "match-end" nil :system t)
+ ("mlv" "make-local-variable" nil :system t)
+ ("ms" "match-string" nil :system t)
+ ("nts" "number-to-string" nil :system t)
+ ("ntr" "narrow-to-region" nil :system t)
+ ("pm" "point-max" nil :system t)
+ ("rap" "region-active-p" nil :system t)
+ ("rb" "region-beginning" nil :system t)
+ ("re" "region-end" nil :system t)
+ ("rf" "rename-file" nil :system t)
+ ("rm" "replace-match" nil :system t)
+ ("rq" "regexp-quote" nil :system t)
+ ("rr" "replace-regexp" nil :system t)
+ ("rris" "replace-regexp-in-string" nil :system t)
+ ("rsb" "re-search-backward" nil :system t)
+ ("rsf" "re-search-forward" nil :system t)
+ ("sb" "search-backward" nil :system t)
+ ("sbr" "search-backward-regexp" nil :system t)
+ ("sc" "shell-command" nil :system t)
+ ("scb" "skip-chars-backward" nil :system t)
+ ("scf" "skip-chars-forward" nil :system t)
+ ("se" "save-excursion" nil :system t)
+ ("sf" "search-forward" nil :system t)
+ ("sfm" "set-file-modes" nil :system t)
+ ("sfr" "search-forward-regexp" nil :system t)
+ ("sm" "string-match" nil :system t)
+ ("sr" "save-restriction" nil :system t)
+ ("ss" "split-string" nil :system t)
+ ("stn" "string-to-number" nil :system t)
+ ("str" "string" nil :system t)
+ ("tap" "thing-at-point" nil :system t)
+ ("wcb" "with-current-buffer" nil :system t)
+ ("wg" "widget-get" nil :system t)
+ ("yonp" "yes-or-no-p" nil :system t)
 
 ("add-hook" "(add-hook HOOK▮ FUNCTION)" nil :system t)
 
@@ -1928,6 +1932,8 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
   (define-key xem-keymap (kbd "C-C C-r") 'xem-indent-region)
   (define-key xem-keymap (kbd "C-C C-e") 'xem-expand-abbrev)
 
+  (define-key xem-keymap (kbd "<tab>") 'xem-complete-or-indent)
+
   (define-key xem-keymap (kbd "<menu> e i") 'xem-complete-or-indent)
   (define-key xem-keymap (kbd "<menu> e p") 'xem-compact-parens)
   (define-key xem-keymap (kbd "<menu> e c") 'xem-complete-symbol)
@@ -1975,20 +1981,15 @@ Warning: This command does not preserve texts inside double quotes (strings) or 
   ;; setup auto-complete-mode
     (when (fboundp 'auto-complete-mode)
       (add-to-list 'ac-modes 'xah-elisp-mode)
-      ;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
-      )
-    )
+ ))
+       ;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
 
-  ;; (if  (and  (string-equal emacs-major-version 24)
-  ;;            (string-equal emacs-minor-version 4)
-  ;;            )
-  ;;     (progn
-  ;;       (setq  abbrev-expand-function 'xem-expand-abbrev)
-  ;;       )
-  ;;   (progn (add-to-list abbrev-expand-functions 'xem-expand-abbrev ))
-  ;;   )
+     (if  (and  (>= emacs-major-version 24)
+                (>= emacs-minor-version 4))
+         (progn
+           (setq abbrev-expand-function 'xem-expand-abbrev))
+       (progn (add-hook 'abbrev-expand-functions 'xem-expand-abbrev nil t)))
 
-  (run-mode-hooks 'xah-elisp-mode-hook)
-  )
+  (run-mode-hooks 'xah-elisp-mode-hook))
 
 (provide 'xah-elisp-mode)

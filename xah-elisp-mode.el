@@ -6,26 +6,18 @@
 ;; Created: 2013-03-23
 ;; Keywords: languages, convenience
 
-;; You can redistribute this program and/or modify it. Please give credit and link. Thanks.
+;; LICENSE:
+
+;; paypal me $5 or
+;; Buy Xah Emacs Tutorial
+;; http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html
 
 ;;; Commentary:
-;; Major mode for editing emacs lisp. Beta stage.
+;; Major mode for editing emacs lisp.
 ;; home page: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
-;; FEATURES:
-
-;; • syntax coloring of almost all emacs lisp words, colored according to their purpose.
-;; • completion with ido interface. (not dependent on `auto-complete-mode'.)
-;; • Function template. (not dependent on `yas-minor-mode'.)
-;; and other experimental features.
-
-;; eventual plan is:
-;; • there shall be no command to indent code, except one that reformat code semantically, not by line. preferably transparent to user as she types. Code formatting shall never be programer's concern.
-;; • no reliance on emacs's syntax table
-;; • no reliance on emacs's comment-dwim
-
 ;;; History:
-
+;; version 0.5, 2014-06-23 first “polished” release.
 ;; version 0.4, 2014-06-22 now features completion and function abbrev/template. (without auto-complete-mode nor yasnippet)
 ;; version 0.3, 2014-06-10 major kinda rewrite. use at your own risk.
 ;; version 0.2.1, 2014-04-10 added keyword “remove”
@@ -1193,58 +1185,65 @@ This uses `ido-mode' user interface for completion."
     (delete-region p1 p2)
     (insert finalResult)
     (if (xem-expand-abbrev)
-        (progn nil)
-      (progn (forward-symbol -1) (insert "(") (forward-symbol 1) (insert " )")
-             (backward-char 1)))))
+        nil
+      (xem-add-paren-around-symbol))))
+
+(defun xem-add-paren-around-symbol ()
+  "add paren around symbol before cursor and add a space before closing paren, place cursor ther.
+ ⁖
+ do-something▮
+becomes
+ (do-something ▮)
+"
+  (interactive)
+  (forward-symbol -1) (insert "(") (forward-symbol 1) (insert " )")
+  (backward-char 1))
 
 (defun xem-expand-abbrev (&optional φexpand-func)
-  "Expand emacs lisp function name before cursor into template."
+  "Expand emacs lisp function name before cursor into template.
+Don't expand when in string or comment.
+
+Returns true if there's a expansion, else false."
   (interactive)
   (let (
         p1 p2
         ab-str
+        (ξsyntax-state (syntax-ppss)))
+
+    (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
+        (progn nil)
+      (save-excursion
+        (forward-symbol -1)
+        (setq p1 (point))
+        (forward-symbol 1)
+        (setq p2 (point))
         )
 
-    (save-excursion
-      (forward-symbol -1)
-      (setq p1 (point))
-      (forward-symbol 1)
-      (setq p2 (point)))
+      (setq ab-str (buffer-substring-no-properties p1 p2))
+      (if (abbrev-symbol ab-str)
+          (progn
+            (abbrev-insert (abbrev-symbol ab-str) ab-str p1 p2 )
+            (xem--abbrev-position-cursor p1)
+            t)
+        (progn nil))
+      )))
 
-    (setq ab-str (buffer-substring-no-properties p1 p2))
-    (if (abbrev-symbol ab-str)
-        (progn
-          (abbrev-insert (abbrev-symbol ab-str) ab-str p1 p2 )
-          (xem--abbrev-position-cursor))
-      (progn nil))
+(put 'xem-expand-abbrev 'no-self-insert t)
 
-;; (if φexpand-func
-;;     (progn (xem--abbrev-position-cursor))
-;;   (progn nil)
-;; )
-
-    ))
-
-(defun xem--abbrev-position-cursor ()
-  ""
+(defun xem--abbrev-position-cursor (&optional φpos)
+  "Move cursor back to ▮.
+but limit backward search to at φpos or at beginning of line.
+return true if found, else false."
   (interactive)
-  (when (search-backward "▮" (max 1 (- (point) 300)) t )
-    ;; (delete-char 1)
-    ;; (delete-char -1)
-nil
-    ))
-
-;; (put 'xem--abbrev-position-cursor 'no-self-insert t)
+  (search-backward "▮" (if φpos φpos (line-beginning-position)) t ))
 
 
 ;; indent/reformat related
 
 (defun xem-complete-or-indent ()
-  "Do keyword complete or indent line depending on context.
+  "Do keyword completion or indent/prettify-format.
 
-If there's a text selection, do indent region. Else, if the char
-before point is letters and char after point is whitespace or
-punctuation, then do completion. Else do indent line."
+If char before point is letters and char after point is whitespace or punctuation, then do completion, except when in string or comment. In these cases, do `xem-prettify-root-sexp'."
   (interactive)
   ;; consider the char to the left or right of cursor. Each side is either empty or char.
   ;; there are 4 cases:
@@ -1252,24 +1251,30 @@ punctuation, then do completion. Else do indent line."
   ;; space▮char → do indent
   ;; char▮space → do completion
   ;; char ▮char → do indent
-  (if (region-active-p)
-      (xem-indent-region (region-beginning) (region-end))
-    (if (and
-         (looking-at "[\n[:blank:][:punct:]]") ; todo if at end of buffer
-         (looking-back "[-_a-zA-Z]"))
-        (xem-complete-symbol)
-      (xem-prettify-root-sexp))))
+  (let ( (ξsyntax-state (syntax-ppss)))
+    (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
+        (progn
+          (xem-prettify-root-sexp))
+      (progn (if
+                 (and (looking-back "[-_a-zA-Z]")
+                      (or (eobp) (looking-at "[\n[:blank:][:punct:]]")))
+                 (xem-complete-symbol)
+               (xem-prettify-root-sexp))))))
 
 (defun xem-prettify-root-sexp ()
-  "Indent …."
+  "Prettify format current root sexp group.
+Root sexp group is the outmost sexp unit."
   (interactive "r")
   (save-excursion
-    (xem-goto-outmost-bracket)
-    (indent-sexp (scan-sexps (point) 1) )
-    ))
+    (let ( ξp1 ξp2)
+      (xem-goto-outmost-bracket)
+      (setq  ξp1 (point))
+      (setq  ξp2 (scan-sexps (point) 1))
+      (indent-sexp ξp2 )
+      (xem-compact-parens-region ξp1 ξp2))))
 
 (defun xem-goto-outmost-bracket (&optional φpos)
-  "Move cursor to the beginning of outer-most bracket."
+  "Move cursor to the beginning of outer-most bracket, with respect to φpos."
   (interactive)
   (let ((i 0)
         (p1 (if φpos
@@ -1283,32 +1288,24 @@ punctuation, then do completion. Else do indent line."
       (setq i (1+ i))
       )))
 
-(defun xem-indent-line ()
-  "Indent lines from parent bracket to matching bracket."
-  (interactive)
-  (save-excursion
-    (backward-up-list)
-    (indent-sexp (line-end-position))))
-
-(defun xem-indent-region (p1 p2)
-  "Indent region."
-  (interactive "r")
-  (let (p3 p4)
-    (save-excursion
-      (goto-char p1)
-      (indent-sexp p2))))
-
-(defun xem-compact-parens ()
+(defun xem-compact-parens (&optional φp1 φp2)
   "Remove whitespaces in ending repetition of parenthesises.
 If there's a text selection, act on the region, else, on defun block."
-  (interactive)
+  (interactive
+   (if (region-active-p)
+       (list (region-beginning) (region-end))
+     (save-excursion
+       (xem-goto-outmost-bracket)
+       (list (point) (scan-sexps (point) 1))
+       ))
+   )
   (let (p1 p2)
-    (if (region-active-p)
-        (setq p1 (region-beginning) p2 (region-end))
+    (when (null φp1)
       (save-excursion
         (xem-goto-outmost-bracket)
         (setq p1 (point))
-        (setq p2 (scan-sexps (point) 1))))
+        (setq p2 (scan-sexps (point) 1)))
+      )
     (xem-compact-parens-region p1 p2)))
 
 (defun xem-compact-parens-region (p1 p2)
@@ -1316,18 +1313,14 @@ If there's a text selection, act on the region, else, on defun block."
   (interactive "r")
   (let (ξsyntax-state)
     (save-restriction
-        (narrow-to-region p1 p2)
-        (goto-char (point-min))
-        (while (search-forward-regexp ")[ \t\n]+)" nil t)
-       (setq ξsyntax-state (syntax-ppss (match-beginning 0)))
-          (if (or (nth 3 ξsyntax-state ) (nth 4 ξsyntax-state))
-              (progn (search-forward ")"))
-            (progn (replace-match "))")
- (backward-char 1))))
-
-        ;; (goto-char (point-min))
-        ;; (while (search-forward-regexp ")[ \t\n]+)" nil t) (replace-match "))"))
-)))
+      (narrow-to-region p1 p2)
+      (goto-char (point-min))
+      (while (search-forward-regexp ")[ \t\n]+)" nil t)
+        (setq ξsyntax-state (syntax-ppss (match-beginning 0)))
+        (if (or (nth 3 ξsyntax-state ) (nth 4 ξsyntax-state))
+            (progn (search-forward ")"))
+          (progn (replace-match "))")
+                 (search-backward ")")))))))
 
 
 ;; abbrev
@@ -1337,13 +1330,20 @@ If there's a text selection, act on the region, else, on defun block."
 (define-abbrev-table 'xem-abbrev-table '(
 
  ;;;; ido completion flex matching eliminate the need for short abbrevs
- ("d" "defun" nil :system t)
- ("i" "insert" nil :system t)
- ("l" "let" nil :system t)
- ("m" "message" nil :system t)
- ("p" "point" nil :system t)
- ("s" "setq" nil :system t)
- ("w" "when" nil :system t)
+ ("d" "(defun ▮ ()
+  \"DOCSTRING\"
+  (interactive)
+  (let (var)
+
+  ))" nil :system t)
+ ("i" "(insert ▮)" nil :system t)
+ ("l" "(let (▮)
+ x
+)" nil :system t)
+ ("m" "(message \"%s▮\" ARGS)" nil :system t)
+ ("p" "(point)" nil :system t)
+ ("s" "(setq ▮)" nil :system t)
+ ("w" "(when ▮)" nil :system t)
 
  ("ah" "add-hook" nil :system t)
  ("bc" "backward-char" nil :system t)
@@ -1497,7 +1497,7 @@ If there's a text selection, act on the region, else, on defun block."
 ("defun" "(defun ▮ ()
   \"DOCSTRING\"
   (interactive)
-  (let (var1)
+  (let (var)
 
   ))" nil :system t)
 
@@ -1596,9 +1596,7 @@ If there's a text selection, act on the region, else, on defun block."
 
 ("line-end-position" "(line-end-position)" nil :system t)
 
-("list" "(list ▮)" nil :system t)
-
-("looking-at" "(looking-at ▮)" nil :system t)
+("looking-at" "(looking-at REGEXP▮)" nil :system t)
 
 ("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
 
@@ -1616,19 +1614,13 @@ If there's a text selection, act on the region, else, on defun block."
 
 ("match-string" "(match-string ▮)" nil :system t)
 
-("max" "(max ▮)" nil :system t)
-
-("member" "(member ▮ LIST)" nil :system t)
+("member" "(member ELT▮ LIST)" nil :system t)
 
 ("memq" "(memq ▮ LIST)" nil :system t)
 
 ("message" "(message \"%s▮\" ARGS)" nil :system t)
 
-("min" "(min ▮)" nil :system t)
-
 ("narrow-to-region" "(narrow-to-region START▮ END)" nil :system t)
-
-("not" "(not ▮)" nil :system t)
 
 ("nth" "(nth N▮ LIST)" nil :system t)
 
@@ -1715,8 +1707,6 @@ If there's a text selection, act on the region, else, on defun block."
 ("set-file-modes" "(set-file-modes ▮ MODE)" nil :system t)
 
 ("set-mark" "(set-mark ▮)" nil :system t)
-
-("set" "(set ▮)" nil :system t)
 
 ("setq" "(setq ▮)" nil :system t)
 
@@ -1924,22 +1914,12 @@ If there's a text selection, act on the region, else, on defun block."
 (defvar xem-keymap nil "Keybinding for `xah-elisp-mode'")
 (progn
   (setq xem-keymap (make-sparse-keymap))
-  (define-key xem-keymap (kbd "C-c C-i")  'xem-complete-or-indent)
-  (define-key xem-keymap (kbd "C-c C-p") 'xem-compact-parens)
-  (define-key xem-keymap (kbd "C-c C-c")  'xem-complete-symbol)
-
-  (define-key xem-keymap (kbd "C-C C-l") 'xem-indent-line)
-  (define-key xem-keymap (kbd "C-C C-r") 'xem-indent-region)
-  (define-key xem-keymap (kbd "C-C C-e") 'xem-expand-abbrev)
-
   (define-key xem-keymap (kbd "<tab>") 'xem-complete-or-indent)
 
-  (define-key xem-keymap (kbd "<menu> e i") 'xem-complete-or-indent)
+  (define-key xem-keymap (kbd "<menu> e t") 'xem-prettify-root-sexp)
+
   (define-key xem-keymap (kbd "<menu> e p") 'xem-compact-parens)
   (define-key xem-keymap (kbd "<menu> e c") 'xem-complete-symbol)
-
-  (define-key xem-keymap (kbd "<menu> e l") 'xem-indent-line)
-  (define-key xem-keymap (kbd "<menu> e r") 'xem-indent-region)
 
   (define-key xem-keymap (kbd "<menu> e e") 'xem-expand-abbrev)
 
@@ -1950,6 +1930,19 @@ If there's a text selection, act on the region, else, on defun block."
 ;; define the mode
 (defun xah-elisp-mode ()
   "A major mode for emacs lisp.
+
+Most useful command is `xem-complete-or-indent'.
+Also, do use:
+
+`backward-sexp'
+`forward-sexp'
+`backward-up-list'
+`down-list'
+`mark-sexp'
+
+and
+
+URL: `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 
 \\{xem-keymap}"
   (interactive)
@@ -1963,7 +1956,6 @@ If there's a text selection, act on the region, else, on defun block."
   (set-syntax-table emacs-lisp-mode-syntax-table)
   (use-local-map xem-keymap)
   (setq local-abbrev-table xem-abbrev-table)
-  ;; (setq abbrev-mode t) ; local
 
   (setq-local comment-start ";")
   (setq-local comment-end "")
@@ -1971,8 +1963,7 @@ If there's a text selection, act on the region, else, on defun block."
   (setq-local comment-add 1) ;default to `;;' in comment-region
   (setq-local comment-column 2)
 
-  (setq-local indent-line-function 'xem-indent-line)
-  (setq-local indent-region-function 'xem-indent-region)
+  (setq-local indent-line-function 'lisp-indent-line)
   (setq-local tab-always-indent 'complete)
 
   (add-hook 'completion-at-point-functions 'xem-complete-symbol nil 'local)
@@ -1980,15 +1971,14 @@ If there's a text selection, act on the region, else, on defun block."
   (progn
   ;; setup auto-complete-mode
     (when (fboundp 'auto-complete-mode)
-      (add-to-list 'ac-modes 'xah-elisp-mode)
- ))
+      (add-to-list 'ac-modes 'xah-elisp-mode)))
        ;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
 
-     (if  (and  (>= emacs-major-version 24)
-                (>= emacs-minor-version 4))
-         (progn
-           (setq abbrev-expand-function 'xem-expand-abbrev))
-       (progn (add-hook 'abbrev-expand-functions 'xem-expand-abbrev nil t)))
+  (if  (and  (>= emacs-major-version 24)
+             (>= emacs-minor-version 4))
+      (progn
+        (setq abbrev-expand-function 'xem-expand-abbrev))
+    (progn (add-hook 'abbrev-expand-functions 'xem-expand-abbrev nil t)))
 
   (run-mode-hooks 'xah-elisp-mode-hook))
 

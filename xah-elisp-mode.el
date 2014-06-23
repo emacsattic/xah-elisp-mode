@@ -354,6 +354,7 @@
 "add-to-invisibility-spec"
 "remove-from-invisibility-spec"
 "invisible-p"
+"number-or-marker-p"
 
 ))
 
@@ -1276,16 +1277,14 @@ Root sexp group is the outmost sexp unit."
   "Move cursor to the beginning of outer-most bracket, with respect to φpos."
   (interactive)
   (let ((i 0)
-        (ξp1 (if φpos
-                φpos
-              (point))))
+        (ξp1 (if (number-or-marker-p φpos)
+                 φpos
+               (point))))
     (goto-char ξp1)
     (while
-        (and (not (eq (nth 0 (syntax-ppss (point))) 0))
-             (< i 20))
-      (up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
-      (setq i (1+ i))
-      )))
+        (and (< (setq i (1+ i)) 20)
+             (not (eq (nth 0 (syntax-ppss (point))) 0)))
+      (up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING"))))
 
 (defun xem-compact-parens (&optional φp1 φp2)
   "Remove whitespaces in ending repetition of parenthesises.

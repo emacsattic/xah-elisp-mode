@@ -1209,7 +1209,6 @@ Returns true if there's a expansion, else false."
         p1 p2
         ab-str
         (ξsyntax-state (syntax-ppss)))
-
     (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
         (progn nil)
       (save-excursion
@@ -1225,6 +1224,16 @@ Returns true if there's a expansion, else false."
             (xem--abbrev-position-cursor p1)
             t)
         (progn nil)))))
+
+(defun xem-abbrev-enable-function ()
+  "determine whether to expand abbrev.
+this is called by emacs abbrev system."
+  (let ((ξsyntax-state (syntax-ppss)))
+    (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
+        (progn nil)
+      (if (looking-at "-") ; todo. this function won't see it. emacs call this function before inserting user's char
+          (progn nil)
+        (progn t)))))
 
 (put 'xem-expand-abbrev 'no-self-insert t)
 
@@ -1323,8 +1332,8 @@ If there's a text selection, act on the region, else, on defun block."
 (setq xem-abbrev-table nil)
 
 (define-abbrev-table 'xem-abbrev-table '(
+ ("3t" "(when ▮)" nil :system t) ;test
 
- ;;;; ido completion flex matching eliminate the need for short abbrevs
  ("d" "(defun ▮ ()
   \"DOCSTRING\"
   (interactive)
@@ -1338,7 +1347,6 @@ If there's a text selection, act on the region, else, on defun block."
  ("m" "(message \"%s▮\" ARGS)" nil :system t)
  ("p" "(point)" nil :system t)
  ("s" "(setq ▮)" nil :system t)
- ("w" "(when ▮)" nil :system t)
 
  ("ah" "add-hook" nil :system t)
  ("bc" "backward-char" nil :system t)
@@ -1753,41 +1761,6 @@ If there's a text selection, act on the region, else, on defun block."
 
 ("write-region" "(write-region (point-min) (point-max) FILENAME &optional APPEND VISIT LOCKNAME MUSTBENEW)" nil :system t)
 
-;; #name: process marked files in dired
-;; # --
-;; ;; idiom for processing a list of files in dired's marked files
-
-;; ;; suppose myProcessFile is your function that takes a file path
-;; ;; and do some processing on the file
-
-;; (defun dired-myProcessFile ()
-;;   "apply myProcessFile function to marked files in dired."
-;;   (interactive)
-;;   (require 'dired)
-;;   (mapc 'myProcessFile (dired-get-marked-files))
-;; )
-
-;; ;; to use it, type M-x dired-myProcessFile
-
-;; #name: a function that process a file
-;; # --
-;; (defun doThisFile (fpath)
-;;   "Process the file at path FPATH ..."
-;;   (let ()
-;;     ;; create temp buffer without undo record or font lock. (more efficient)
-;;     ;; first space in temp buff name is necessary
-;;     (set-buffer (get-buffer-create " myTemp"))
-;;     (insert-file-contents fpath nil nil nil t)
-
-;;     ;; process it ...
-;;     ;; (goto-char 0) ; move to begining of file's content (in case it was open)
-;;     ;; ... do something here
-;;     ;; (write-file fpath) ;; write back to the file
-
-;;     (kill-buffer " myTemp")))
-
-;;
-
 ;; #name: read lines of a file
 ;; # --
 ;; (defun read-lines (filePath)
@@ -1862,8 +1835,11 @@ If there's a text selection, act on the region, else, on defun block."
  )
 
 "abbrev table for `xah-elisp-mode'"
-:regexp "\\_<\\([_-0-9A-Za-z]+\\)"
-  )
+;; :regexp "\\_<\\([_-0-9A-Za-z]+\\)"
+:regexp "\\([_-0-9A-Za-z]+\\)"
+:case-fixed t
+:enable-function 'xem-abbrev-enable-function
+ )
 
 
 ;; syntax coloring related

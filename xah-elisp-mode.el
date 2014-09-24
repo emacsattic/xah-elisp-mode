@@ -162,6 +162,16 @@
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
 (setq xem-emacs-words '(
 
+"left-char"
+"right-char"
+
+"upcase"
+"upcase-region"
+"downcase-region"
+"downcase"
+"capitalize"
+"upcase-initials"
+
 "atomic-change-group"
 "ido-completing-read"
 "ido-read-directory-name"

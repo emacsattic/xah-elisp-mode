@@ -165,6 +165,8 @@
 "left-char"
 "right-char"
 
+"propertize"
+
 "upcase"
 "upcase-region"
 "downcase-region"

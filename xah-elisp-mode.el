@@ -1203,6 +1203,22 @@
 (setq xem-elisp-all-keywords (append xem-elisp-lang-words xem-emacs-words xem-emacs-user-commands xem-keyword-builtin xem-elisp-vars-1 xem-elisp-vars-2))
 
 
+
+;; emacs 24.4 or 24.3 change fix
+
+(defun xem-up-list (arg1 &optional arg2 arg3)
+  "Backward compatibility fix for emacs 24.4's up-list.
+emacs 24.4 changed up-list to take up to 3 args. Before, only 1.
+See
+ `backward-up-list',
+ `up-list'"
+  (interactive)
+  (if (and (>= emacs-major-version 24)
+           (>= 4 emacs-minor-version))
+      (up-list arg1 arg2 arg3)
+    (up-list arg1)))
+
+
 ;; completion
 
 (defun xem-complete-symbol ()
@@ -1262,9 +1278,9 @@ Call `exchange-point-and-mark' to highlight them.
         p1 p2
         )
     (atomic-change-group
-      (up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
+      (xem-up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
       (while (not (char-equal (char-after) ?\( ))
-        (up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING"))
+        (xem-up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING"))
       (setq p1 (point))
       (forward-sexp)
       (setq p2 (point))
@@ -1377,7 +1393,7 @@ Returns true if point is moved, else false."
     (while
         (and (< (setq ξi (1+ ξi)) 20)
              (not (eq (nth 0 (syntax-ppss (point))) 0)))
-      (up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING"))
+      (xem-up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING"))
     (if (equal ξp0 (point))
         nil
       t
@@ -1911,7 +1927,7 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
   (add-hook 'completion-at-point-functions 'xem-complete-symbol nil 'local)
 
   (abbrev-mode 1)
-  
+
   (progn
     ;; setup auto-complete-mode
     (when (fboundp 'auto-complete-mode)

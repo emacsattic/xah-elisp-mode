@@ -1214,7 +1214,7 @@ See
  `up-list'"
   (interactive)
   (if (and (>= emacs-major-version 24)
-           (>= 4 emacs-minor-version))
+           (>= emacs-minor-version 4))
       (up-list arg1 arg2 arg3)
     (up-list arg1)))
 

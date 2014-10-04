@@ -1625,6 +1625,7 @@ If there's a text selection, act on the region, else, on defun block."
 )" nil :system t)
     ("line-beginning-position" "(line-beginning-position)" nil :system t)
     ("line-end-position" "(line-end-position)" nil :system t)
+    ("load" "(load FILE▮ &optional NOERROR NOMESSAGE NOSUFFIX MUST-SUFFIX)" nil :system t)
     ("looking-at" "(looking-at \"REGEXP▮\")" nil :system t)
     ("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
     ("make-local-variable" "(make-local-variable ▮)" nil :system t)

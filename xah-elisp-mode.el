@@ -1636,7 +1636,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("match-beginning" "(match-beginning N▮)" nil :system t)
     ("match-end" "(match-end N▮)" nil :system t)
     ("match-data" "(match-data &optional INTEGERS▮ REUSE RESEAT)" nil :system t)
-    ("match-string" "(match-string ▮)" nil :system t)
+    ("match-string" "(match-string NUM▮ &optional STRING)" nil :system t)
     ("member" "(member ELT▮ LIST)" nil :system t)
     ("memq" "(memq ELT▮ LIST)" nil :system t)
 

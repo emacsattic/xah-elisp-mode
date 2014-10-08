@@ -269,6 +269,7 @@
 "mark"
 "match-beginning"
 "match-end"
+"match-data"
 "match-string"
 "narrow-to-region"
 "point"

@@ -1714,6 +1714,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("throw" "(throw TAG▮ VALUE)" nil :system t)
     ("unless" "(unless ▮)" nil :system t)
     ("use-region-p" "(use-region-p)" nil :system t)
+    ("user-error" "(user-error FORMAT▮ &rest ARGS)" nil :system t)
     ("vector" "(vector ▮)" nil :system t)
     ("when" "(when ▮)" nil :system t)
     ("while" "(while ▮)" nil :system t)

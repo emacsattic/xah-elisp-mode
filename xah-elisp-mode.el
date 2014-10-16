@@ -1214,8 +1214,10 @@ See
  `backward-up-list',
  `up-list'"
   (interactive)
-  (if (and (>= emacs-major-version 24)
-           (>= emacs-minor-version 4))
+  (if (or
+       (and (>= emacs-major-version 24)
+            (>= emacs-minor-version 4))
+       (>= emacs-major-version 25))
       (up-list arg1 arg2 arg3)
     (up-list arg1)))
 
@@ -1939,8 +1941,10 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
       (add-to-list 'ac-modes 'xah-elisp-mode)))
   ;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
 
-  (if (and (>= emacs-major-version 24)
-           (>= emacs-minor-version 4))
+  (if (or
+       (and (>= emacs-major-version 24)
+            (>= emacs-minor-version 4))
+       (>= emacs-major-version 25))
       (progn
         (setq abbrev-expand-function 'xem-expand-abbrev-maybe))
     (progn (add-hook 'abbrev-expand-functions 'xem-expand-abbrev-maybe nil t)))

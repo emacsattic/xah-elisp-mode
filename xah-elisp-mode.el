@@ -180,6 +180,8 @@
 "ido-completing-read"
 "ido-read-directory-name"
 
+"terpri"
+
 "frame-parameter"
 "frame-parameters"
 "modify-frame-parameters"
@@ -1342,7 +1344,7 @@ Returns true if there's a expansion, else false."
 This is called by emacs abbrev system."
   (let ((ξsyntax-state (syntax-ppss)))
     (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
-        (progn nil)
+        nil
       t)))
 
 (defun xem--abbrev-position-cursor (&optional φpos)
@@ -1811,7 +1813,7 @@ If there's a text selection, act on the region, else, on defun block."
 ;; :regexp "\\_<\\([_-0-9A-Za-z]+\\)"
   :regexp "\\([_-0-9A-Za-z]+\\)"
   :case-fixed t
-  ;; :enable-function 'xem-abbrev-enable-function
+  :enable-function 'xem-abbrev-enable-function
   )
 
 

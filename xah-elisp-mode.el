@@ -1938,7 +1938,7 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
   (use-local-map xem-keymap)
   (setq local-abbrev-table xem-abbrev-table)
 
-  (setq-local comment-start ";")
+  (setq-local comment-start "; ")
   (setq-local comment-end "")
   (setq-local comment-start-skip ";+ *")
   (setq-local comment-add 1) ;default to `;;' in comment-region

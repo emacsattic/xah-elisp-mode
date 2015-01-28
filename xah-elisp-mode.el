@@ -1965,6 +1965,10 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
         (setq abbrev-expand-function 'xem-expand-abbrev-maybe))
     (progn (add-hook 'abbrev-expand-functions 'xem-expand-abbrev-maybe nil t)))
 
-  (run-mode-hooks 'xah-elisp-mode-hook))
+  (setq prettify-symbols-alist '(("lambda" . 955)))
+
+  (run-mode-hooks 'xah-elisp-mode-hook)
+
+  )
 
 (provide 'xah-elisp-mode)

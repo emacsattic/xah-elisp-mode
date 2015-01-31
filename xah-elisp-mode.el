@@ -168,7 +168,7 @@
 "right-char"
 
 "propertize"
-
+"setq-local"
 "upcase"
 "upcase-region"
 "downcase-region"
@@ -1932,9 +1932,9 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
 
   (setq mode-name "∑lisp")
   (setq major-mode 'xah-elisp-mode)
-  (setq font-lock-defaults '((xem-font-lock-keywords)))
-
   (set-syntax-table emacs-lisp-mode-syntax-table)
+  (setq font-lock-defaults '((xem-font-lock-keywords)))
+  
   (use-local-map xem-keymap)
   (setq local-abbrev-table xem-abbrev-table)
 

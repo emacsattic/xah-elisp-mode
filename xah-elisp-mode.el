@@ -29,6 +29,9 @@
 (defvar xem-elisp-lang-words nil "a list of elisp keyword more or less related to elisp the language.")
 (setq xem-elisp-lang-words '(
 
+"read"
+"eval"
+
 "zerop"
 "listp"
 "numberp"

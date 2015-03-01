@@ -1894,7 +1894,7 @@ If there's a text selection, act on the region, else, on defun block."
 (defvar xem-keymap nil "Keybinding for `xah-elisp-mode'")
 (progn
   (setq xem-keymap (make-sparse-keymap))
-  (define-key xem-keymap (kbd "<tab>") 'xem-complete-or-indent)
+  (define-key xem-keymap (kbd "TAB") 'xem-complete-or-indent)
 
   (define-prefix-command 'xem-single-keys-keymap)
   (define-key xem-keymap (kbd "<menu> e") xem-single-keys-keymap)

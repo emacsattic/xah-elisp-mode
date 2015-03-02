@@ -168,6 +168,7 @@
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
 (setq xem-emacs-words '(
 
+"define-abbrev-table"
 "current-word"
 "call-interactively"
 "left-char"
@@ -1306,8 +1307,6 @@ Call `exchange-point-and-mark' to highlight them.
 
 (defun xem-expand-abbrev-maybe (&optional φexpand-func)
   "Expand emacs lisp function name before cursor into template.
-Right now, always expand.
-Used to be: Don't expand when in string or comment.
 Returns true if there's a expansion, else false."
   (interactive)
   (let (
@@ -1961,6 +1960,7 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
       (add-to-list 'ac-modes 'xah-elisp-mode)))
   ;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
 
+  (make-local-variable abbrev-expand-function)
   (if (or
        (and (>= emacs-major-version 24)
             (>= emacs-minor-version 4))

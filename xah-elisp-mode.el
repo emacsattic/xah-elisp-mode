@@ -168,6 +168,8 @@
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
 (setq xem-emacs-words '(
 
+"delete-and-extract-region"
+
 "define-abbrev-table"
 "current-word"
 "call-interactively"

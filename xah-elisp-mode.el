@@ -26,7 +26,7 @@
 
 (defvar xah-elisp-mode-hook nil "Standard hook for `xah-elisp-mode'")
 
-(defvar xem-elisp-lang-words nil "a list of elisp keyword more or less related to elisp the language.")
+(defvar xem-elisp-lang-words nil "List of elisp keyword more or less related to elisp the language.")
 (setq xem-elisp-lang-words '(
 
 "read"
@@ -165,9 +165,10 @@
 "print-length"
 ))
 
-(defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
+(defvar xem-emacs-words nil "List of keywords more or less related to emacs system.")
 (setq xem-emacs-words '(
 
+"count-matches"
 "delete-and-extract-region"
 
 "define-abbrev-table"
@@ -448,10 +449,10 @@
 
   ))
 
-(defvar xem-keyword-builtin nil "a list of elisp names")
+(defvar xem-keyword-builtin nil "List of elisp names")
 (setq xem-keyword-builtin '( "&optional"))
 
-(defvar xem-elisp-vars-1 nil "a list elisp variables names")
+(defvar xem-elisp-vars-1 nil "List elisp variables names")
 (setq xem-elisp-vars-1 '(
 
 "current-prefix-arg"
@@ -859,7 +860,7 @@
 
 ))
 
-(defvar xem-elisp-vars-2 nil "a list elisp variables names")
+(defvar xem-elisp-vars-2 nil "List elisp variables names")
 (setq xem-elisp-vars-2 '(
 
 "multibyte-syntax-as-symbol"

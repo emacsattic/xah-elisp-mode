@@ -275,6 +275,7 @@
 "kill-ring-save"
 "kill-all-local-variables"
 "kill-buffer"
+"kill-new"
 "line-beginning-position"
 "line-end-position"
 "local-set-key"
@@ -1706,7 +1707,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("replace-regexp" "(replace-regexp \"REGEXP▮\" TO-STRING &optional DELIMITED START END)" nil :system t)
     ("require" "(require ▮)" nil :system t)
     ("reverse" "(reverse ▮)" nil :system t)
-    ("save-buffer" "(save-buffer ▮)" nil :system t)
+    ("save-buffer" "(save-buffer &optional ARG▮)" nil :system t)
     ("save-excursion" "(save-excursion ▮)" nil :system t)
     ("save-restriction" "(save-restriction ▮)" nil :system t)
     ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)

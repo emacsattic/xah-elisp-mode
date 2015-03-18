@@ -1562,7 +1562,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("backward-char" "(backward-char ▮)" nil :system t)
     ("beginning-of-line" "(beginning-of-line)" nil :system t)
     ("boundp" "(boundp '▮)" nil :system t)
-    ("bounds-of-thing-at-point" "(bounds-of-thing-at-point '▮) ; symbol, list, sexp, defun, filename, url, email, word, sentence, whitespace, line, page ...")
+    ("bounds-of-thing-at-point" "(bounds-of-thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
 
     ("buffer-file-name" "(buffer-file-name)" nil :system t)
     ("buffer-modified-p" "(buffer-modified-p ▮)" nil :system t)
@@ -1731,7 +1731,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("stringp" "(stringp ▮)" nil :system t)
     ("substring-no-properties" "(substring-no-properties ▮ FROM TO)" nil :system t)
     ("substring" "(substring STRING▮ FROM &optional TO)" nil :system t)
-    ("thing-at-point" "(thing-at-point '▮) ; symbol, list, sexp, defun, filename, url, email, word, sentence, whitespace, line, page …")
+    ("thing-at-point" "(thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
     ("throw" "(throw TAG▮ VALUE)" nil :system t)
     ("unless" "(unless ▮)" nil :system t)
     ("use-region-p" "(use-region-p)" nil :system t)

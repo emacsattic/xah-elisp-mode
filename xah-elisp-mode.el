@@ -1662,20 +1662,21 @@ If there's a text selection, act on the region, else, on defun block."
     ("memq" "(memq ELT▮ LIST)" nil :system t)
 
     ("delq" "(delq ELT▮ LIST)" nil :system t)
+    ("delete" "(delete OBJECT▮ SEQUENCE)" nil :system t)
+    ("delete-dups" "(delete-dups LIST▮)" nil :system t)
 
     ("remq" "(remq OBJECT▮ LIST)" nil :system t)
     ("memql" "(memql OBJECT▮ LIST)" nil :system t)
     ("member" "(member OBJECT▮ LIST)" nil :system t)
-    ("delete" "(delete OBJECT▮ SEQUENCE)" nil :system t)
     ("remove" "(remove OBJECT▮ SEQUENCE)" nil :system t)
     ("member-ignore-case" "(member-ignore-case OBJECT▮ LIST)" nil :system t)
-    ("delete-dups" "(delete-dups LIST▮)" nil :system t)
 
     ("message" "(message \"%s▮\" ARGS)" nil :system t)
     ("narrow-to-region" "(narrow-to-region START▮ END)" nil :system t)
     ("nth" "(nth N▮ LIST)" nil :system t)
     ("null" "(null ▮)" nil :system t)
     ("number-to-string" "(number-to-string ▮)" nil :system t)
+    ("number-sequence" "(number-sequence FROM▮ &optional TO INC)" nil :system t)
     ("or" "(or ▮)" nil :system t)
     ("point-max" "(point-max)" nil :system t)
     ("point-min" "(point-min)" nil :system t)

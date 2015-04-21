@@ -460,6 +460,7 @@
 "deactivate-mark"
 "load-file-name"
 "buffer-file-name"
+"load-path"
 
 "Buffer-menu-buffer+size-width"
 "Buffer-menu-mode-width"

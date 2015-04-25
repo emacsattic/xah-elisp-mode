@@ -39,7 +39,7 @@
 "char-equal"
 
 "delete"
-
+"make-list"
 "memq"
 "delq"
 "remq"
@@ -1603,7 +1603,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("delete-file" "(delete-file ▮)" nil :system t)
     ("delete-region" "(delete-region pos1▮ pos2)" nil :system t)
     ("directory-files" "(directory-files ▮ &optional FULL MATCH NOSORT)" nil :system t)
-    ("dolist" "(dolist ▮)" nil :system t)
+    ("dolist" "(dolist (VAR▮ LIST [RESULT]) BODY)" nil :system t)
     ("dotimes" "(dotimes (VAR▮ COUNT [RESULT]) BODY)" nil :system t)
     ("elt" "(elt SEQUENCE▮ N)" nil :system t)
     ("end-of-line" "(end-of-line ▮&optional N)" nil :system t)
@@ -1652,6 +1652,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("looking-at" "(looking-at \"REGEXP▮\")" nil :system t)
     ("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
     ("make-local-variable" "(make-local-variable ▮)" nil :system t)
+    ("make-list" "(make-list LENGTH▮ INIT)" nil :system t)
     ("mapc" "(mapc '▮ SEQUENCE)" nil :system t)
     ("mapcar" "(mapcar '▮ SEQUENCE)" nil :system t)
     ("mapconcat" "(mapconcat FUNCTION▮ SEQUENCE SEPARATOR)" nil :system t)

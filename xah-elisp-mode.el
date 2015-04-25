@@ -1662,7 +1662,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("match-string" "(match-string NUM▮ &optional STRING)" nil :system t)
     ("member" "(member ELT▮ LIST)" nil :system t)
     ("memq" "(memq ELT▮ LIST)" nil :system t)
-
+    ("not" "(not ▮)" nil :system t)
     ("delq" "(delq ELT▮ LIST)" nil :system t)
     ("delete" "(delete OBJECT▮ SEQUENCE)" nil :system t)
     ("delete-dups" "(delete-dups LIST▮)" nil :system t)

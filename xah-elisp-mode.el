@@ -31,6 +31,7 @@
 
 "read"
 "eval"
+"intern"
 
 "zerop"
 "listp"
@@ -1516,6 +1517,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("ms" "match-string" nil :system t)
     ("nts" "number-to-string" nil :system t)
     ("ntr" "narrow-to-region" nil :system t)
+    ("pmi" "point-min" nil :system t)
     ("pm" "point-max" nil :system t)
     ("rap" "region-active-p" nil :system t)
     ("urp" "use-region-p" nil :system t)
@@ -1687,7 +1689,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("princ" "(princ ▮)" nil :system t)
     ("print" "(print ▮)" nil :system t)
     ("progn" "(progn ▮)" nil :system t)
-    ("push" "(push ▮)" nil :system t)
+    ("push" "(push NEWELT▮ PLACE)" nil :system t)
     ("push-mark" "(push-mark ▮&optional LOCATION NOMSG ACTIVATE)" nil :system t)
     ("put" "(put 'SYMBOL▮ PROPNAME VALUE)" nil :system t)
     ("random" "(random ▮)" nil :system t)

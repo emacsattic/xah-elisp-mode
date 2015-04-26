@@ -1903,7 +1903,6 @@ If there's a text selection, act on the region, else, on defun block."
   (define-key xem-keymap (kbd "TAB") 'xem-complete-or-indent)
 
   (define-prefix-command 'xem-single-keys-keymap)
-  (define-key xem-keymap (kbd "<menu> e") xem-single-keys-keymap)
 
   (define-key xem-single-keys-keymap (kbd "u") 'xem-add-paren-around-symbol)
 
@@ -1944,9 +1943,15 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
   (setq major-mode 'xah-elisp-mode)
   (set-syntax-table emacs-lisp-mode-syntax-table)
   (setq font-lock-defaults '((xem-font-lock-keywords)))
-  
-  (use-local-map xem-keymap)
+
   (setq local-abbrev-table xem-abbrev-table)
+
+  (if (or
+       (not (boundp 'xfk-major-mode-lead-key))
+       (null 'xfk-major-mode-lead-key))
+      (define-key xem-keymap (kbd "<menu> e") xem-single-keys-keymap)
+    (define-key xem-keymap xfk-major-mode-lead-key xem-single-keys-keymap))
+  (use-local-map xem-keymap)
 
   (setq-local comment-start "; ")
   (setq-local comment-end "")

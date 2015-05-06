@@ -420,7 +420,7 @@
 (setq xah-elisp-emacs-user-commands '(
 
 "repeat-complex-command"
-
+"yank"
 "clear-rectangle"
 "complete-symbol"
 "define-prefix-command"

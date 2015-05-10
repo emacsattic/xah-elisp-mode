@@ -1,26 +1,44 @@
-;;; xah-elisp-mode.el --- Major mode for editing emacs lisp. -*- coding: utf-8 -*-
+;;; xah-elisp-mode.el --- Major mode for editing emacs lisp.
 
-;; Copyright © 2013 by Xah Lee
+;; Copyright © 2013-2015, by Xah Lee
 
-;; Author: Xah Lee <xah@xahlee.org> ( http://xahlee.org/ )
-;; Created: 2013-03-23
-;; Keywords: languages, convenience
+;; Author: Xah Lee ( http://xahlee.org/ )
+;; Version: 2.0.1
+;; Created: 23 Mar 2013
+;; Keywords: lisp, languages
+;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
-;; LICENSE:
-;; paypal me $5
-;; Buy Xah Emacs Tutorial
-;; Please see: http://ergoemacs.org/emacs/xah-elisp-mode.html
+;; This file is not part of GNU Emacs.
+
+;; You can redistribute this program and/or modify it. Please give credit and link. Thanks.
 
 ;;; Commentary:
 ;; Major mode for editing emacs lisp.
+;; This is alternative to GNU Emacs emacs-lisp-mode.
 ;; See: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
-;; todo
-;; 2014-06-30 don't expand abbrev (push-mark▮)
+;; Please Buy Xah Emacs Tutorial
+;; http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html
+;; Thanks.
+
+;;; INSTALL:
+
+;; manual install.
+
+;; Place the file at ~/.emacs.d/lisp/
+;; Then put the following in ~/.emacs.d/init.el
+;; (add-to-list 'load-path "~/.emacs.d/lisp/")
+;; (autoload 'xah-elisp-mode "xah-elisp-mode" "xah emacs lisp major mode." t)
+
+;;; todo:
+;; 2014-06-30 type this (push-mark▮) and you get this instead (push NEWELT-▮ PLACE)
 
 ;;; History:
 ;; version 0.5, 2014-06-23 first “polished” release.
 ;; version 0.1, 2013-03-23 first version
+
+
+;;; Code:
 
 (require 'lisp-mode)
 
@@ -1920,7 +1938,7 @@ If there's a text selection, act on the region, else, on defun block."
 
 
 
-;; define the mode
+;;;###autoload
 (defun xah-elisp-mode ()
   "A major mode for emacs lisp.
 
@@ -1987,8 +2005,8 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
 
   (setq prettify-symbols-alist '(("lambda" . 955)))
 
-  (run-mode-hooks 'xah-elisp-mode-hook)
-
-  )
+  (run-mode-hooks 'xah-elisp-mode-hook))
 
 (provide 'xah-elisp-mode)
+
+;;; xah-elisp-mode.el ends here

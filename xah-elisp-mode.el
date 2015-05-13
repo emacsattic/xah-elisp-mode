@@ -182,6 +182,7 @@
 
 "print-level"
 "print-length"
+"string-to-char"
 ))
 
 (defvar xah-elisp-emacs-words nil "List of keywords that are not related to emacs lisp the language.")
@@ -189,6 +190,7 @@
 
 "count-matches"
 "delete-and-extract-region"
+"get-char-code-property"
 
 "define-abbrev-table"
 "current-word"
@@ -1670,6 +1672,7 @@ If there's a text selection, act on the region, else, on defun block."
 )" nil :system t)
     ("line-beginning-position" "(line-beginning-position)" nil :system t)
     ("line-end-position" "(line-end-position)" nil :system t)
+    ("list" "(list ▮)" nil :system t)
     ("load" "(load FILE▮ &optional NOERROR NOMESSAGE NOSUFFIX MUST-SUFFIX)" nil :system t)
     ("looking-at" "(looking-at \"REGEXP▮\")" nil :system t)
     ("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
@@ -1753,6 +1756,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("string-match-p" "(string-match-p \"REGEXP▮\" \"STRING\" &optional START)" nil :system t)
     ("string-match" "(string-match \"REGEXP▮\" \"STRING\" &optional START)" nil :system t)
     ("string-to-number" "(string-to-number \"▮\")" nil :system t)
+    ("string-to-char" "(string-to-char \"▮\")" nil :system t)
     ("stringp" "(stringp ▮)" nil :system t)
     ("substring-no-properties" "(substring-no-properties ▮ FROM TO)" nil :system t)
     ("substring" "(substring STRING▮ FROM &optional TO)" nil :system t)

@@ -2011,6 +2011,8 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
 
   (run-mode-hooks 'xah-elisp-mode-hook))
 
+(add-to-list 'auto-mode-alist '("\\.el\\'" . xah-elisp-mode))
+
 (provide 'xah-elisp-mode)
 
 ;;; xah-elisp-mode.el ends here

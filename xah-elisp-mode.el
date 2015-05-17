@@ -3,23 +3,39 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.1
+;; Version: 2.0.2
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
 ;; This file is not part of GNU Emacs.
 
-;; You can redistribute this program and/or modify it. Please give credit and link. Thanks.
+;;; License:
+
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License version 2.
 
 ;;; Commentary:
+
 ;; Major mode for editing emacs lisp.
 ;; This is alternative to GNU Emacs emacs-lisp-mode.
-;; See: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
-;; Please Buy Xah Emacs Tutorial
-;; http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html
-;; Thanks.
+;; Major features different from emacs-lisp-mode:
+
+;; • Syntax coloring of 99% statistically most frequently used elisp functions.
+;; • Completion for function names and function templates. (press Tab after the word, or space after full name.)
+;; • 1 to 3 letters abbrevs for top 50 most used functions. e.g. “bsnp” → “buffer-substring-no-properties”
+;; • Convenient formatting command that formats entire sexp expression unit. (press Tab before line or end of line.)
+
+;; Call `xah-elisp-mode' to activate the mode.
+;; Files ending in “.el” will also open in `xah-elisp-mode'.
+
+;; home page: http://ergoemacs.org/emacs/xah-elisp-mode.html
+
+;; This mode is designed to be very different from the usual paredit approach.
+;; The focus of this mode is to eliminate any concept of {manual formatting, code format “style”, “indentation”, “line of code”}.
+;; The goal of this mode is for it to become 100% semantic lisp code editor, such that it is impossible to create mis-formed elisp expressions, yet being practical.
+
+;; If you like the idea, please help fund the project. Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. See home page. Thanks.
 
 ;;; INSTALL:
 
@@ -31,11 +47,7 @@
 ;; (autoload 'xah-elisp-mode "xah-elisp-mode" "xah emacs lisp major mode." t)
 
 ;;; todo:
-;; 2014-06-30 type this (push-mark▮) and you get this instead (push NEWELT-▮ PLACE)
-
-;;; History:
-;; version 0.5, 2014-06-23 first “polished” release.
-;; version 0.1, 2013-03-23 first version
+;; 2015-05-17 type this “push-mark” and you get this instead (push NEWELT-▮ PLACE). temp solution, type “push” then tab. Always use tab to create functions...
 
 
 ;;; Code:
@@ -1881,12 +1893,10 @@ If there's a text selection, act on the region, else, on defun block."
 Most useful command is `xah-elisp-complete-or-indent'.
 
 Press TAB before word to pretty format (indent).
-
 Press TAB after word to complete.
-
 Press SPACE to expand name to template.
 
-i also recommend you use these commands:
+I also recommend you use these commands:
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 or

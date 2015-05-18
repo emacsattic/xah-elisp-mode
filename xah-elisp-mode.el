@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.2
+;; Version: 2.0.3
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -22,17 +22,28 @@
 ;; Major features different from emacs-lisp-mode:
 
 ;; • Syntax coloring of 99% statistically most frequently used elisp functions.
-;; • Completion for function names and function templates. (press Tab after the word, or space after full name.)
-;; • 1 to 3 letters abbrevs for top 50 most used functions. e.g. “bsnp” → “buffer-substring-no-properties”
-;; • Convenient formatting command that formats entire sexp expression unit. (press Tab before line or end of line.)
+;; • Completion for function names with `ido-mode' interface. (press TAB after word)
+;; • Function param template. (press space after function name.)
+;; • 1 to 4 letters abbrevs for top 50 most used functions. e.g. “bsnp” → “buffer-substring-no-properties”
+;; • Convenient formatting command that formats entire sexp expression unit. (press TAB before word.)
 
 ;; Call `xah-elisp-mode' to activate the mode.
 ;; Files ending in “.el” will also open in `xah-elisp-mode'.
 
+;; Single letter abbrevs are:
+;; d → defun
+;; i → insert
+;; l → let
+;; m → message
+;; p → point
+;; s → setq
+
+;; Call `list-abbrevs' to see the full list.
+
 ;; home page: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
-;; This mode is designed to be very different from the usual paredit approach.
-;; The focus of this mode is to eliminate any concept of {manual formatting, code format “style”, “indentation”, “line of code”}.
+;; This mode is designed to be very different from the usual paredit/smartparens approach.
+;; The focus of this mode is to eliminate any concept of {manual formatting, format “style”, “indentation”, “line of code”} from programer. Instead, pretty-print/rendering should be automated, as part of display system. ({Matematica, XML, HTML} are examples.)
 ;; The goal of this mode is for it to become 100% semantic lisp code editor, such that it is impossible to create mis-formed elisp expressions, yet being practical.
 
 ;; If you like the idea, please help fund the project. Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. See home page. Thanks.
@@ -58,32 +69,7 @@
 
 (defvar xah-elisp-elisp-lang-words nil "List of elisp keyword more or less related to elisp the language.")
 (setq xah-elisp-elisp-lang-words '(
-
-"read"
-"eval"
-"intern"
-
-"zerop"
-"listp"
-"numberp"
-"functionp"
-"char-equal"
-
-"delete"
-"make-list"
-"memq"
-"delq"
-"remq"
-"memql"
-"member"
-"remove"
-"member-ignore-case"
-"delete-dups"
-
 "abs"
-
-"url-unhex-string"
-"decode-coding-string"
 "add-to-list"
 "and"
 "append"
@@ -94,8 +80,10 @@
 "assq"
 "boundp"
 "car"
+"car-safe"
 "catch"
 "cdr"
+"char-equal"
 "char-to-string"
 "commandp"
 "concat"
@@ -103,37 +91,52 @@
 "condition-case"
 "cons"
 "consp"
+"decode-coding-string"
 "defmacro"
 "defun"
+"defvar"
+"delete"
+"delete-dups"
+"delq"
 "elt"
 "eq"
 "equal"
+"eval"
 "expt"
 "fboundp"
 "featurep"
+"float"
 "floatp"
 "format"
 "format-time-string"
 "funcall"
 "function"
+"functionp"
 "get"
 "gethash"
 "hash-table-count"
 "if"
 "integerp"
+"intern"
 "lambda"
 "last"
 "length"
 "let"
 "let*"
 "list"
+"listp"
 "load"
 "make-hash-table"
+"make-list"
 "mapc"
 "mapcar"
 "mapconcat"
 "maphash"
 "max"
+"member"
+"member-ignore-case"
+"memq"
+"memql"
 "message"
 "min"
 "nil"
@@ -143,11 +146,14 @@
 "null"
 "number-sequence"
 "number-to-string"
+"numberp"
 "or"
 "pop"
 "prin1"
 "princ"
 "print"
+"print-length"
+"print-level"
 "progn"
 "provide"
 "push"
@@ -156,9 +162,12 @@
 "quote"
 "random"
 "rassoc"
+"read"
 "regexp-opt"
 "regexp-quote"
 "remhash"
+"remove"
+"remq"
 "require"
 "reverse"
 "set"
@@ -170,6 +179,7 @@
 "string-equal"
 "string-match"
 "string-match-p"
+"string-to-char"
 "string-to-number"
 "string="
 "stringp"
@@ -183,109 +193,79 @@
 "t"
 "throw"
 "unless"
+"url-unhex-string"
+"vconcat"
 "vector"
+"vectorp"
 "when"
 "while"
-"defvar"
-"float"
-"vectorp"
-"vconcat"
-"car-safe"
-
-"print-level"
-"print-length"
-"string-to-char"
+"zerop"
 ))
 
-(defvar xah-elisp-emacs-words nil "List of keywords that are not related to emacs lisp the language.")
+(defvar xah-elisp-emacs-words nil "List of elisp keywords that's not related to core lisp language, but about emacs environment, such as buffer, hook, editing, copy paste, ….")
 (setq xah-elisp-emacs-words '(
-
-"count-matches"
-"delete-and-extract-region"
-"get-char-code-property"
-
-"define-abbrev-table"
-"current-word"
-"call-interactively"
-"left-char"
-"right-char"
-
-"propertize"
-"setq-local"
-"upcase"
-"upcase-region"
-"downcase-region"
-"downcase"
-"capitalize"
-"upcase-initials"
-
-"atomic-change-group"
-"ido-completing-read"
-"ido-read-directory-name"
-
-"terpri"
-"match-string-no-properties"
-
-"frame-parameter"
-"frame-parameters"
-"modify-frame-parameters"
-"set-frame-parameter"
-"modify-all-frames-parameters"
-
-"with-syntax-table"
-
-"buffer-enable-undo"
-"buffer-disable-undo"
-
-"define-minor-mode"
-"set-buffer-modified-p"
-"file-readable-p"
-"buffer-live-p"
-
-"parse-partial-sexp"
-"skip-syntax-forward"
-"skip-syntax-backward"
-"forward-comment"
-"scan-lists"
-"scan-sexps"
-"syntax-ppss"
-"forward-symbol"
-"forward-sexp"
-"backward-up-list"
-
-"set-default"
-
+"abbrev-insert"
+"abbrev-symbol"
 "add-hook"
+"add-to-invisibility-spec"
+"append-to-file"
+"atomic-change-group"
 "autoload"
 "backward-char"
+"backward-up-list"
 "beginning-of-line"
+"bobp"
+"bolp"
 "bounds-of-thing-at-point"
+"buffer-disable-undo"
+"buffer-enable-undo"
 "buffer-file-name"
+"buffer-live-p"
 "buffer-modified-p"
+"buffer-name"
+"buffer-string"
 "buffer-substring"
 "buffer-substring-no-properties"
+"call-interactively"
 "called-interactively-p"
+"capitalize"
+"char-after"
+"char-before"
 "completing-read"
 "copy-directory"
 "copy-file"
+"copy-overlay"
+"count-matches"
 "current-buffer"
+"current-word"
 "custom-autoload"
 "custom-set-faces"
 "defalias"
 "defconst"
 "defcustom"
+"defface"
 "defgroup"
+"define-abbrev-table"
 "define-derived-mode"
 "define-key"
+"define-minor-mode"
 "defsubst"
+"delete-and-extract-region"
 "delete-char"
 "delete-directory"
 "delete-file"
+"delete-overlay"
 "delete-region"
 "directory-files"
 "dolist"
 "dotimes"
+"downcase"
+"downcase-region"
+"emacs-version"
 "end-of-line"
+"eobp"
+"eolp"
+"erase-buffer"
 "error"
 "expand-file-name"
 "file-directory-p"
@@ -294,40 +274,82 @@
 "file-name-extension"
 "file-name-nondirectory"
 "file-name-sans-extension"
+"file-readable-p"
 "file-regular-p"
 "file-relative-name"
 "find-file"
+"following-char"
+"font-family-list"
 "forward-char"
+"forward-comment"
 "forward-line"
+"forward-sexp"
+"forward-symbol"
+"frame-parameter"
+"frame-parameters"
 "generate-new-buffer"
+"get-char-code-property"
+"get-char-property"
+"getenv"
 "global-unset-key"
 "goto-char"
-"insert-file-contents"
+"ido-completing-read"
+"ido-read-directory-name"
 "insert"
+"insert-buffer-substring-no-properties"
+"insert-file-contents"
 "interactive"
-"kill-region"
-"kill-ring-save"
+"invisible-p"
 "kill-all-local-variables"
 "kill-buffer"
 "kill-new"
+"kill-region"
+"kill-ring-save"
+"left-char"
 "line-beginning-position"
 "line-end-position"
 "local-set-key"
 "looking-at"
 "make-directory"
 "make-local-variable"
+"make-overlay"
+"make-sparse-keymap"
 "mark"
 "match-beginning"
-"match-end"
 "match-data"
+"match-end"
 "match-string"
+"match-string-no-properties"
+"modify-all-frames-parameters"
+"modify-frame-parameters"
+"modify-syntax-entry"
+"move-overlay"
 "narrow-to-region"
+"next-buffer"
+"next-overlay-change"
+"number-or-marker-p"
+"overlay-buffer"
+"overlay-end"
+"overlay-get"
+"overlay-properties"
+"overlay-put"
+"overlay-recenter"
+"overlay-start"
+"overlayp"
+"overlays-at"
+"overlays-in"
+"parse-partial-sexp"
+"parse-time-string"
 "point"
 "point-marker"
 "point-max"
 "point-min"
 "pop-mark"
+"preceding-char"
 "prefix-numeric-value"
+"previous-buffer"
+"previous-overlay-change"
+"propertize"
 "push-mark"
 "re-search-backward"
 "re-search-forward"
@@ -336,123 +358,82 @@
 "read-from-minibuffer"
 "read-regexp"
 "read-string"
+"redraw-frame"
 "region-active-p"
-"use-region-p"
 "region-beginning"
 "region-end"
+"remove-from-invisibility-spec"
 "remove-hook"
+"remove-overlays"
 "rename-file"
 "repeat"
 "replace-match"
 "replace-regexp"
 "replace-regexp-in-string"
+"right-char"
 "run-hooks"
+"run-mode-hooks"
 "save-buffer"
 "save-excursion"
 "save-restriction"
+"scan-lists"
+"scan-sexps"
 "search-backward"
 "search-backward-regexp"
 "search-forward"
 "search-forward-regexp"
+"selected-frame"
 "set-buffer"
+"set-buffer-modified-p"
+"set-default"
 "set-file-modes"
+"set-fontset-font"
+"set-frame-parameter"
 "set-mark"
+"set-syntax-table"
+"set-window-margins"
+"setenv"
+"setq-default"
+"setq-local"
 "shell-command"
+"shell-command-to-string"
 "skip-chars-backward"
 "skip-chars-forward"
+"skip-syntax-backward"
+"skip-syntax-forward"
+"standard-syntax-table"
+"start-process"
 "substring-no-properties"
+"switch-to-buffer"
+"syntax-ppss"
+"terpri"
 "thing-at-point"
+"upcase"
+"upcase-initials"
+"upcase-region"
+"use-local-map"
+"use-region-p"
 "user-error"
+"variable-pitch-mode"
+"version"
+"version<"
+"version<="
 "widget-get"
+"window-body-width"
+"window-margins"
 "with-current-buffer"
+"with-output-to-temp-buffer"
+"with-syntax-table"
 "with-temp-buffer"
 "with-temp-file"
 "write-file"
 "write-region"
 "y-or-n-p"
 "yes-or-no-p"
-
-"setenv"
-"getenv"
-"modify-syntax-entry"
-"make-sparse-keymap"
-"standard-syntax-table"
-"run-mode-hooks"
-"set-syntax-table"
-"use-local-map"
-"defface"
-
-"shell-command-to-string"
-
-"start-process"
-
-"next-buffer"
-"previous-buffer"
-"buffer-name"
-"insert-buffer-substring-no-properties"
-"erase-buffer"
-"append-to-file"
-"buffer-string"
-
-"switch-to-buffer"
-"with-output-to-temp-buffer"
-"setq-default"
-
-"parse-time-string"
-
-"bolp"
-"eolp"
-"eobp"
-"bobp"
-"char-after"
-"char-before"
-"following-char"
-"preceding-char"
-"get-char-property"
-
-"overlay-get"
-"overlay-put"
-"overlay-properties"
-
-"overlayp"
-"make-overlay"
-"overlay-start"
-"overlay-end"
-"overlay-buffer"
-"delete-overlay"
-"move-overlay"
-"remove-overlays"
-"copy-overlay"
-"overlay-recenter"
-"overlays-at"
-"overlays-in"
-"next-overlay-change"
-"previous-overlay-change"
-"redraw-frame"
-"selected-frame"
-"set-window-margins"
-"variable-pitch-mode"
-"window-body-width"
-"window-margins"
-"set-fontset-font"
-"font-family-list"
-
-"add-to-invisibility-spec"
-"remove-from-invisibility-spec"
-"invisible-p"
-"number-or-marker-p"
-"version<"
-"version<="
-"version"
-"emacs-version"
-
 ))
 
-(defvar xah-elisp-emacs-user-commands nil "list of keywords related to user's needs.")
+(defvar xah-elisp-emacs-user-commands nil "List of elisp keywords that are almost always called by user interactively.")
 (setq xah-elisp-emacs-user-commands '(
-
-"repeat-complex-command"
-"yank"
 "clear-rectangle"
 "complete-symbol"
 "define-prefix-command"
@@ -476,27 +457,23 @@
 "prettify-symbols-mode"
 "rectangle-mark-mode"
 "rectangle-number-lines"
+"repeat-complex-command"
 "replace-rectangle"
 "shell-command-on-region"
 "shell-command-on-region"
 "sort-lines"
 "subword-mode"
-"yank-rectangle"
-
-  ))
+"yank"
+"yank-rectangle"))
 
 (defvar xah-elisp-keyword-builtin nil "List of elisp names")
 (setq xah-elisp-keyword-builtin '( "&optional"))
 
 (defvar xah-elisp-elisp-vars-1 nil "List elisp variables names")
+;; todo. needs lots work. ideally, ALL elisp var names. But that's too many. Consider implementation to save memory or load on demand. Then, perhaps for simplicity just the top 300 most used ones (by stat of elisp source code).
+;; consider find a way to programmatically list all elisp vars, loaded or even unloaded.
+;; consider also leave this list empty, instead, dynamically determine when a symbol is a lisp var.
 (setq xah-elisp-elisp-vars-1 '(
-
-"current-prefix-arg"
-"deactivate-mark"
-"load-file-name"
-"buffer-file-name"
-"load-path"
-
 "Buffer-menu-buffer+size-width"
 "Buffer-menu-mode-width"
 "Buffer-menu-name-width"
@@ -570,6 +547,8 @@
 "blink-matching-paren-on-screen"
 "break-hardlink-on-save"
 "browse-url-browser-function"
+"buffer-file-name"
+"buffer-invisibility-spec"
 "buffer-offer-save"
 "buffers-menu-buffer-name-length"
 "buffers-menu-max-size"
@@ -615,6 +594,7 @@
 "ctl-arrow"
 "cua-mode"
 "current-language-environment"
+"current-prefix-arg"
 "cursor-in-non-selected-windows"
 "custom-browse-sort-alphabetically"
 "custom-buffer-sort-alphabetically"
@@ -626,6 +606,7 @@
 "custom-theme-load-path"
 "cvs-dired-action"
 "cvs-dired-use-hook"
+"deactivate-mark"
 "debug-ignored-errors"
 "debug-on-error"
 "debug-on-event"
@@ -732,12 +713,26 @@
 "fit-frame-to-buffer-bottom-margin"
 "focus-follows-mouse"
 "font-list-limit"
+"font-lock-builtin-face"
+"font-lock-comment-delimiter-face"
+"font-lock-comment-face"
+"font-lock-constant-face"
 "font-lock-defaults"
+"font-lock-doc-face"
+"font-lock-function-name-face"
 "font-lock-global-modes"
+"font-lock-keyword-face"
 "font-lock-maximum-decoration"
 "font-lock-maximum-size"
+"font-lock-negation-char-face"
+"font-lock-preprocessor-face"
+"font-lock-reference-face"
+"font-lock-string-face"
 "font-lock-support-mode"
+"font-lock-type-face"
+"font-lock-variable-name-face"
 "font-lock-verbose"
+"font-lock-warning-face"
 "font-use-system-font"
 "frame-auto-hide-function"
 "frame-background-mode"
@@ -894,58 +889,13 @@
 "list-matching-lines-buffer-name-face"
 "list-matching-lines-default-context-lines"
 "list-matching-lines-face"
-
-))
-
-(defvar xah-elisp-elisp-vars-2 nil "List elisp variables names")
-(setq xah-elisp-elisp-vars-2 '(
-
-"multibyte-syntax-as-symbol"
-
-"font-lock-builtin-face"
-"font-lock-comment-delimiter-face"
-"font-lock-comment-face"
-"font-lock-constant-face"
-"font-lock-doc-face"
-"font-lock-function-name-face"
-"font-lock-keyword-face"
-"font-lock-negation-char-face"
-"font-lock-preprocessor-face"
-"font-lock-reference-face"
-"font-lock-string-face"
-"font-lock-type-face"
-"font-lock-variable-name-face"
-"font-lock-warning-face"
+"load-file-name"
+"load-path"
 "local-holidays"
 "locate-ls-subdir-switches"
 "lpr-command"
 "lpr-switches"
 "ls-lisp-support-shell-wildcards"
-"mail-abbrevs-mode"
-"mail-archive-file-name"
-"mail-citation-hook"
-"mail-citation-prefix-regexp"
-"mail-complete-style"
-"mail-default-directory"
-"mail-default-headers"
-"mail-default-reply-to"
-"mail-dont-reply-to-names"
-"mail-from-style"
-"mail-header-separator"
-"mail-hist-keep-history"
-"mail-host-address"
-"mail-indentation-spaces"
-"mail-interactive"
-"mail-mailing-lists"
-"mail-personal-alias-file"
-"mail-self-blind"
-"mail-setup-hook"
-"mail-signature"
-"mail-signature-file"
-"mail-specify-envelope-from"
-"mail-use-rfc822"
-"mail-user-agent"
-"mail-yank-prefix"
 "major-mode"
 "make-backup-file-name-function"
 "make-backup-files"
@@ -993,6 +943,7 @@
 "mouse-wheel-up-event"
 "mouse-yank-at-point"
 "msb-mode"
+"multibyte-syntax-as-symbol"
 "next-error-highlight"
 "next-error-highlight-no-select"
 "next-error-hook"
@@ -1055,18 +1006,6 @@
 "replace-regexp-lax-whitespace"
 "require-final-newline"
 "revert-without-query"
-"rmail-displayed-headers"
-"rmail-dont-reply-to-names"
-"rmail-file-name"
-"rmail-highlighted-headers"
-"rmail-ignored-headers"
-"rmail-primary-inbox-list"
-"rmail-retry-ignored-headers"
-"rmail-secondary-file-directory"
-"rmail-secondary-file-regexp"
-"rmail-show-message-hook"
-"rmail-spool-directory"
-"rmail-user-mail-address-regexp"
 "safe-local-eval-forms"
 "safe-local-variable-values"
 "same-window-buffer-names"
@@ -1192,6 +1131,7 @@
 "use-dialog-box"
 "use-empty-active-region"
 "use-file-dialog"
+"user-emacs-directory"
 "user-full-name"
 "user-mail-address"
 "vc-before-checkin-hook"
@@ -1228,16 +1168,6 @@
 "woman-locale"
 "word-wrap"
 "words-include-escapes"
-"x-bitmap-file-path"
-"x-dnd-known-types"
-"x-dnd-test-function"
-"x-dnd-types-alist"
-"x-gtk-file-dialog-help-text"
-"x-gtk-show-hidden-files"
-"x-gtk-stock-map"
-"x-gtk-use-old-file-dialog"
-"x-gtk-use-system-tooltips"
-"x-gtk-whole-detached-tool-bar"
 "x-select-enable-clipboard"
 "x-select-enable-clipboard-manager"
 "x-select-enable-primary"
@@ -1250,14 +1180,10 @@
 "yank-handled-properties"
 "yank-menu-length"
 "yank-pop-change-selection"
-"user-emacs-directory"
-
-"buffer-invisibility-spec"
-
 ))
 
-(defvar xah-elisp-elisp-all-keywords nil "list of all elisp keywords")
-(setq xah-elisp-elisp-all-keywords (append xah-elisp-elisp-lang-words xah-elisp-emacs-words xah-elisp-emacs-user-commands xah-elisp-keyword-builtin xah-elisp-elisp-vars-1 xah-elisp-elisp-vars-2))
+(defvar xah-elisp-elisp-all-keywords nil "List of all elisp keywords")
+(setq xah-elisp-elisp-all-keywords (append xah-elisp-elisp-lang-words xah-elisp-emacs-words xah-elisp-emacs-user-commands xah-elisp-keyword-builtin xah-elisp-elisp-vars-1 ))
 
 
 
@@ -1278,7 +1204,7 @@ See
 ;; completion
 
 (defun xah-elisp-complete-symbol ()
-  "Perform keyword completion on current word.
+  "Perform keyword completion on current symbol.
 This uses `ido-mode' user interface for completion."
   (interactive)
   (let* (
@@ -1304,31 +1230,28 @@ This uses `ido-mode' user interface for completion."
 ))))
 
 (defun xah-elisp-start-with-left-paren-p ()
-  "true or false"
+  "Returns t or nil"
   (interactive)
   (save-excursion
     (forward-symbol -1) (backward-char 1)
     (if (looking-at "(")
-      t
+        t
       nil)))
 
 (defun xah-elisp-add-paren-around-symbol ()
-  "add paren around symbol before cursor and add a space before closing paren, place cursor ther.
- ⁖
- do-something▮
+  "Add paren around symbol before cursor and add a space before closing paren, place cursor there.
+ Example:
+ my-xyz▮
 becomes
- (do-something ▮)
-"
+ (my-xyz ▮)"
   (interactive)
   (forward-symbol -1) (insert "(") (forward-symbol 1) (insert " )")
   (backward-char 1))
 
 (defun xah-elisp-remove-paren-pair ()
-  "Remove closest outer paren around cursor or remove string quote and activate the region.
+  "Remove closest left outer paren around cursor or remove string quote and activate the region.
 Cursor is moved to the left deleted paren spot, mark is set to the right deleted paren spot.
-Call `exchange-point-and-mark' to highlight them.
-“closest outer paren” is based on left side of cursor.
-"
+Call `exchange-point-and-mark' \\[exchange-point-and-mark] to highlight them."
   (interactive)
   (let ((pos (point))
         p1 p2
@@ -1347,7 +1270,7 @@ Call `exchange-point-and-mark' to highlight them.
 
 (defun xah-elisp-expand-abbrev-maybe (&optional φexpand-func)
   "Expand emacs lisp function name before cursor into template.
-Returns true if there's a expansion, else false."
+Returns true if there's a expansion, else nil."
   (interactive)
   (let (
         ξp1 ξp2
@@ -1355,15 +1278,13 @@ Returns true if there's a expansion, else false."
         (ξsyntax-state (syntax-ppss)))
     (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
         nil
-      (xah-elisp-expand-abbrev))
-    ;; (xah-elisp-expand-abbrev)
-    ))
+      (xah-elisp-expand-abbrev))))
 
 (put 'xah-elisp-expand-abbrev-maybe 'no-self-insert t)
 
 (defun xah-elisp-expand-abbrev ()
   "Expand the symbol before cursor.
-Returns true if there's a expansion, else false."
+Returns true if there's a expansion, else nil."
   (interactive)
   (let (
         ξp1 ξp2
@@ -1491,105 +1412,98 @@ If there's a text selection, act on the region, else, on defun block."
 
 (define-abbrev-table 'xah-elisp-abbrev-table
   '(
-    ("3t" "(when ▮)" nil :system t) ;test
-
-    ("d" "(defun ▮ ()
-  \"DOCSTRING\"
-  (interactive)
-  (let (VAR)
-
-  ))" nil :system t)
+    ("d" "(defun f▮ ()\n  \"DOCSTRING\"\n  (interactive)\n  (let (VAR)\n\n  ))" nil :system t)
     ("i" "(insert ▮)" nil :system t)
-    ("l" "(let (▮)
- x
-)" nil :system t)
+    ("l" "(let (x▮)\n x\n)" nil :system t)
     ("m" "(message \"%s▮\" ARGS)" nil :system t)
     ("p" "(point)" nil :system t)
-    ("s" "(setq ▮)" nil :system t)
+    ("s" "(setq SYM▮ VAL)" nil :system t)
 
     ("ah" "add-hook" nil :system t)
     ("bc" "backward-char" nil :system t)
-    ("bfn" "buffer-file-name" nil :system t)
-    ("bmp" "buffer-modified-p" nil :system t)
-    ("bol" "beginning-of-line" nil :system t)
-    ("botap" "bounds-of-thing-at-point" nil :system t)
     ("bs" "buffer-substring" nil :system t)
-    ("bsnp" "buffer-substring-no-properties" nil :system t)
     ("ca" "custom-autoload" nil :system t)
     ("cb" "current-buffer" nil :system t)
     ("cc" "condition-case" nil :system t)
     ("cd" "copy-directory" nil :system t)
-    ("cdr" "cdr" nil :system t)
     ("cf" "copy-file" nil :system t)
     ("dc" "delete-char" nil :system t)
     ("dd" "delete-directory" nil :system t)
     ("df" "delete-file" nil :system t)
     ("dk" "define-key" nil :system t)
     ("dr" "delete-region" nil :system t)
-    ("efn" "expand-file-name" nil :system t)
-    ("eol" "end-of-line" nil :system t)
     ("fc" "forward-char" nil :system t)
     ("ff" "find-file" nil :system t)
     ("fl" "forward-line" nil :system t)
-    ("fnd" "file-name-directory" nil :system t)
-    ("fne" "file-name-extension" nil :system t)
-    ("fnn" "file-name-nondirectory" nil :system t)
-    ("fnse" "file-name-sans-extension" nil :system t)
-    ("frn" "file-relative-name" nil :system t)
     ("gc" "goto-char" nil :system t)
-    ("gnb" "generate-new-buffer" nil :system t)
-    ("gsk" "global-set-key" nil :system t)
-    ("ifc" "insert-file-contents" nil :system t)
     ("kb" "kill-buffer" nil :system t)
     ("la" "looking-at" nil :system t)
-    ("lbp" "line-beginning-position" nil :system t)
-    ("lep" "line-end-position" nil :system t)
     ("mb" "match-beginning" nil :system t)
     ("md" "make-directory" nil :system t)
     ("me" "match-end" nil :system t)
-    ("mlv" "make-local-variable" nil :system t)
     ("ms" "match-string" nil :system t)
-    ("nts" "number-to-string" nil :system t)
-    ("ntr" "narrow-to-region" nil :system t)
-    ("pmi" "point-min" nil :system t)
     ("pm" "point-max" nil :system t)
-    ("rap" "region-active-p" nil :system t)
-    ("urp" "use-region-p" nil :system t)
     ("rb" "region-beginning" nil :system t)
     ("re" "region-end" nil :system t)
     ("rf" "rename-file" nil :system t)
     ("rm" "replace-match" nil :system t)
     ("rq" "regexp-quote" nil :system t)
     ("rr" "replace-regexp" nil :system t)
-    ("rris" "replace-regexp-in-string" nil :system t)
-    ("rsb" "re-search-backward" nil :system t)
-    ("rsf" "re-search-forward" nil :system t)
     ("sb" "search-backward" nil :system t)
-    ("sbr" "search-backward-regexp" nil :system t)
     ("sc" "shell-command" nil :system t)
-    ("scb" "skip-chars-backward" nil :system t)
-    ("scf" "skip-chars-forward" nil :system t)
     ("se" "save-excursion" nil :system t)
     ("sf" "search-forward" nil :system t)
-    ("sfm" "set-file-modes" nil :system t)
-    ("sfr" "search-forward-regexp" nil :system t)
     ("sm" "string-match" nil :system t)
     ("sr" "save-restriction" nil :system t)
     ("ss" "split-string" nil :system t)
-    ("stn" "string-to-number" nil :system t)
-    ("str" "string" nil :system t)
-    ("tap" "thing-at-point" nil :system t)
-    ("wcb" "with-current-buffer" nil :system t)
     ("wg" "widget-get" nil :system t)
+
+    ("bfn" "buffer-file-name" nil :system t)
+    ("bmp" "buffer-modified-p" nil :system t)
+    ("bol" "beginning-of-line" nil :system t)
+    ("cdr" "cdr" nil :system t)
+    ("efn" "expand-file-name" nil :system t)
+    ("eol" "end-of-line" nil :system t)
+    ("fnd" "file-name-directory" nil :system t)
+    ("fne" "file-name-extension" nil :system t)
+    ("fnn" "file-name-nondirectory" nil :system t)
+    ("frn" "file-relative-name" nil :system t)
+    ("gnb" "generate-new-buffer" nil :system t)
+    ("gsk" "global-set-key" nil :system t)
+    ("ifc" "insert-file-contents" nil :system t)
+    ("lbp" "line-beginning-position" nil :system t)
+    ("lep" "line-end-position" nil :system t)
+    ("mlv" "make-local-variable" nil :system t)
+    ("ntr" "narrow-to-region" nil :system t)
+    ("nts" "number-to-string" nil :system t)
+    ("pmi" "point-min" nil :system t)
+    ("rap" "region-active-p" nil :system t)
+    ("rsb" "re-search-backward" nil :system t)
+    ("rsf" "re-search-forward" nil :system t)
+    ("sbr" "search-backward-regexp" nil :system t)
+    ("scb" "skip-chars-backward" nil :system t)
+    ("scf" "skip-chars-forward" nil :system t)
+    ("sfm" "set-file-modes" nil :system t)
+    ("sfr" "search-forward-regexp" nil :system t)
+    ("stn" "string-to-number" nil :system t)
+    ("tap" "thing-at-point" nil :system t)
+    ("urp" "use-region-p" nil :system t)
+    ("wcb" "with-current-buffer" nil :system t)
+
+    ("bsnp" "buffer-substring-no-properties" nil :system t)
+    ("fnse" "file-name-sans-extension" nil :system t)
+    ("rris" "replace-regexp-in-string" nil :system t)
     ("yonp" "yes-or-no-p" nil :system t)
+
+    ("botap" "bounds-of-thing-at-point" nil :system t)
 
     ("add-hook" "(add-hook 'HOOK▮ 'FUNCTION)" nil :system t)
     ("and" "(and ▮)" nil :system t )
     ("version<" "(version< \"24.4\" emacs-version)" nil :system t )
     ("version<=" "(version<= \"24.4\" emacs-version)" nil :system t )
 
-    ("append" "(append ▮)" nil :system t)
     ("add-to-list" "(add-to-list LIST-VAR▮ ELEMENT &optional APPEND COMPARE-FN)" nil :system t)
+    ("append" "(append ▮)" nil :system t)
     ("apply" "(apply ▮)" nil :system t)
     ("aref" "(aref ARRAY▮ INDEX)" nil :system t)
     ("aset" "(aset ARRAY▮ IDX NEWELT)" nil :system t)
@@ -1600,21 +1514,17 @@ If there's a text selection, act on the region, else, on defun block."
     ("beginning-of-line" "(beginning-of-line)" nil :system t)
     ("boundp" "(boundp '▮)" nil :system t)
     ("bounds-of-thing-at-point" "(bounds-of-thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
-
     ("buffer-file-name" "(buffer-file-name)" nil :system t)
     ("buffer-modified-p" "(buffer-modified-p ▮)" nil :system t)
-    ("buffer-substring-no-properties" "(buffer-substring-no-properties START▮ END)" nil :system t)
     ("buffer-substring" "(buffer-substring START▮ END)" nil :system t)
+    ("buffer-substring-no-properties" "(buffer-substring-no-properties START▮ END)" nil :system t)
     ("call-interactively" "(call-interactively 'FUNCTION▮ &optional RECORD-FLAG KEYS)" nil :system t)
     ("called-interactively-p" "(called-interactively-p 'interactive▮)" nil :system t)
     ("car" "(car LIST▮)" nil :system t)
     ("catch" "(catch TAG▮ BODY)" nil :system t)
     ("cdr" "(cdr LIST▮)" nil :system t)
     ("concat" "(concat \"▮\" \"▮\")" nil :system t)
-    ("cond" "(cond
-(CONDITION▮ BODY)
-(CONDITION BODY)
-)" nil :system t)
+    ("cond" "(cond\n(CONDITION▮ BODY)\n(CONDITION BODY)\n)" nil :system t)
     ("condition-case" "(condition-case ▮)" nil :system t)
     ("cons" "(cons CAR▮ CDR)" nil :system t)
     ("consp" "(consp ▮)" nil :system t)
@@ -1627,17 +1537,15 @@ If there's a text selection, act on the region, else, on defun block."
     ("defcustom" "(defcustom ▮ VALUE \"DOC\" &optional ARGS)" nil :system t)
     ("define-key" "(define-key KEYMAPNAME▮ (kbd \"M-b\") 'FUNCNAME)" nil :system t)
     ("defsubst" "(defsubst ▮)" nil :system t)
-    ("defun" "(defun ▮ ()
-  \"DOCSTRING\"
-  (interactive)
-  (let (VAR)
-
-  ))" nil :system t)
+    ("defun" "(defun ▮ ()\n  \"DOCSTRING\"\n  (interactive)\n  (let (VAR)\n\n  ))" nil :system t)
     ("defvar" "(defvar ▮ &optional INITVALUE \"DOCSTRING\")" nil :system t)
+    ("delete" "(delete OBJECT▮ SEQUENCE)" nil :system t)
     ("delete-char" "(delete-char ▮)" nil :system t)
     ("delete-directory" "(delete-directory ▮ &optional RECURSIVE)" nil :system t)
+    ("delete-dups" "(delete-dups LIST▮)" nil :system t)
     ("delete-file" "(delete-file ▮)" nil :system t)
     ("delete-region" "(delete-region pos1▮ pos2)" nil :system t)
+    ("delq" "(delq ELT▮ LIST)" nil :system t)
     ("directory-files" "(directory-files ▮ &optional FULL MATCH NOSORT)" nil :system t)
     ("dolist" "(dolist (VAR▮ LIST [RESULT]) BODY)" nil :system t)
     ("dotimes" "(dotimes (VAR▮ COUNT [RESULT]) BODY)" nil :system t)
@@ -1647,7 +1555,6 @@ If there's a text selection, act on the region, else, on defun block."
     ("equal" "(equal ▮)" nil :system t)
     ("error" "(error \"%s\" ▮)" nil :system t)
     ("expand-file-name" "(expand-file-name ▮ &optional relativedir)" nil :system t)
-    ("format" "(format \"▮\" &optional OBJECTS)" nil :system t)
     ("fboundp" "(fboundp '▮)" nil :system t)
     ("featurep" "(featurep 'FEATURE▮)" nil :system t)
     ("file-directory-p" "(file-directory-p ▮)" nil :system t)
@@ -1660,6 +1567,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("file-relative-name" "(file-relative-name ▮)" nil :system t)
     ("find-file" "(find-file ▮)" nil :system t)
     ("format" "(format \"%s\" ▮)" nil :system t)
+    ("format" "(format \"▮\" &optional OBJECTS)" nil :system t)
     ("forward-char" "(forward-char ▮)" nil :system t)
     ("forward-line" "(forward-line ▮)" nil :system t)
     ("funcall" "(funcall ▮)" nil :system t)
@@ -1668,58 +1576,46 @@ If there's a text selection, act on the region, else, on defun block."
     ("get" "(get SYMBOL▮ PROPNAME)" nil :system t)
     ("global-set-key" "(global-set-key (kbd \"C-▮\") 'COMMAND)" nil :system t)
     ("goto-char" "(goto-char ▮)" nil :system t)
-    ("if" "(if ▮
-    (progn )
-  (progn )
-)" nil :system t)
-    ("insert-file-contents" "(insert-file-contents ▮ &optional VISIT BEG END REPLACE)" nil :system t)
+    ("if" "(if ▮\n    (progn )\n  (progn )\n)" nil :system t)
     ("insert" "(insert ▮)" nil :system t)
+    ("insert-file-contents" "(insert-file-contents ▮ &optional VISIT BEG END REPLACE)" nil :system t)
     ("interactive" "(interactive)" nil :system t)
     ("kbd" "(kbd \"▮\")" nil :system t)
     ("kill-buffer" "(kill-buffer ▮)" nil :system t)
     ("lambda" "(lambda (▮) BODY)" nil :system t)
     ("length" "(length ▮)" nil :system t)
-    ("let" "(let (▮)
- x
-)" nil :system t)
+    ("let" "(let (▮)\n x\n)" nil :system t)
     ("line-beginning-position" "(line-beginning-position)" nil :system t)
     ("line-end-position" "(line-end-position)" nil :system t)
     ("list" "(list ▮)" nil :system t)
     ("load" "(load FILE▮ &optional NOERROR NOMESSAGE NOSUFFIX MUST-SUFFIX)" nil :system t)
     ("looking-at" "(looking-at \"REGEXP▮\")" nil :system t)
     ("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
-    ("make-local-variable" "(make-local-variable ▮)" nil :system t)
     ("make-list" "(make-list LENGTH▮ INIT)" nil :system t)
+    ("make-local-variable" "(make-local-variable ▮)" nil :system t)
     ("mapc" "(mapc '▮ SEQUENCE)" nil :system t)
     ("mapcar" "(mapcar '▮ SEQUENCE)" nil :system t)
     ("mapconcat" "(mapconcat FUNCTION▮ SEQUENCE SEPARATOR)" nil :system t)
     ("match-beginning" "(match-beginning N▮)" nil :system t)
-    ("match-end" "(match-end N▮)" nil :system t)
     ("match-data" "(match-data &optional INTEGERS▮ REUSE RESEAT)" nil :system t)
+    ("match-end" "(match-end N▮)" nil :system t)
     ("match-string" "(match-string NUM▮ &optional STRING)" nil :system t)
     ("member" "(member ELT▮ LIST)" nil :system t)
-    ("memq" "(memq ELT▮ LIST)" nil :system t)
-    ("not" "(not ▮)" nil :system t)
-    ("delq" "(delq ELT▮ LIST)" nil :system t)
-    ("delete" "(delete OBJECT▮ SEQUENCE)" nil :system t)
-    ("delete-dups" "(delete-dups LIST▮)" nil :system t)
-
-    ("remq" "(remq OBJECT▮ LIST)" nil :system t)
-    ("memql" "(memql OBJECT▮ LIST)" nil :system t)
     ("member" "(member OBJECT▮ LIST)" nil :system t)
-    ("remove" "(remove OBJECT▮ SEQUENCE)" nil :system t)
     ("member-ignore-case" "(member-ignore-case OBJECT▮ LIST)" nil :system t)
-
+    ("memq" "(memq ELT▮ LIST)" nil :system t)
+    ("memql" "(memql OBJECT▮ LIST)" nil :system t)
     ("message" "(message \"%s▮\" ARGS)" nil :system t)
     ("narrow-to-region" "(narrow-to-region START▮ END)" nil :system t)
+    ("not" "(not ▮)" nil :system t)
     ("nth" "(nth N▮ LIST)" nil :system t)
     ("null" "(null ▮)" nil :system t)
-    ("number-to-string" "(number-to-string ▮)" nil :system t)
     ("number-sequence" "(number-sequence FROM▮ &optional TO INC)" nil :system t)
+    ("number-to-string" "(number-to-string ▮)" nil :system t)
     ("or" "(or ▮)" nil :system t)
+    ("point" "(point)" nil :system t)
     ("point-max" "(point-max)" nil :system t)
     ("point-min" "(point-min)" nil :system t)
-    ("point" "(point)" nil :system t)
     ("prin1" "(prin1 ▮)" nil :system t)
     ("princ" "(princ ▮)" nil :system t)
     ("print" "(print ▮)" nil :system t)
@@ -1740,20 +1636,22 @@ If there's a text selection, act on the region, else, on defun block."
     ("region-active-p" "(region-active-p)" nil :system t)
     ("region-beginning" "(region-beginning)" nil :system t)
     ("region-end" "(region-end)" nil :system t)
+    ("remove" "(remove OBJECT▮ SEQUENCE)" nil :system t)
+    ("remq" "(remq OBJECT▮ LIST)" nil :system t)
     ("rename-file" "(rename-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS)" nil :system t)
     ("repeat" "(repeat ▮)" nil :system t)
     ("replace-match" "(replace-match NEWTEXT▮ &optional FIXEDCASE LITERAL \"STRING\" SUBEXP)" nil :system t)
-    ("replace-regexp-in-string" "(replace-regexp-in-string \"REGEXP▮\" REP \"STRING\" &optional FIXEDCASE LITERAL SUBEXP START)" nil :system t)
     ("replace-regexp" "(replace-regexp \"REGEXP▮\" TO-STRING &optional DELIMITED START END)" nil :system t)
+    ("replace-regexp-in-string" "(replace-regexp-in-string \"REGEXP▮\" REP \"STRING\" &optional FIXEDCASE LITERAL SUBEXP START)" nil :system t)
     ("require" "(require ▮)" nil :system t)
     ("reverse" "(reverse ▮)" nil :system t)
     ("save-buffer" "(save-buffer &optional ARG▮)" nil :system t)
     ("save-excursion" "(save-excursion ▮)" nil :system t)
     ("save-restriction" "(save-restriction ▮)" nil :system t)
-    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
     ("search-backward" "(search-backward \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
-    ("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
+    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
     ("search-forward" "(search-forward \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
+    ("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
     ("set-buffer" "(set-buffer ▮)" nil :system t)
     ("set-file-modes" "(set-file-modes ▮ MODE)" nil :system t)
     ("set-mark" "(set-mark ▮)" nil :system t)
@@ -1763,15 +1661,15 @@ If there's a text selection, act on the region, else, on defun block."
     ("skip-chars-forward" "(skip-chars-forward \"▮\" &optional LIM)" nil :system t)
     ("split-string" "(split-string ▮ &optional SEPARATORS OMIT-NULLS)" nil :system t)
     ("string" "(string ▮)" nil :system t)
-    ("string=" "(string-equal str1▮ str2)" nil :system t)
     ("string-equal" "(string-equal str1▮ str2)" nil :system t)
-    ("string-match-p" "(string-match-p \"REGEXP▮\" \"STRING\" &optional START)" nil :system t)
     ("string-match" "(string-match \"REGEXP▮\" \"STRING\" &optional START)" nil :system t)
-    ("string-to-number" "(string-to-number \"▮\")" nil :system t)
+    ("string-match-p" "(string-match-p \"REGEXP▮\" \"STRING\" &optional START)" nil :system t)
     ("string-to-char" "(string-to-char \"▮\")" nil :system t)
+    ("string-to-number" "(string-to-number \"▮\")" nil :system t)
+    ("string=" "(string-equal str1▮ str2)" nil :system t)
     ("stringp" "(stringp ▮)" nil :system t)
-    ("substring-no-properties" "(substring-no-properties ▮ FROM TO)" nil :system t)
     ("substring" "(substring STRING▮ FROM &optional TO)" nil :system t)
+    ("substring-no-properties" "(substring-no-properties ▮ FROM TO)" nil :system t)
     ("thing-at-point" "(thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
     ("throw" "(throw TAG▮ VALUE)" nil :system t)
     ("unless" "(unless ▮)" nil :system t)
@@ -1779,8 +1677,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("user-error" "(user-error FORMAT▮ &rest ARGS)" nil :system t)
     ("vector" "(vector ▮)" nil :system t)
     ("when" "(when ▮)" nil :system t)
-    ("while" "(while (< ξi▮ 9)
-      (setq ξi (1+ ξi)))" nil :system t)
+    ("while" "(while (< ξi▮ 9)\n  (setq ξi (1+ ξi)))" nil :system t)
     ("widget-get" "(widget-get ▮)" nil :system t)
     ("with-current-buffer" "(with-current-buffer ▮)" nil :system t)
     ("with-temp-buffer" "(with-temp-buffer ▮)" nil :system t)
@@ -1819,7 +1716,6 @@ If there's a text selection, act on the region, else, on defun block."
             (emacsBuiltins (regexp-opt xah-elisp-keyword-builtin 'symbols))
             (elispLangWords (regexp-opt xah-elisp-elisp-lang-words 'symbols))
             (elispVars1 (regexp-opt xah-elisp-elisp-vars-1 'symbols))
-            (elispVars2 (regexp-opt xah-elisp-elisp-vars-2 'symbols))
             (functionParameters "φ[-_?0-9A-Za-z]+" )
             (userVars "ξ[-_?0-9A-Za-z]+" ))
         `(
@@ -1828,24 +1724,8 @@ If there's a text selection, act on the region, else, on defun block."
           (,emacsBuiltins . font-lock-builtin-face)
           (,elispLangWords . font-lock-keyword-face)
           (,elispVars1 . font-lock-variable-name-face)
-          (,elispVars2 . font-lock-variable-name-face)
           (,functionParameters . 'xah-elisp-function-param)
           (,userVars . 'xah-elisp-user-variable))))
-
-;; font-lock-builtin-face
-;; font-lock-comment-delimiter-face
-;; font-lock-comment-face
-;; font-lock-constant-face
-;; font-lock-doc-face
-;; font-lock-function-name-face
-;; font-lock-keyword-face
-;; font-lock-negation-char-face
-;; font-lock-preprocessor-face
-;; font-lock-reference-face
-;; font-lock-string-face
-;; font-lock-type-face
-;; font-lock-variable-name-face
-;; font-lock-warning-face
 
 
 ;; ;; syntax table
@@ -1864,25 +1744,23 @@ If there's a text selection, act on the region, else, on defun block."
 
 ;; keybinding
 
-(when (string-equal system-type "windows-nt")
-  (define-key key-translation-map (kbd "<apps>") (kbd "<menu>")))
-
 (defvar xah-elisp-keymap nil "Keybinding for `xah-elisp-mode'")
 (progn
   (setq xah-elisp-keymap (make-sparse-keymap))
+
+  ;; painful to stick with emacs convention of not defining the key and get what i want
   (define-key xah-elisp-keymap (kbd "TAB") 'xah-elisp-complete-or-indent)
 
   (define-prefix-command 'xah-elisp-single-keys-keymap)
 
   (define-key xah-elisp-single-keys-keymap (kbd "u") 'xah-elisp-add-paren-around-symbol)
-
   (define-key xah-elisp-single-keys-keymap (kbd "t") 'xah-elisp-prettify-root-sexp)
   (define-key xah-elisp-single-keys-keymap (kbd "h") 'xah-elisp-remove-paren-pair)
-
   (define-key xah-elisp-single-keys-keymap (kbd "p") 'xah-elisp-compact-parens)
   (define-key xah-elisp-single-keys-keymap (kbd "c") 'xah-elisp-complete-symbol)
+  (define-key xah-elisp-single-keys-keymap (kbd "e") 'xah-elisp-expand-abbrev-maybe)
 
-  (define-key xah-elisp-single-keys-keymap (kbd "e") 'xah-elisp-expand-abbrev-maybe))
+)
 
 
 
@@ -1900,7 +1778,7 @@ I also recommend you use these commands:
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 or
-URL `http://ergoemacs.github.io/ergoemacs-mode/'
+URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 
 \\{xah-elisp-keymap}"
   (interactive)
@@ -1914,12 +1792,14 @@ URL `http://ergoemacs.github.io/ergoemacs-mode/'
 
   (setq local-abbrev-table xah-elisp-abbrev-table)
 
-  (if (or
-       (not (boundp 'xfk-major-mode-lead-key))
-       (null 'xfk-major-mode-lead-key))
-      (define-key xah-elisp-keymap (kbd "<menu> e") xah-elisp-single-keys-keymap)
-    (define-key xah-elisp-keymap xfk-major-mode-lead-key xah-elisp-single-keys-keymap))
-  (use-local-map xah-elisp-keymap)
+  (progn 
+    (define-key xah-elisp-keymap (kbd "C-c") xah-elisp-single-keys-keymap)
+    (if (or
+         (not (boundp 'xfk-major-mode-lead-key))
+         (null 'xfk-major-mode-lead-key))
+        (define-key xah-elisp-keymap (kbd "<menu> e") xah-elisp-single-keys-keymap)
+      (define-key xah-elisp-keymap xfk-major-mode-lead-key xah-elisp-single-keys-keymap))
+    (use-local-map xah-elisp-keymap))
 
   (setq-local comment-start "; ")
   (setq-local comment-end "")

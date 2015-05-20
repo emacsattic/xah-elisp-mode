@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.3
+;; Version: 2.0.4
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -296,6 +296,7 @@
 "ido-completing-read"
 "ido-read-directory-name"
 "insert"
+"insert-char"
 "insert-buffer-substring-no-properties"
 "insert-file-contents"
 "interactive"
@@ -1578,6 +1579,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("goto-char" "(goto-char ▮)" nil :system t)
     ("if" "(if ▮\n    (progn )\n  (progn )\n)" nil :system t)
     ("insert" "(insert ▮)" nil :system t)
+    ("insert-char" "(insert-char CHARACTER▮ &optional COUNT INHERIT)" nil :system t)
     ("insert-file-contents" "(insert-file-contents ▮ &optional VISIT BEG END REPLACE)" nil :system t)
     ("interactive" "(interactive)" nil :system t)
     ("kbd" "(kbd \"▮\")" nil :system t)

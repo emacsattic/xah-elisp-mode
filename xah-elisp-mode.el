@@ -426,6 +426,7 @@
 "with-output-to-temp-buffer"
 "with-syntax-table"
 "with-temp-buffer"
+"with-temp-buffer-window"
 "with-temp-file"
 "write-file"
 "write-region"
@@ -1523,6 +1524,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("called-interactively-p" "(called-interactively-p 'interactive▮)" nil :system t)
     ("car" "(car LIST▮)" nil :system t)
     ("catch" "(catch TAG▮ BODY)" nil :system t)
+    ("char-to-string" "(char-to-string CHAR▮) " nil :system t)
     ("cdr" "(cdr LIST▮)" nil :system t)
     ("concat" "(concat \"▮\" \"▮\")" nil :system t)
     ("cond" "(cond\n(CONDITION▮ BODY)\n(CONDITION BODY)\n)" nil :system t)

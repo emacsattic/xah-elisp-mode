@@ -204,9 +204,11 @@
 
 (defvar xah-elisp-emacs-words nil "List of elisp keywords that's not related to core lisp language, but about emacs environment, such as buffer, hook, editing, copy paste, ….")
 (setq xah-elisp-emacs-words '(
+
 "abbrev-insert"
 "abbrev-symbol"
 "add-hook"
+"add-text-properties"
 "add-to-invisibility-spec"
 "append-to-file"
 "atomic-change-group"
@@ -290,14 +292,17 @@
 "generate-new-buffer"
 "get-char-code-property"
 "get-char-property"
+"get-char-property-and-overlay"
+"get-pos-property"
+"get-text-property"
 "getenv"
 "global-unset-key"
 "goto-char"
 "ido-completing-read"
 "ido-read-directory-name"
 "insert"
-"insert-char"
 "insert-buffer-substring-no-properties"
+"insert-char"
 "insert-file-contents"
 "interactive"
 "invisible-p"
@@ -352,6 +357,7 @@
 "previous-overlay-change"
 "propertize"
 "push-mark"
+"put-text-property"
 "re-search-backward"
 "re-search-forward"
 "read-directory-name"
@@ -365,7 +371,9 @@
 "region-end"
 "remove-from-invisibility-spec"
 "remove-hook"
+"remove-list-of-text-properties"
 "remove-overlays"
+"remove-text-properties"
 "rename-file"
 "repeat"
 "replace-match"
@@ -392,6 +400,7 @@
 "set-frame-parameter"
 "set-mark"
 "set-syntax-table"
+"set-text-properties"
 "set-window-margins"
 "setenv"
 "setq-default"
@@ -408,6 +417,7 @@
 "switch-to-buffer"
 "syntax-ppss"
 "terpri"
+"text-properties-at"
 "thing-at-point"
 "upcase"
 "upcase-initials"
@@ -433,6 +443,7 @@
 "write-region"
 "y-or-n-p"
 "yes-or-no-p"
+
 ))
 
 (defvar xah-elisp-emacs-user-commands nil "List of elisp keywords that are almost always called by user interactively.")
@@ -477,6 +488,7 @@
 ;; consider find a way to programmatically list all elisp vars, loaded or even unloaded.
 ;; consider also leave this list empty, instead, dynamically determine when a symbol is a lisp var.
 (setq xah-elisp-elisp-vars-1 '(
+
 "Buffer-menu-buffer+size-width"
 "Buffer-menu-mode-width"
 "Buffer-menu-name-width"
@@ -560,6 +572,7 @@
 "case-fold-search"
 "case-replace"
 "change-major-mode-with-file-name"
+"char-property-alias-alist"
 "charset-map-path"
 "christian-holidays"
 "colon-double-space"
@@ -619,6 +632,7 @@
 "default-frame-alist"
 "default-input-method"
 "default-justification"
+"default-text-properties"
 "defun-prompt-regexp"
 "delete-active-region"
 "delete-auto-save-files"
@@ -1183,6 +1197,7 @@
 "yank-handled-properties"
 "yank-menu-length"
 "yank-pop-change-selection"
+
 ))
 
 (defvar xah-elisp-elisp-all-keywords nil "List of all elisp keywords")
@@ -1194,10 +1209,7 @@
 
 (defun xah-elisp-up-list (arg1 &optional arg2 arg3)
   "Backward compatibility fix for emacs 24.4's up-list.
-emacs 24.4 changed up-list to take up to 3 args. Before, only 1.
-See
- `backward-up-list',
- `up-list'"
+emacs 25.x changed `up-list' to take up to 3 args. Before, only 1."
   (interactive)
   (if (>= emacs-major-version 25)
       (up-list arg1 arg2 arg3)
@@ -1502,11 +1514,9 @@ If there's a text selection, act on the region, else, on defun block."
     ("botap" "bounds-of-thing-at-point" nil :system t)
 
     ("add-hook" "(add-hook 'HOOK▮ 'FUNCTION)" nil :system t)
-    ("and" "(and ▮)" nil :system t )
-    ("version<" "(version< \"24.4\" emacs-version)" nil :system t )
-    ("version<=" "(version<= \"24.4\" emacs-version)" nil :system t )
-
+    ("add-text-properties" "(add-text-properties START▮ END PROPS &optional OBJECT)" nil :system t)
     ("add-to-list" "(add-to-list LIST-VAR▮ ELEMENT &optional APPEND COMPARE-FN)" nil :system t)
+    ("and" "(and ▮)" nil :system t )
     ("append" "(append ▮)" nil :system t)
     ("apply" "(apply ▮)" nil :system t)
     ("aref" "(aref ARRAY▮ INDEX)" nil :system t)
@@ -1526,8 +1536,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("called-interactively-p" "(called-interactively-p 'interactive▮)" nil :system t)
     ("car" "(car LIST▮)" nil :system t)
     ("catch" "(catch TAG▮ BODY)" nil :system t)
-    ("char-to-string" "(char-to-string CHAR▮) " nil :system t)
     ("cdr" "(cdr LIST▮)" nil :system t)
+    ("char-to-string" "(char-to-string CHAR▮) " nil :system t)
     ("concat" "(concat \"▮\" \"▮\")" nil :system t)
     ("cond" "(cond\n(CONDITION▮ BODY)\n(CONDITION BODY)\n)" nil :system t)
     ("condition-case" "(condition-case ▮)" nil :system t)
@@ -1579,6 +1589,11 @@ If there's a text selection, act on the region, else, on defun block."
     ("function" "(function ▮)" nil :system t)
     ("generate-new-buffer" "(generate-new-buffer ▮)" nil :system t)
     ("get" "(get SYMBOL▮ PROPNAME)" nil :system t)
+    ("get-char-code-property" "(get-char-code-property CHAR▮ PROPNAME)" nil :system t)
+    ("get-char-property" "(get-char-property POSITION▮ PROP &optional OBJECT)" nil :system t)
+    ("get-char-property-and-overlay" "(get-char-property-and-overlay POSITION▮ PROP &optional)" nil :system t)
+    ("get-pos-property" "(get-pos-property POSITION▮ PROP &optional OBJECT)" nil :system t)
+    ("get-text-property" "(get-text-property POS▮ PROP &optional OBJECT)" nil :system t)
     ("global-set-key" "(global-set-key (kbd \"C-▮\") 'COMMAND)" nil :system t)
     ("goto-char" "(goto-char ▮)" nil :system t)
     ("if" "(if ▮\n    (progn )\n  (progn )\n)" nil :system t)
@@ -1626,9 +1641,11 @@ If there's a text selection, act on the region, else, on defun block."
     ("princ" "(princ ▮)" nil :system t)
     ("print" "(print ▮)" nil :system t)
     ("progn" "(progn ▮)" nil :system t)
+    ("propertize" "(propertize STRING▮ &rest PROPERTIES)" nil :system t)
     ("push" "(push NEWELT▮ PLACE)" nil :system t)
     ("push-mark" "(push-mark ▮&optional LOCATION NOMSG ACTIVATE)" nil :system t)
     ("put" "(put 'SYMBOL▮ PROPNAME VALUE)" nil :system t)
+    ("put-text-property" "(put-text-property START▮ END PROP VALUE &optional OBJECT)" nil :system t)
     ("random" "(random ▮)" nil :system t)
     ("rassoc" "(rassoc KEY▮ LIST)" nil :system t)
     ("re-search-backward" "(re-search-backward \"REGEXP▮\" &optional BOUND NOERROR COUNT)" nil :system t)
@@ -1643,6 +1660,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("region-beginning" "(region-beginning)" nil :system t)
     ("region-end" "(region-end)" nil :system t)
     ("remove" "(remove OBJECT▮ SEQUENCE)" nil :system t)
+    ("remove-list-of-text-properties" "(remove-list-of-text-properties START▮ END LIST OF PROPERTIES &optional OBJECT)" nil :system t)
+    ("remove-text-properties" "(remove-text-properties START▮ END PROPS &optional OBJECT)" nil :system t)
     ("remq" "(remq OBJECT▮ LIST)" nil :system t)
     ("rename-file" "(rename-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS)" nil :system t)
     ("repeat" "(repeat ▮)" nil :system t)
@@ -1661,6 +1680,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("set-buffer" "(set-buffer ▮)" nil :system t)
     ("set-file-modes" "(set-file-modes ▮ MODE)" nil :system t)
     ("set-mark" "(set-mark ▮)" nil :system t)
+    ("set-text-properties" "(set-text-properties START▮ END PROPS &optional OBJECT)" nil :system t)
     ("setq" "(setq ▮)" nil :system t)
     ("shell-command" "(shell-command ▮ &optional OUTPUT-BUFFER ERROR-BUFFER)" nil :system t)
     ("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" nil :system t)
@@ -1676,12 +1696,15 @@ If there's a text selection, act on the region, else, on defun block."
     ("stringp" "(stringp ▮)" nil :system t)
     ("substring" "(substring STRING▮ FROM &optional TO)" nil :system t)
     ("substring-no-properties" "(substring-no-properties ▮ FROM TO)" nil :system t)
+    ("text-properties-at" "(text-properties-at POSITION▮ &optional OBJECT)" nil :system t)
     ("thing-at-point" "(thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
     ("throw" "(throw TAG▮ VALUE)" nil :system t)
     ("unless" "(unless ▮)" nil :system t)
     ("use-region-p" "(use-region-p)" nil :system t)
     ("user-error" "(user-error FORMAT▮ &rest ARGS)" nil :system t)
     ("vector" "(vector ▮)" nil :system t)
+    ("version<" "(version< \"24.4\" emacs-version)" nil :system t )
+    ("version<=" "(version<= \"24.4\" emacs-version)" nil :system t )
     ("when" "(when ▮)" nil :system t)
     ("while" "(while (< ii▮ 9)\n  (setq ii (1+ ii)))" nil :system t)
     ("widen" "(widen)" nil :system t)
@@ -1692,10 +1715,13 @@ If there's a text selection, act on the region, else, on defun block."
     ("write-file" "(write-file FILENAME▮ &optional CONFIRM)" nil :system t)
     ("write-region" "(write-region (point-min) (point-max) FILENAME &optional APPEND VISIT LOCKNAME MUSTBENEW)" nil :system t)
     ("y-or-n-p" "(y-or-n-p \"PROMPT▮ \")" nil :system t)
-    ("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" nil :system t))
+    ("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" nil :system t)
+
+    ;;
+    )
 
   "abbrev table for `xah-elisp-mode'"
-;; :regexp "\\_<\\([_-0-9A-Za-z]+\\)"
+  ;; :regexp "\\_<\\([_-0-9A-Za-z]+\\)"
   :regexp "\\([_-0-9A-Za-z]+\\)"
   :case-fixed t
   :enable-function 'xah-elisp-abbrev-enable-function
@@ -1799,7 +1825,7 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 
   (setq local-abbrev-table xah-elisp-abbrev-table)
 
-  (progn 
+  (progn
     (define-key xah-elisp-keymap (kbd "C-c") xah-elisp-single-keys-keymap)
     (if (or
          (not (boundp 'xfk-major-mode-lead-key))

@@ -419,6 +419,7 @@
 "version"
 "version<"
 "version<="
+"widen"
 "widget-get"
 "window-body-width"
 "window-margins"
@@ -1682,6 +1683,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("vector" "(vector ▮)" nil :system t)
     ("when" "(when ▮)" nil :system t)
     ("while" "(while (< ξi▮ 9)\n  (setq ξi (1+ ξi)))" nil :system t)
+    ("widen" "(widen)" nil :system t)
     ("widget-get" "(widget-get ▮)" nil :system t)
     ("with-current-buffer" "(with-current-buffer ▮)" nil :system t)
     ("with-temp-buffer" "(with-temp-buffer ▮)" nil :system t)

@@ -1420,7 +1420,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("l" "(let (x▮)\n x\n)" nil :system t)
     ("m" "(message \"%s▮\" ARGS)" nil :system t)
     ("p" "(point)" nil :system t)
-    ("s" "(setq SYM▮ VAL)" nil :system t)
+    ("s" "(setq ▮ VAL)" nil :system t)
+    ("w" "(when ▮)" nil :system t)
 
     ("ah" "add-hook" nil :system t)
     ("bc" "backward-char" nil :system t)
@@ -1682,7 +1683,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("user-error" "(user-error FORMAT▮ &rest ARGS)" nil :system t)
     ("vector" "(vector ▮)" nil :system t)
     ("when" "(when ▮)" nil :system t)
-    ("while" "(while (< ξi▮ 9)\n  (setq ξi (1+ ξi)))" nil :system t)
+    ("while" "(while (< ii▮ 9)\n  (setq ii (1+ ii)))" nil :system t)
     ("widen" "(widen)" nil :system t)
     ("widget-get" "(widget-get ▮)" nil :system t)
     ("with-current-buffer" "(with-current-buffer ▮)" nil :system t)

@@ -332,7 +332,11 @@
 "move-overlay"
 "narrow-to-region"
 "next-buffer"
+"next-char-property-change"
 "next-overlay-change"
+"next-property-change"
+"next-single-char-property-change"
+"next-single-property-change"
 "number-or-marker-p"
 "overlay-buffer"
 "overlay-end"
@@ -354,7 +358,11 @@
 "preceding-char"
 "prefix-numeric-value"
 "previous-buffer"
+"previous-char-property-change"
 "previous-overlay-change"
+"previous-property-change"
+"previous-single-char-property-change"
+"previous-single-property-change"
 "propertize"
 "push-mark"
 "put-text-property"
@@ -418,6 +426,8 @@
 "syntax-ppss"
 "terpri"
 "text-properties-at"
+"text-property-any"
+"text-property-not-all"
 "thing-at-point"
 "upcase"
 "upcase-initials"
@@ -1628,6 +1638,10 @@ If there's a text selection, act on the region, else, on defun block."
     ("memql" "(memql OBJECT▮ LIST)" nil :system t)
     ("message" "(message \"%s▮\" ARGS)" nil :system t)
     ("narrow-to-region" "(narrow-to-region START▮ END)" nil :system t)
+    ("next-char-property-change" "(next-char-property-change POS &optional LIMIT)" nil :system t)
+    ("next-property-change" "(next-property-change POS &optional OBJECT LIMIT)" nil :system t)
+    ("next-single-char-property-change" "(next-single-char-property-change POS PROP &optional OBJECT LIMIT)" nil :system t)
+    ("next-single-property-change" "(next-single-property-change POS PROP &optional OBJECT LIMIT)" nil :system t)
     ("not" "(not ▮)" nil :system t)
     ("nth" "(nth N▮ LIST)" nil :system t)
     ("null" "(null ▮)" nil :system t)
@@ -1637,6 +1651,10 @@ If there's a text selection, act on the region, else, on defun block."
     ("point" "(point)" nil :system t)
     ("point-max" "(point-max)" nil :system t)
     ("point-min" "(point-min)" nil :system t)
+    ("previous-char-property-change" "(previous-char-property-change POS &optional LIMIT)" nil :system t)
+    ("previous-property-change" "(previous-property-change POS &optional OBJECT LIMIT)" nil :system t)
+    ("previous-single-char-property-change" "(previous-single-char-property-change POS PROP &optional OBJECT LIMIT)" nil :system t)
+    ("previous-single-property-change" "(previous-single-property-change POS PROP &optional OBJECT LIMIT)" nil :system t)
     ("prin1" "(prin1 ▮)" nil :system t)
     ("princ" "(princ ▮)" nil :system t)
     ("print" "(print ▮)" nil :system t)
@@ -1697,6 +1715,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("substring" "(substring STRING▮ FROM &optional TO)" nil :system t)
     ("substring-no-properties" "(substring-no-properties ▮ FROM TO)" nil :system t)
     ("text-properties-at" "(text-properties-at POSITION▮ &optional OBJECT)" nil :system t)
+    ("text-property-any" "(text-property-any START END PROP VALUE &optional OBJECT)" nil :system t)
+    ("text-property-not-all" "(text-property-not-all START END PROP VALUE &optional OBJECT)" nil :system t)
     ("thing-at-point" "(thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
     ("throw" "(throw TAG▮ VALUE)" nil :system t)
     ("unless" "(unless ▮)" nil :system t)
@@ -1716,6 +1736,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("write-region" "(write-region (point-min) (point-max) FILENAME &optional APPEND VISIT LOCKNAME MUSTBENEW)" nil :system t)
     ("y-or-n-p" "(y-or-n-p \"PROMPT▮ \")" nil :system t)
     ("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" nil :system t)
+
+    ("defface" "(defface FACE SPEC \"DOC\" &rest ARGS)" nil :system t)
 
     ;;
     )
@@ -1869,5 +1891,9 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 (add-to-list 'auto-mode-alist '("\\.el\\'" . xah-elisp-mode))
 
 (provide 'xah-elisp-mode)
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 
 ;;; xah-elisp-mode.el ends here

@@ -205,7 +205,13 @@
 (defvar xah-elisp-emacs-words nil "List of elisp keywords that's not related to core lisp language, but about emacs environment, such as buffer, hook, editing, copy paste, ….")
 (setq xah-elisp-emacs-words '(
 
+"save-current-buffer"
+"rename-buffer"
+"get-buffer"
+"generate-new-buffer-name"
+
 "abbrev-insert"
+"bufferp"
 "abbrev-symbol"
 "add-hook"
 "add-text-properties"
@@ -1540,8 +1546,10 @@ If there's a text selection, act on the region, else, on defun block."
     ("bounds-of-thing-at-point" "(bounds-of-thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
     ("buffer-file-name" "(buffer-file-name)" nil :system t)
     ("buffer-modified-p" "(buffer-modified-p ▮)" nil :system t)
+    ("buffer-name" "(buffer-name BUFFER▮)" nil :system t)
     ("buffer-substring" "(buffer-substring START▮ END)" nil :system t)
     ("buffer-substring-no-properties" "(buffer-substring-no-properties START▮ END)" nil :system t)
+    ("bufferp" "(bufferp ▮)" nil :system t)
     ("call-interactively" "(call-interactively 'FUNCTION▮ &optional RECORD-FLAG KEYS)" nil :system t)
     ("called-interactively-p" "(called-interactively-p 'interactive▮)" nil :system t)
     ("car" "(car LIST▮)" nil :system t)
@@ -1598,7 +1606,9 @@ If there's a text selection, act on the region, else, on defun block."
     ("funcall" "(funcall ▮)" nil :system t)
     ("function" "(function ▮)" nil :system t)
     ("generate-new-buffer" "(generate-new-buffer ▮)" nil :system t)
+    ("generate-new-buffer-name" "(generate-new-buffer-name STARTING-NAME▮ &optional IGNORE)" nil :system t)
     ("get" "(get SYMBOL▮ PROPNAME)" nil :system t)
+    ("get-buffer" "(get-buffer BUFFER-OR-NAME▮)" nil :system t)
     ("get-char-code-property" "(get-char-code-property CHAR▮ PROPNAME)" nil :system t)
     ("get-char-property" "(get-char-property POSITION▮ PROP &optional OBJECT)" nil :system t)
     ("get-char-property-and-overlay" "(get-char-property-and-overlay POSITION▮ PROP &optional)" nil :system t)
@@ -1681,6 +1691,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("remove-list-of-text-properties" "(remove-list-of-text-properties START▮ END LIST OF PROPERTIES &optional OBJECT)" nil :system t)
     ("remove-text-properties" "(remove-text-properties START▮ END PROPS &optional OBJECT)" nil :system t)
     ("remq" "(remq OBJECT▮ LIST)" nil :system t)
+    ("rename-buffer" "(rename-buffer NEWNAME▮ &optional UNIQUE)" nil :system t)
     ("rename-file" "(rename-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS)" nil :system t)
     ("repeat" "(repeat ▮)" nil :system t)
     ("replace-match" "(replace-match NEWTEXT▮ &optional FIXEDCASE LITERAL \"STRING\" SUBEXP)" nil :system t)
@@ -1689,6 +1700,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("require" "(require ▮)" nil :system t)
     ("reverse" "(reverse ▮)" nil :system t)
     ("save-buffer" "(save-buffer &optional ARG▮)" nil :system t)
+    ("save-current-buffer" "(save-current-buffer ▮)" nil :system t)
     ("save-excursion" "(save-excursion ▮)" nil :system t)
     ("save-restriction" "(save-restriction ▮)" nil :system t)
     ("search-backward" "(search-backward \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
@@ -1729,7 +1741,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("while" "(while (< ii▮ 9)\n  (setq ii (1+ ii)))" nil :system t)
     ("widen" "(widen)" nil :system t)
     ("widget-get" "(widget-get ▮)" nil :system t)
-    ("with-current-buffer" "(with-current-buffer ▮)" nil :system t)
+    ("with-current-buffer" "(with-current-buffer BUFFER-OR-NAME▮ BODY)" nil :system t)
     ("with-temp-buffer" "(with-temp-buffer ▮)" nil :system t)
     ("with-temp-file" "(with-temp-file FILE▮)" nil :system t)
     ("write-file" "(write-file FILENAME▮ &optional CONFIRM)" nil :system t)
@@ -1737,7 +1749,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("y-or-n-p" "(y-or-n-p \"PROMPT▮ \")" nil :system t)
     ("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" nil :system t)
 
-    ("defface" "(defface FACE SPEC \"DOC\" &rest ARGS)" nil :system t)
+    ("defface" "(defface FACE▮ SPEC \"DOC\" &rest ARGS)" nil :system t)
 
     ;;
     )

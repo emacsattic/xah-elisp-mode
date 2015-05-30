@@ -205,40 +205,45 @@
 (defvar xah-elisp-emacs-words nil "List of elisp keywords that's not related to core lisp language, but about emacs environment, such as buffer, hook, editing, copy paste, ….")
 (setq xah-elisp-emacs-words '(
 
-"save-current-buffer"
-"rename-buffer"
-"get-buffer"
-"generate-new-buffer-name"
-
 "abbrev-insert"
-"bufferp"
 "abbrev-symbol"
 "add-hook"
 "add-text-properties"
 "add-to-invisibility-spec"
 "append-to-file"
+"ask-user-about-supersession-threat"
 "atomic-change-group"
 "autoload"
 "backward-char"
 "backward-up-list"
+"barf-if-buffer-read-only"
 "beginning-of-line"
 "bobp"
 "bolp"
 "bounds-of-thing-at-point"
+"buffer-base-buffer"
+"buffer-chars-modified-tick"
 "buffer-disable-undo"
 "buffer-enable-undo"
 "buffer-file-name"
+"buffer-list"
 "buffer-live-p"
 "buffer-modified-p"
+"buffer-modified-tick"
 "buffer-name"
 "buffer-string"
 "buffer-substring"
 "buffer-substring-no-properties"
+"buffer-swap-text"
+"bufferp"
+"bury-buffer"
 "call-interactively"
 "called-interactively-p"
 "capitalize"
 "char-after"
 "char-before"
+"clear-visited-file-modtime"
+"clone-indirect-buffer"
 "completing-read"
 "copy-directory"
 "copy-file"
@@ -285,6 +290,7 @@
 "file-readable-p"
 "file-regular-p"
 "file-relative-name"
+"find-buffer-visiting"
 "find-file"
 "following-char"
 "font-family-list"
@@ -295,10 +301,16 @@
 "forward-symbol"
 "frame-parameter"
 "frame-parameters"
+"gap-position"
+"gap-size"
 "generate-new-buffer"
+"generate-new-buffer-name"
+"get-buffer"
+"get-buffer-create"
 "get-char-code-property"
 "get-char-property"
 "get-char-property-and-overlay"
+"get-file-buffer"
 "get-pos-property"
 "get-text-property"
 "getenv"
@@ -317,12 +329,14 @@
 "kill-new"
 "kill-region"
 "kill-ring-save"
+"last-buffer"
 "left-char"
 "line-beginning-position"
 "line-end-position"
 "local-set-key"
 "looking-at"
 "make-directory"
+"make-indirect-buffer"
 "make-local-variable"
 "make-overlay"
 "make-sparse-keymap"
@@ -343,7 +357,9 @@
 "next-property-change"
 "next-single-char-property-change"
 "next-single-property-change"
+"not-modified"
 "number-or-marker-p"
+"other-buffer"
 "overlay-buffer"
 "overlay-end"
 "overlay-get"
@@ -388,15 +404,18 @@
 "remove-list-of-text-properties"
 "remove-overlays"
 "remove-text-properties"
+"rename-buffer"
 "rename-file"
 "repeat"
 "replace-match"
 "replace-regexp"
 "replace-regexp-in-string"
+"restore-buffer-modified-p"
 "right-char"
 "run-hooks"
 "run-mode-hooks"
 "save-buffer"
+"save-current-buffer"
 "save-excursion"
 "save-restriction"
 "scan-lists"
@@ -415,6 +434,8 @@
 "set-mark"
 "set-syntax-table"
 "set-text-properties"
+"set-visited-file-modtime"
+"set-visited-file-name"
 "set-window-margins"
 "setenv"
 "setq-default"
@@ -435,6 +456,8 @@
 "text-property-any"
 "text-property-not-all"
 "thing-at-point"
+"toggle-read-only"
+"unbury-buffer"
 "upcase"
 "upcase-initials"
 "upcase-region"
@@ -442,9 +465,11 @@
 "use-region-p"
 "user-error"
 "variable-pitch-mode"
+"verify-visited-file-modtime"
 "version"
 "version<"
 "version<="
+"visited-file-modtime"
 "widen"
 "widget-get"
 "window-body-width"
@@ -579,8 +604,12 @@
 "break-hardlink-on-save"
 "browse-url-browser-function"
 "buffer-file-name"
+"buffer-file-number"
+"buffer-file-truename"
 "buffer-invisibility-spec"
 "buffer-offer-save"
+"buffer-read-only"
+"buffer-save-without-query"
 "buffers-menu-buffer-name-length"
 "buffers-menu-max-size"
 "buffers-menu-show-directories"
@@ -839,6 +868,7 @@
 "inhibit-default-init"
 "inhibit-eol-conversion"
 "inhibit-local-menu-bar-menus"
+"inhibit-read-only"
 "inhibit-splash-screen"
 "inhibit-startup-buffer-menu"
 "inhibit-startup-echo-area-message"
@@ -888,6 +918,8 @@
 "keypad-numlock-shifted-setup"
 "keypad-setup"
 "keypad-shifted-setup"
+"kill-buffer-hook"
+"kill-buffer-query-functions"
 "kill-do-not-save-duplicates"
 "kill-read-only-ok"
 "kill-ring-max"
@@ -916,6 +948,7 @@
 "lisp-indent-offset"
 "lisp-interaction-mode-hook"
 "lisp-mode-hook"
+"list-buffers-directory"
 "list-colors-sort"
 "list-directory-brief-switches"
 "list-directory-verbose-switches"
@@ -1343,9 +1376,9 @@ This is called by emacs abbrev system."
       t)))
 
 (defun xah-elisp--abbrev-position-cursor (&optional φpos)
-  "Move cursor back to ▮.
-but limit backward search to at φpos or at beginning of line.
-return true if found, else false."
+  "Move cursor back to ▮ if exist, else put at end.
+Limit backward search to at φpos or at beginning of line.
+Return true if found, else false."
   (interactive)
   (search-backward "▮" (if φpos φpos (line-beginning-position)) t ))
 
@@ -1748,6 +1781,39 @@ If there's a text selection, act on the region, else, on defun block."
     ("write-region" "(write-region (point-min) (point-max) FILENAME &optional APPEND VISIT LOCKNAME MUSTBENEW)" nil :system t)
     ("y-or-n-p" "(y-or-n-p \"PROMPT▮ \")" nil :system t)
     ("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" nil :system t)
+
+    ("get-file-buffer" "(get-file-buffer FILENAME▮)" nil :system t)
+    ("find-buffer-visiting" "(find-buffer-visiting FILENAME▮ &optional PREDICATE)" nil :system t)
+    ("set-visited-file-name" "(set-visited-file-name FILENAME▮ &optional NO-QUERY ALONG-WITH-FILE)" nil :system t)
+    ("buffer-modified-p" "(buffer-modified-p BUFFER▮)" nil :system t)
+    ("set-buffer-modified-p" "(set-buffer-modified-p FLAG▮)" nil :system t)
+    ("restore-buffer-modified-p" "(restore-buffer-modified-p FLAG▮)" nil :system t)
+    ("not-modified" "(not-modified &optional ARG▮)" nil :system t)
+    ("buffer-modified-tick" "(buffer-modified-tick &optional BUFFER▮)" nil :system t)
+    ("buffer-chars-modified-tick" "(buffer-chars-modified-tick &optional BUFFER▮)" nil :system t)
+    ("verify-visited-file-modtime" "(verify-visited-file-modtime BUFFER▮)" nil :system t)
+    ("clear-visited-file-modtime" "(clear-visited-file-modtime)" nil :system t)
+    ("visited-file-modtime" "(visited-file-modtime)" nil :system t)
+    ("set-visited-file-modtime" "(set-visited-file-modtime &optional TIME▮)" nil :system t)
+    ("ask-user-about-supersession-threat" "(ask-user-about-supersession-threat FILENAME▮)" nil :system t)
+    ("toggle-read-only" "(toggle-read-only &optional ARG▮)" nil :system t)
+    ("barf-if-buffer-read-only" "(barf-if-buffer-read-only)" nil :system t)
+    ("buffer-list" "(buffer-list &optional FRAME▮)" nil :system t)
+    ("other-buffer" "(other-buffer &optional BUFFER▮ VISIBLE-OK FRAME)" nil :system t)
+    ("last-buffer" "(last-buffer &optional BUFFER▮ VISIBLE-OK FRAME)" nil :system t)
+    ("bury-buffer" "(bury-buffer &optional BUFFER-OR-NAME▮)" nil :system t)
+    ("unbury-buffer" "(unbury-buffer)" nil :system t)
+    ("get-buffer-create" "(get-buffer-create BUFFER-OR-NAME▮)" nil :system t)
+    ("generate-new-buffer" "(generate-new-buffer NAME▮)" nil :system t)
+    ("kill-buffer" "(kill-buffer &optional BUFFER-OR-NAME▮)" nil :system t)
+    ("buffer-live-p" "(buffer-live-p OBJECT▮)" nil :system t)
+    ("make-indirect-buffer" "(make-indirect-buffer BASE-BUFFER▮ NAME &optional CLONE)" nil :system t)
+    ("clone-indirect-buffer" "(clone-indirect-buffer NEWNAME▮ DISPLAY-FLAG &optional NORECORD)" nil :system t)
+    ("buffer-base-buffer" "(buffer-base-buffer &optional BUFFER▮)" nil :system t)
+    ("buffer-swap-text" "(buffer-swap-text BUFFER▮)" nil :system t)
+    ("gap-position" "(gap-position)" nil :system t)
+    ("gap-size" "(gap-size)" nil :system t)
+    ("with-output-to-temp-buffer" "(with-output-to-temp-buffer BUFNAME▮ &rest BODY)" nil :system t)
 
     ("defface" "(defface FACE▮ SPEC \"DOC\" &rest ARGS)" nil :system t)
 

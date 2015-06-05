@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.4
+;; Version: 2.0.5
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -105,6 +105,7 @@
 "expt"
 "fboundp"
 "featurep"
+"file-name-absolute-p"
 "float"
 "floatp"
 "format"
@@ -126,6 +127,7 @@
 "list"
 "listp"
 "load"
+"load-file"
 "make-hash-table"
 "make-list"
 "mapc"
@@ -191,6 +193,7 @@
 "symbol-value"
 "symbolp"
 "t"
+"terpri"
 "throw"
 "unless"
 "url-unhex-string"
@@ -202,8 +205,33 @@
 "zerop"
 ))
 
-(defvar xah-elisp-emacs-words nil "List of elisp keywords that's not related to core lisp language, but about emacs environment, such as buffer, hook, editing, copy paste, ….")
+(defvar xah-elisp-emacs-words nil "List of elisp keywords that's not core lisp language, such as buffer, marker, hook, editing, copy paste, ….")
 (setq xah-elisp-emacs-words '(
+
+"image-flush"
+"clear-image-cache"
+
+"insert-image"
+"insert-sliced-image"
+"put-image"
+"remove-images"
+"image-size"
+
+"insert-and-inherit"
+"insert-before-markers-and-inherit"
+"field-beginning"
+"field-end"
+"field-string"
+"field-string-no-properties"
+"delete-field"
+"constrain-to-field"
+"write-char"
+"prin1-to-string"
+"with-output-to-string"
+"create-image"
+"defimage"
+"find-image"
+"image-load-path-for-library"
 
 "abbrev-insert"
 "abbrev-symbol"
@@ -451,7 +479,6 @@
 "substring-no-properties"
 "switch-to-buffer"
 "syntax-ppss"
-"terpri"
 "text-properties-at"
 "text-property-any"
 "text-property-not-all"
@@ -522,13 +549,20 @@
 "yank-rectangle"))
 
 (defvar xah-elisp-keyword-builtin nil "List of elisp names")
-(setq xah-elisp-keyword-builtin '( "&optional"))
+(setq xah-elisp-keyword-builtin '( "&optional" "&rest"))
 
 (defvar xah-elisp-elisp-vars-1 nil "List elisp variables names")
 ;; todo. needs lots work. ideally, ALL elisp var names. But that's too many. Consider implementation to save memory or load on demand. Then, perhaps for simplicity just the top 300 most used ones (by stat of elisp source code).
 ;; consider find a way to programmatically list all elisp vars, loaded or even unloaded.
 ;; consider also leave this list empty, instead, dynamically determine when a symbol is a lisp var.
 (setq xah-elisp-elisp-vars-1 '(
+
+"image-cache-eviction-delay"
+"max-image-size"
+"buffer-access-fontify-functions"
+"buffer-access-fontified-property"
+"text-property-default-nonsticky"
+"image-load-path"
 
 "Buffer-menu-buffer+size-width"
 "Buffer-menu-mode-width"
@@ -1663,6 +1697,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("line-end-position" "(line-end-position)" nil :system t)
     ("list" "(list ▮)" nil :system t)
     ("load" "(load FILE▮ &optional NOERROR NOMESSAGE NOSUFFIX MUST-SUFFIX)" nil :system t)
+    ("load-file" "(load-file FILE▮)" nil :system t)
     ("looking-at" "(looking-at \"REGEXP▮\")" nil :system t)
     ("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
     ("make-list" "(make-list LENGTH▮ INIT)" nil :system t)
@@ -1816,6 +1851,32 @@ If there's a text selection, act on the region, else, on defun block."
     ("with-output-to-temp-buffer" "(with-output-to-temp-buffer BUFNAME▮ &rest BODY)" nil :system t)
 
     ("defface" "(defface FACE▮ SPEC \"DOC\" &rest ARGS)" nil :system t)
+
+    ("file-name-absolute-p" "(file-name-absolute-p ▮)" nil :system t)
+    ("terpri" "(terpri ▮)" nil :system t)
+    ("insert-and-inherit" "(insert-and-inherit ▮)" nil :system t)
+    ("insert-before-markers-and-inherit" "(insert-before-markers-and-inherit ▮)" nil :system t)
+    ("field-beginning" "(field-beginning &optional POS▮ ESCAPE-FROM-EDGE LIMIT)" nil :system t)
+    ("field-end" "(field-end &optional POS▮ ESCAPE-FROM-EDGE LIMIT)" nil :system t)
+    ("field-string" "(field-string &optional POS▮)" nil :system t)
+    ("field-string-no-properties" "(field-string-no-properties &optional POS▮)" nil :system t)
+    ("delete-field" "(delete-field &optional POS▮)" nil :system t)
+    ("constrain-to-field" "(constrain-to-field NEW-POS▮ OLD-POS &optional ESCAPE-FROM-EDGE ONLY-IN-LINE INHIBIT-CAPTURE-PROPERTY)" nil :system t)
+    ("write-char" "(write-char CHARACTER▮ &optional STREAM)" nil :system t)
+    ("prin1-to-string" "(prin1-to-string▮ OBJECT &optional NOESCAPE)" nil :system t)
+    ("with-output-to-string" "(with-output-to-string BODY▮)" nil :system t)
+    ("create-image" "(create-image FILE-OR-DATA▮ &optional TYPE DATA-P &rest)" nil :system t)
+    ("defimage" "(defimage SYMBOL▮ SPECS &optional DOC)" nil :system t)
+    ("find-image" "(find-image SPECS▮)" nil :system t)
+    ("image-load-path-for-library" "(image-load-path-for-library LIBRARY▮ IMAGE &optional PATH)" nil :system t)
+
+    ("insert-image" "(insert-image IMAGE▮ &optional STRING AREA SLICE)" nil :system t)
+    ("insert-sliced-image" "(insert-sliced-image IMAGE▮ &optional STRING AREA ROWS COLS)" nil :system t)
+    ("put-image" "(put-image IMAGE▮ POS &optional STRING AREA)" nil :system t)
+    ("remove-images" "(remove-images START▮ END &optional BUFFER)" nil :system t)
+    ("image-size" "(image-size SPEC▮ &optional PIXELS FRAME)" nil :system t)
+    ("image-flush" "(image-flush SPEC▮ &optional FRAME)" nil :system t)
+    ("clear-image-cache" "(clear-image-cache &optional FILTER▮)" nil :system t)
 
     ;;
     )

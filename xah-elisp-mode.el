@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.5
+;; Version: 2.0.7
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -1536,6 +1536,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("fl" "forward-line" nil :system t)
     ("gc" "goto-char" nil :system t)
     ("kb" "kill-buffer" nil :system t)
+    ("kr" "kill-region" nil :system t)
     ("la" "looking-at" nil :system t)
     ("mb" "match-beginning" nil :system t)
     ("md" "make-directory" nil :system t)
@@ -1690,6 +1691,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("interactive" "(interactive)" nil :system t)
     ("kbd" "(kbd \"▮\")" nil :system t)
     ("kill-buffer" "(kill-buffer ▮)" nil :system t)
+    ("kill-region" "(kill-region BEG▮ END &optional REGION)" nil :system t)
     ("lambda" "(lambda (▮) BODY)" nil :system t)
     ("length" "(length ▮)" nil :system t)
     ("let" "(let (▮)\n x\n)" nil :system t)
@@ -1797,7 +1799,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("text-properties-at" "(text-properties-at POSITION▮ &optional OBJECT)" nil :system t)
     ("text-property-any" "(text-property-any START END PROP VALUE &optional OBJECT)" nil :system t)
     ("text-property-not-all" "(text-property-not-all START END PROP VALUE &optional OBJECT)" nil :system t)
-    ("thing-at-point" "(thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
+    ("thing-at-point" "(thing-at-point 'word▮ 'symbol 'list 'sexp 'defun 'filename 'url 'email 'sentence 'whitespace 'line 'number 'page)")
     ("throw" "(throw TAG▮ VALUE)" nil :system t)
     ("unless" "(unless ▮)" nil :system t)
     ("use-region-p" "(use-region-p)" nil :system t)

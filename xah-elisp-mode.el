@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.7
+;; Version: 2.0.8
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -216,6 +216,9 @@
 "put-image"
 "remove-images"
 "image-size"
+
+"font-lock-add-keywords"
+"font-lock-fontify-buffer"
 
 "insert-and-inherit"
 "insert-before-markers-and-inherit"
@@ -1879,6 +1882,9 @@ If there's a text selection, act on the region, else, on defun block."
     ("image-size" "(image-size SPEC▮ &optional PIXELS FRAME)" nil :system t)
     ("image-flush" "(image-flush SPEC▮ &optional FRAME)" nil :system t)
     ("clear-image-cache" "(clear-image-cache &optional FILTER▮)" nil :system t)
+
+    ("font-lock-add-keywords" "(font-lock-add-keywords MODE▮ KEYWORDS &optional HOW)" nil :system t)
+    ("font-lock-fontify-buffer" "(font-lock-fontify-buffer ▮)" nil :system t)
 
     ;;
     )

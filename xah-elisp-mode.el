@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.8
+;; Version: 2.0.9
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -47,6 +47,13 @@
 ;; The goal of this mode is for it to become 100% semantic lisp code editor, such that it is impossible to create mis-formed elisp expressions, yet being practical.
 
 ;; If you like the idea, please help fund the project. Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. See home page. Thanks.
+
+;; auto-complete-mode support
+;; if you want also to use auto-complete-mode, add the following to your emacs init.
+
+;; make auto-complete-mode support xah-elisp-mode
+;; (when (boundp 'ac-modes)
+;;   (add-to-list 'ac-modes 'xah-elisp-mode))
 
 ;;; INSTALL:
 
@@ -1674,7 +1681,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("format" "(format \"▮\" &optional OBJECTS)" nil :system t)
     ("forward-char" "(forward-char ▮)" nil :system t)
     ("forward-line" "(forward-line ▮)" nil :system t)
-    ("funcall" "(funcall ▮)" nil :system t)
+    ("funcall" "(funcall 'FUNCTION▮ &rest ARGUMENTS)" nil :system t)
     ("function" "(function ▮)" nil :system t)
     ("generate-new-buffer" "(generate-new-buffer ▮)" nil :system t)
     ("generate-new-buffer-name" "(generate-new-buffer-name STARTING-NAME▮ &optional IGNORE)" nil :system t)
@@ -1741,7 +1748,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("prin1" "(prin1 ▮)" nil :system t)
     ("princ" "(princ ▮)" nil :system t)
     ("print" "(print ▮)" nil :system t)
-    ("progn" "(progn ▮)" nil :system t)
+    ("progn" "(progn\n▮)" nil :system t)
     ("propertize" "(propertize STRING▮ &rest PROPERTIES)" nil :system t)
     ("push" "(push NEWELT▮ PLACE)" nil :system t)
     ("push-mark" "(push-mark ▮&optional LOCATION NOMSG ACTIVATE)" nil :system t)
@@ -2015,12 +2022,6 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   (add-hook 'completion-at-point-functions 'xah-elisp-complete-symbol nil 'local)
 
   (abbrev-mode 1)
-
-  (progn
-    ;; setup auto-complete-mode
-    (when (fboundp 'auto-complete-mode)
-      (add-to-list 'ac-modes 'xah-elisp-mode)))
-  ;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
 
   (make-local-variable abbrev-expand-function)
   (if (or

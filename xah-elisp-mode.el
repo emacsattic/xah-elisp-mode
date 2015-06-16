@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.9
+;; Version: 2.0.12
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -179,6 +179,7 @@
 "remq"
 "require"
 "reverse"
+"round"
 "set"
 "setq"
 "sleep-for"
@@ -373,6 +374,7 @@
 "line-end-position"
 "local-set-key"
 "looking-at"
+"looking-back"
 "make-directory"
 "make-indirect-buffer"
 "make-local-variable"
@@ -1548,12 +1550,14 @@ If there's a text selection, act on the region, else, on defun block."
     ("kb" "kill-buffer" nil :system t)
     ("kr" "kill-region" nil :system t)
     ("la" "looking-at" nil :system t)
+    ("lc" "left-char" nil :system t)
     ("mb" "match-beginning" nil :system t)
     ("md" "make-directory" nil :system t)
     ("me" "match-end" nil :system t)
     ("ms" "match-string" nil :system t)
     ("pm" "point-max" nil :system t)
     ("rb" "region-beginning" nil :system t)
+    ("rc" "right-char" nil :system t)
     ("re" "region-end" nil :system t)
     ("rf" "rename-file" nil :system t)
     ("rm" "replace-match" nil :system t)
@@ -1704,6 +1708,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("kill-region" "(kill-region BEG▮ END &optional REGION)" nil :system t)
     ("lambda" "(lambda (▮) BODY)" nil :system t)
     ("length" "(length ▮)" nil :system t)
+    ("left-char" "(left-char ▮)" nil :system t)
     ("let" "(let (▮)\n x\n)" nil :system t)
     ("line-beginning-position" "(line-beginning-position)" nil :system t)
     ("line-end-position" "(line-end-position)" nil :system t)
@@ -1711,6 +1716,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("load" "(load FILE▮ &optional NOERROR NOMESSAGE NOSUFFIX MUST-SUFFIX)" nil :system t)
     ("load-file" "(load-file FILE▮)" nil :system t)
     ("looking-at" "(looking-at \"REGEXP▮\")" nil :system t)
+    ("looking-back" "(looking-back \"REGEXP▮\" &optional LIMIT GREEDY)" nil :system t)
     ("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
     ("make-list" "(make-list LENGTH▮ INIT)" nil :system t)
     ("make-local-variable" "(make-local-variable ▮)" nil :system t)
@@ -1779,6 +1785,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("replace-regexp-in-string" "(replace-regexp-in-string \"REGEXP▮\" REP \"STRING\" &optional FIXEDCASE LITERAL SUBEXP START)" nil :system t)
     ("require" "(require ▮)" nil :system t)
     ("reverse" "(reverse ▮)" nil :system t)
+    ("right-char" "(right-char ▮)" nil :system t)
     ("save-buffer" "(save-buffer &optional ARG▮)" nil :system t)
     ("save-current-buffer" "(save-current-buffer ▮)" nil :system t)
     ("save-excursion" "(save-excursion ▮)" nil :system t)
@@ -1979,14 +1986,15 @@ If there's a text selection, act on the region, else, on defun block."
 
 Most useful command is `xah-elisp-complete-or-indent'.
 
-Press TAB before word to pretty format (indent).
+Press TAB before word to pretty format current lisp expression tree.
 Press TAB after word to complete.
-Press SPACE to expand name to template.
+Press SPACE to expand function name to template.
 
-I also recommend you use these commands:
+I also recommend the following setup:
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-or
+
+home page:
 URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 
 \\{xah-elisp-keymap}"

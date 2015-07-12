@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.12
+;; Version: 2.0.13
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -254,6 +254,7 @@
 "atomic-change-group"
 "autoload"
 "backward-char"
+"backward-word"
 "backward-up-list"
 "barf-if-buffer-read-only"
 "beginning-of-line"
@@ -338,6 +339,7 @@
 "forward-line"
 "forward-sexp"
 "forward-symbol"
+"forward-word"
 "frame-parameter"
 "frame-parameters"
 "gap-position"
@@ -1533,6 +1535,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("ah" "add-hook" nil :system t)
     ("bc" "backward-char" nil :system t)
     ("bs" "buffer-substring" nil :system t)
+    ("bw" "backward-word" nil :system t)
     ("ca" "custom-autoload" nil :system t)
     ("cb" "current-buffer" nil :system t)
     ("cc" "condition-case" nil :system t)
@@ -1544,6 +1547,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("dk" "define-key" nil :system t)
     ("dr" "delete-region" nil :system t)
     ("fc" "forward-char" nil :system t)
+    ("fw" "forward-word" nil :system t)
     ("ff" "find-file" nil :system t)
     ("fl" "forward-line" nil :system t)
     ("gc" "goto-char" nil :system t)
@@ -1623,6 +1627,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("assq" "(assq KEY▮ LIST)" nil :system t)
     ("autoload" "(autoload 'FUNCNAME▮ \"FILENAME\" &optional \"DOCSTRING\" INTERACTIVE TYPE)" nil :system t)
     ("backward-char" "(backward-char ▮)" nil :system t)
+    ("backward-word" "(backward-word ▮)" nil :system t)
     ("beginning-of-line" "(beginning-of-line)" nil :system t)
     ("boundp" "(boundp '▮)" nil :system t)
     ("bounds-of-thing-at-point" "(bounds-of-thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
@@ -1672,6 +1677,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("expand-file-name" "(expand-file-name ▮ &optional relativedir)" nil :system t)
     ("fboundp" "(fboundp '▮)" nil :system t)
     ("featurep" "(featurep 'FEATURE▮)" nil :system t)
+    ("forward-word" "(forward-word ▮)" nil :system t)
     ("file-directory-p" "(file-directory-p ▮)" nil :system t)
     ("file-exists-p" "(file-exists-p ▮)" nil :system t)
     ("file-name-directory" "(file-name-directory ▮)" nil :system t)
@@ -1899,6 +1905,7 @@ If there's a text selection, act on the region, else, on defun block."
 
     ("font-lock-add-keywords" "(font-lock-add-keywords MODE▮ KEYWORDS &optional HOW)" nil :system t)
     ("font-lock-fontify-buffer" "(font-lock-fontify-buffer ▮)" nil :system t)
+    ("set-syntax-table" "(set-syntax-table ▮)" nil :system t)
 
     ;;
     )

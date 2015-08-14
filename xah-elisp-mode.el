@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.13
+;; Version: 2.0.14
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -106,8 +106,8 @@
 "delete-dups"
 "delq"
 "elt"
-"eq"
 "equal"
+"eq"
 "eval"
 "expt"
 "fboundp"
@@ -1906,6 +1906,9 @@ If there's a text selection, act on the region, else, on defun block."
     ("font-lock-add-keywords" "(font-lock-add-keywords MODE▮ KEYWORDS &optional HOW)" nil :system t)
     ("font-lock-fontify-buffer" "(font-lock-fontify-buffer ▮)" nil :system t)
     ("set-syntax-table" "(set-syntax-table ▮)" nil :system t)
+
+    ("define-minor-mode" "(define-minor-mode MODE▮ \"DOC\" &optional INIT-VALUE LIGHTER KEYMAP &rest
+BODY)" nil :system t)
 
     ;;
     )

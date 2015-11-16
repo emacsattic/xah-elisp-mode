@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.14
+;; Version: 2.0.17
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -368,6 +368,7 @@
 "kill-all-local-variables"
 "kill-buffer"
 "kill-new"
+"kill-append"
 "kill-region"
 "kill-ring-save"
 "last-buffer"
@@ -530,6 +531,8 @@
 
 (defvar xah-elisp-emacs-user-commands nil "List of elisp keywords that are almost always called by user interactively.")
 (setq xah-elisp-emacs-user-commands '(
+"split-window-below"
+"split-window-right"
 "clear-rectangle"
 "complete-symbol"
 "define-prefix-command"
@@ -1335,7 +1338,6 @@ This uses `ido-mode' user interface for completion."
     (insert ξresult-sym)
 
     ;; use case of completion
-
     (when (not (xah-elisp-start-with-left-paren-p))
       (let ( (ξabbrev-expanded-p (xah-elisp-expand-abbrev)))
         ;; (when (not (xah-elisp-start-with-left-paren-p)) (xah-elisp-add-paren-around-symbol))
@@ -1639,9 +1641,9 @@ If there's a text selection, act on the region, else, on defun block."
     ("bufferp" "(bufferp ▮)" nil :system t)
     ("call-interactively" "(call-interactively 'FUNCTION▮ &optional RECORD-FLAG KEYS)" nil :system t)
     ("called-interactively-p" "(called-interactively-p 'interactive▮)" nil :system t)
-    ("car" "(car LIST▮)" nil :system t)
+    ("car" "(car ▮)" nil :system t)
     ("catch" "(catch TAG▮ BODY)" nil :system t)
-    ("cdr" "(cdr LIST▮)" nil :system t)
+    ("cdr" "(cdr ▮)" nil :system t)
     ("char-to-string" "(char-to-string CHAR▮) " nil :system t)
     ("concat" "(concat \"▮\" \"▮\")" nil :system t)
     ("cond" "(cond\n(CONDITION▮ BODY)\n(CONDITION BODY)\n)" nil :system t)
@@ -1907,8 +1909,9 @@ If there's a text selection, act on the region, else, on defun block."
     ("font-lock-fontify-buffer" "(font-lock-fontify-buffer ▮)" nil :system t)
     ("set-syntax-table" "(set-syntax-table ▮)" nil :system t)
 
-    ("define-minor-mode" "(define-minor-mode MODE▮ \"DOC\" &optional INIT-VALUE LIGHTER KEYMAP &rest
-BODY)" nil :system t)
+    ("define-minor-mode" "(define-minor-mode MODE▮ \"DOC\" &optional INIT-VALUE LIGHTER KEYMAP &rest BODY)" nil :system t)
+
+    ("kill-append" "(kill-append STRING▮ BEFORE-P)" nil :system t)
 
     ;;
     )

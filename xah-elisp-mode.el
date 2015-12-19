@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.17
+;; Version: 2.0.18
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -1934,7 +1934,7 @@ If there's a text selection, act on the region, else, on defun block."
 
 (defface xah-elisp-user-variable
   '(
-    (t :foreground "magenta"))
+    (t :foreground "dark green"))
   "face for user variables."
   :group 'xah-elisp-mode )
 
@@ -2004,8 +2004,9 @@ Press TAB after word to complete.
 Press SPACE to expand function name to template.
 
 I also recommend the following setup:
-URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+ URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
+ URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+ URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
 
 home page:
 URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.0.18
+;; Version: 2.1.18
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -1928,7 +1928,10 @@ If there's a text selection, act on the region, else, on defun block."
 
 (defface xah-elisp-function-param
   '(
-    (t :foreground "black" :background "LightYellow"))
+    (t :foreground "black" :background "aquamarine")
+    ;; (t :foreground "dark blue")
+    ;; (t :foreground "black" :background "pink")
+)
   "face for function parameters."
   :group 'xah-elisp-mode )
 

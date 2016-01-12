@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.1.18
+;; Version: 2.2.18
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -457,6 +457,7 @@
 "right-char"
 "run-hooks"
 "run-mode-hooks"
+"run-with-timer"
 "save-buffer"
 "save-current-buffer"
 "save-excursion"
@@ -1912,6 +1913,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("define-minor-mode" "(define-minor-mode MODE▮ \"DOC\" &optional INIT-VALUE LIGHTER KEYMAP &rest BODY)" nil :system t)
 
     ("kill-append" "(kill-append STRING▮ BEFORE-P)" nil :system t)
+    ("run-with-timer" "(run-with-timer SECS▮ REPEAT FUNCTION &rest ARGS)" nil :system t)
 
     ;;
     )

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.2.18
+;; Version: 2.3.0
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -1937,6 +1937,12 @@ If there's a text selection, act on the region, else, on defun block."
   "face for function parameters."
   :group 'xah-elisp-mode )
 
+(defface xah-elisp-global-var
+  '(
+    (t :foreground "red"))
+  "face for globar variable."
+  :group 'xah-elisp-mode )
+
 (defface xah-elisp-user-variable
   '(
     (t :foreground "dark green"))
@@ -1951,6 +1957,7 @@ If there's a text selection, act on the region, else, on defun block."
             (elispLangWords (regexp-opt xah-elisp-elisp-lang-words 'symbols))
             (elispVars1 (regexp-opt xah-elisp-elisp-vars-1 'symbols))
             (functionParameters "φ[-_?0-9A-Za-z]+" )
+            (globalVar "γ[-_?0-9A-Za-z]+" )
             (userVars "ξ[-_?0-9A-Za-z]+" ))
         `(
           (,emacsWords . font-lock-function-name-face)
@@ -1959,6 +1966,7 @@ If there's a text selection, act on the region, else, on defun block."
           (,elispLangWords . font-lock-keyword-face)
           (,elispVars1 . font-lock-variable-name-face)
           (,functionParameters . 'xah-elisp-function-param)
+          (,globalVar . 'xah-elisp-global-var)
           (,userVars . 'xah-elisp-user-variable))))
 
 
@@ -2045,6 +2053,9 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 
   (setq-local indent-line-function 'lisp-indent-line)
   (setq-local tab-always-indent 'complete)
+
+  (add-function :before-until (local 'eldoc-documentation-function)
+                #'elisp-eldoc-documentation-function)
 
   (add-hook 'completion-at-point-functions 'xah-elisp-complete-symbol nil 'local)
 

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.3.0
+;; Version: 2.3.1
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -1993,16 +1993,14 @@ If there's a text selection, act on the region, else, on defun block."
   ;; painful to stick with emacs convention of not defining the key and get what i want
   (define-key xah-elisp-keymap (kbd "TAB") 'xah-elisp-complete-or-indent)
 
-  (define-prefix-command 'xah-elisp-single-keys-keymap)
-
-  (define-key xah-elisp-single-keys-keymap (kbd "u") 'xah-elisp-add-paren-around-symbol)
-  (define-key xah-elisp-single-keys-keymap (kbd "t") 'xah-elisp-prettify-root-sexp)
-  (define-key xah-elisp-single-keys-keymap (kbd "h") 'xah-elisp-remove-paren-pair)
-  (define-key xah-elisp-single-keys-keymap (kbd "p") 'xah-elisp-compact-parens)
-  (define-key xah-elisp-single-keys-keymap (kbd "c") 'xah-elisp-complete-symbol)
-  (define-key xah-elisp-single-keys-keymap (kbd "e") 'xah-elisp-expand-abbrev-maybe)
-
-)
+  (progn
+    (define-prefix-command 'xah-elisp-single-keys-keymap)
+    (define-key xah-elisp-single-keys-keymap (kbd "u") 'xah-elisp-add-paren-around-symbol)
+    (define-key xah-elisp-single-keys-keymap (kbd "t") 'xah-elisp-prettify-root-sexp)
+    (define-key xah-elisp-single-keys-keymap (kbd "h") 'xah-elisp-remove-paren-pair)
+    (define-key xah-elisp-single-keys-keymap (kbd "p") 'xah-elisp-compact-parens)
+    (define-key xah-elisp-single-keys-keymap (kbd "c") 'xah-elisp-complete-symbol)
+    (define-key xah-elisp-single-keys-keymap (kbd "e") 'xah-elisp-expand-abbrev-maybe)))
 
 
 
@@ -2037,12 +2035,11 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   (setq local-abbrev-table xah-elisp-abbrev-table)
 
   (progn
-    (define-key xah-elisp-keymap (kbd "C-c") xah-elisp-single-keys-keymap)
-    (if (or
-         (not (boundp 'xfk-major-mode-lead-key))
-         (null 'xfk-major-mode-lead-key))
-        (define-key xah-elisp-keymap (kbd "<menu> e") xah-elisp-single-keys-keymap)
-      (define-key xah-elisp-keymap xfk-major-mode-lead-key xah-elisp-single-keys-keymap))
+    (define-key xah-elisp-keymap
+      (if (boundp 'xah-major-mode-lead-key)
+          xah-major-mode-lead-key
+        (kbd "C-c C-c"))
+      xah-elisp-single-keys-keymap)
     (use-local-map xah-elisp-keymap))
 
   (setq-local comment-start "; ")

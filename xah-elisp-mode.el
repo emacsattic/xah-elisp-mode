@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.3.1
+;; Version: 2.4.1
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -74,7 +74,7 @@
 
 (defvar xah-elisp-mode-hook nil "Standard hook for `xah-elisp-mode'")
 
-(defvar xah-elisp-elisp-lang-words nil "List of elisp keyword more or less related to elisp the language.")
+(defvar xah-elisp-elisp-lang-words nil "List of elisp keywords more or less the core language.")
 (setq xah-elisp-elisp-lang-words '(
 "abs"
 "add-to-list"
@@ -528,6 +528,20 @@
 "y-or-n-p"
 "yes-or-no-p"
 
+"eval-when-compile"
+"make-network-process"
+"make-network-process"
+
+"process-send-string"
+"process-send-region"
+"set-process-filter"
+"set-marker"
+"process-mark"
+"delete-process"
+"current-time-string"
+"process-status"
+"process-buffer"
+
 ))
 
 (defvar xah-elisp-emacs-user-commands nil "List of elisp keywords that are almost always called by user interactively.")
@@ -574,6 +588,8 @@
 ;; consider find a way to programmatically list all elisp vars, loaded or even unloaded.
 ;; consider also leave this list empty, instead, dynamically determine when a symbol is a lisp var.
 (setq xah-elisp-elisp-vars-1 '(
+
+"load-in-progress"
 
 "image-cache-eviction-delay"
 "max-image-size"

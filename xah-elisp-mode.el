@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.4.1
+;; Version: 2.5.1
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -541,6 +541,17 @@
 "current-time-string"
 "process-status"
 "process-buffer"
+"processp"
+"kill-process"
+
+"process-datagram-address"
+"process-list"
+"get-process"
+"process-command"
+"process-type"
+"process-id"
+"process-contact"
+"network-interface-list"
 
 ))
 
@@ -1956,7 +1967,7 @@ If there's a text selection, act on the region, else, on defun block."
 (defface xah-elisp-global-var
   '(
     (t :foreground "red"))
-  "face for globar variable."
+  "face for global variable."
   :group 'xah-elisp-mode )
 
 (defface xah-elisp-user-variable

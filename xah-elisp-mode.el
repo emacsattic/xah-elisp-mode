@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.5.1
+;; Version: 2.5.2
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -1458,7 +1458,12 @@ This is called by emacs abbrev system."
 Limit backward search to at φpos or at beginning of line.
 Return true if found, else false."
   (interactive)
-  (search-backward "▮" (if φpos φpos (line-beginning-position)) t ))
+  (let ((found-p (search-backward "▮" (if φpos φpos (line-beginning-position)) t )))
+    (when found-p
+      ;; (forward-char )
+      (search-forward "▮"))
+    found-p
+    ))
 
 
 ;; indent/reformat related
@@ -1994,7 +1999,8 @@ If there's a text selection, act on the region, else, on defun block."
           (,elispVars1 . font-lock-variable-name-face)
           (,functionParameters . 'xah-elisp-function-param)
           (,globalVar . 'xah-elisp-global-var)
-          (,userVars . 'xah-elisp-user-variable))))
+          (,userVars . 'xah-elisp-user-variable)
+          )))
 
 
 ;; ;; syntax table

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.5.2
+;; Version: 2.5.4
 ;; Created: 23 Mar 2013
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -76,6 +76,10 @@
 
 (defvar xah-elisp-elisp-lang-words nil "List of elisp keywords more or less the core language.")
 (setq xah-elisp-elisp-lang-words '(
+"defalias"
+"fset"
+"defconst"
+
 "abs"
 "add-to-list"
 "and"
@@ -293,8 +297,6 @@
 "current-word"
 "custom-autoload"
 "custom-set-faces"
-"defalias"
-"defconst"
 "defcustom"
 "defface"
 "defgroup"
@@ -1594,7 +1596,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("md" "make-directory" nil :system t)
     ("me" "match-end" nil :system t)
     ("ms" "match-string" nil :system t)
-    ("pm" "point-max" nil :system t)
+    ("pm" "point-min" nil :system t)
+    ("px" "point-max" nil :system t)
     ("rb" "region-beginning" nil :system t)
     ("rc" "right-char" nil :system t)
     ("re" "region-end" nil :system t)
@@ -1990,7 +1993,8 @@ If there's a text selection, act on the region, else, on defun block."
             (elispVars1 (regexp-opt xah-elisp-elisp-vars-1 'symbols))
             (functionParameters "φ[-_?0-9A-Za-z]+" )
             (globalVar "γ[-_?0-9A-Za-z]+" )
-            (userVars "ξ[-_?0-9A-Za-z]+" ))
+            (userVars "ξ[-_?0-9A-Za-z]+" )
+            (xVars "\b[A-Z][-_?0-9A-Za-z]+" ))
         `(
           (,emacsWords . font-lock-function-name-face)
           (,emacsUserWords . font-lock-type-face)
@@ -2000,6 +2004,7 @@ If there's a text selection, act on the region, else, on defun block."
           (,functionParameters . 'xah-elisp-function-param)
           (,globalVar . 'xah-elisp-global-var)
           (,userVars . 'xah-elisp-user-variable)
+          (,xVars . 'xah-elisp-user-variable)
           )))
 
 

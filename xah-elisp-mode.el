@@ -3,8 +3,9 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.5.4
+;; Version: 2.6.4
 ;; Created: 23 Mar 2013
+;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
@@ -40,6 +41,9 @@
 
 ;; Call `list-abbrevs' to see the full list.
 
+;; put this in your init to turn on abbrev
+;; (abbrev-mode 1)
+
 ;; home page: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
 ;; This mode is designed to be very different from the usual paredit/smartparens approach.
@@ -54,6 +58,8 @@
 ;; make auto-complete-mode support xah-elisp-mode
 ;; (when (boundp 'ac-modes)
 ;;   (add-to-list 'ac-modes 'xah-elisp-mode))
+
+;; equires emacs 24.3 because of using setq-local
 
 ;;; INSTALL:
 
@@ -1557,9 +1563,9 @@ If there's a text selection, act on the region, else, on defun block."
 
 ;; abbrev
 
-(setq xah-elisp-abbrev-table nil)
+(setq xah-elisp-mode-abbrev-table nil)
 
-(define-abbrev-table 'xah-elisp-abbrev-table
+(define-abbrev-table 'xah-elisp-mode-abbrev-table
   '(
     ("d" "(defun f▮ ()\n  \"DOCSTRING\"\n  (interactive)\n  (let (VAR)\n\n  ))" nil :system t)
     ("i" "(insert ▮)" nil :system t)
@@ -2054,26 +2060,30 @@ If there's a text selection, act on the region, else, on defun block."
 
 ;; keybinding
 
-(defvar xah-elisp-keymap nil "Keybinding for `xah-elisp-mode'")
+(defvar xah-elisp-mode-map nil "Keybinding for `xah-elisp-mode'")
 (progn
-  (setq xah-elisp-keymap (make-sparse-keymap))
+  (setq xah-elisp-mode-map (make-sparse-keymap))
 
   ;; painful to stick with emacs convention of not defining the key and get what i want
-  (define-key xah-elisp-keymap (kbd "TAB") 'xah-elisp-complete-or-indent)
+  (define-key xah-elisp-mode-map (kbd "TAB") 'xah-elisp-complete-or-indent)
 
   (progn
-    (define-prefix-command 'xah-elisp-single-keys-keymap)
-    (define-key xah-elisp-single-keys-keymap (kbd "u") 'xah-elisp-add-paren-around-symbol)
-    (define-key xah-elisp-single-keys-keymap (kbd "t") 'xah-elisp-prettify-root-sexp)
-    (define-key xah-elisp-single-keys-keymap (kbd "h") 'xah-elisp-remove-paren-pair)
-    (define-key xah-elisp-single-keys-keymap (kbd "p") 'xah-elisp-compact-parens)
-    (define-key xah-elisp-single-keys-keymap (kbd "c") 'xah-elisp-complete-symbol)
-    (define-key xah-elisp-single-keys-keymap (kbd "e") 'xah-elisp-expand-abbrev-maybe)))
+    (define-prefix-command 'xah-elisp-mode-no-chord-map)
+    (define-key xah-elisp-mode-no-chord-map (kbd "u") 'xah-elisp-add-paren-around-symbol)
+    (define-key xah-elisp-mode-no-chord-map (kbd "t") 'xah-elisp-prettify-root-sexp)
+    (define-key xah-elisp-mode-no-chord-map (kbd "h") 'xah-elisp-remove-paren-pair)
+    (define-key xah-elisp-mode-no-chord-map (kbd "p") 'xah-elisp-compact-parens)
+    (define-key xah-elisp-mode-no-chord-map (kbd "c") 'xah-elisp-complete-symbol)
+    (define-key xah-elisp-mode-no-chord-map (kbd "e") 'xah-elisp-expand-abbrev-maybe))
+
+  ;; define separate, so that user can override the lead key
+  (define-key xah-elisp-mode-map (kbd "C-c C-c") xah-elisp-mode-no-chord-map)
+  )
 
 
 
 ;;;###autoload
-(defun xah-elisp-mode ()
+(define-derived-mode xah-elisp-mode prog-mode "∑lisp"
   "A major mode for emacs lisp.
 
 Most useful command is `xah-elisp-complete-or-indent'.
@@ -2090,25 +2100,9 @@ I also recommend the following setup:
 home page:
 URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 
-\\{xah-elisp-keymap}"
-  (interactive)
-
-  (kill-all-local-variables)
-
-  (setq mode-name "∑lisp")
-  (setq major-mode 'xah-elisp-mode)
+\\{xah-elisp-mode-map}"
   (set-syntax-table emacs-lisp-mode-syntax-table)
   (setq font-lock-defaults '((xah-elisp-font-lock-keywords)))
-
-  (setq local-abbrev-table xah-elisp-abbrev-table)
-
-  (progn
-    (define-key xah-elisp-keymap
-      (if (boundp 'xah-major-mode-lead-key)
-          xah-major-mode-lead-key
-        (kbd "C-c C-c"))
-      xah-elisp-single-keys-keymap)
-    (use-local-map xah-elisp-keymap))
 
   (setq-local comment-start "; ")
   (setq-local comment-end "")
@@ -2124,8 +2118,6 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 
   (add-hook 'completion-at-point-functions 'xah-elisp-complete-symbol nil 'local)
 
-  (abbrev-mode 1)
-
   (make-local-variable abbrev-expand-function)
   (if (or
        (and (>= emacs-major-version 24)
@@ -2137,7 +2129,8 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 
   (setq prettify-symbols-alist '(("lambda" . 955)))
 
-  (run-mode-hooks 'xah-elisp-mode-hook))
+  :group 'xah-elisp-mode
+  )
 
 (add-to-list 'auto-mode-alist '("\\.el\\'" . xah-elisp-mode))
 

@@ -1353,23 +1353,23 @@ emacs 25.x changed `up-list' to take up to 3 args. Before, only 1."
 This uses `ido-mode' user interface for completion."
   (interactive)
   (let* (
-         (ξbds (bounds-of-thing-at-point 'symbol))
-         (ξp1 (car ξbds))
-         (ξp2 (cdr ξbds))
-         (ξcurrent-sym
-          (if  (or (null ξp1) (null ξp2) (equal ξp1 ξp2))
+         (-bds (bounds-of-thing-at-point 'symbol))
+         (-p1 (car -bds))
+         (-p2 (cdr -bds))
+         (-current-sym
+          (if  (or (null -p1) (null -p2) (equal -p1 -p2))
               ""
-            (buffer-substring-no-properties ξp1 ξp2)))
-         ξresult-sym)
-    (when (not ξcurrent-sym) (setq ξcurrent-sym ""))
-    (setq ξresult-sym
-          (ido-completing-read "" xah-elisp-elisp-all-keywords nil nil ξcurrent-sym ))
-    (delete-region ξp1 ξp2)
-    (insert ξresult-sym)
+            (buffer-substring-no-properties -p1 -p2)))
+         -result-sym)
+    (when (not -current-sym) (setq -current-sym ""))
+    (setq -result-sym
+          (ido-completing-read "" xah-elisp-elisp-all-keywords nil nil -current-sym ))
+    (delete-region -p1 -p2)
+    (insert -result-sym)
 
     ;; use case of completion
     (when (not (xah-elisp-start-with-left-paren-p))
-      (let ( (ξabbrev-expanded-p (xah-elisp-expand-abbrev)))
+      (let ( (-abbrev-expanded-p (xah-elisp-expand-abbrev)))
         ;; (when (not (xah-elisp-start-with-left-paren-p)) (xah-elisp-add-paren-around-symbol))
 ))))
 
@@ -1412,15 +1412,15 @@ Call `exchange-point-and-mark' \\[exchange-point-and-mark] to highlight them."
       (goto-char p1)
       (delete-char 1))))
 
-(defun xah-elisp-expand-abbrev-maybe (&optional φexpand-func)
+(defun xah-elisp-expand-abbrev-maybe (&optional *expand-func)
   "Expand emacs lisp function name before cursor into template.
 Returns true if there's a expansion, else nil."
   (interactive)
   (let (
-        ξp1 ξp2
-        ξab-str
-        (ξsyntax-state (syntax-ppss)))
-    (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
+        -p1 -p2
+        -ab-str
+        (-syntax-state (syntax-ppss)))
+    (if (or (nth 3 -syntax-state) (nth 4 -syntax-state))
         nil
       (xah-elisp-expand-abbrev))))
 
@@ -1431,36 +1431,36 @@ Returns true if there's a expansion, else nil."
 Returns true if there's a expansion, else nil."
   (interactive)
   (let (
-        ξp1 ξp2
-        ξab-str
+        -p1 -p2
+        -ab-str
         )
     (save-excursion
       (forward-symbol -1)
-      (setq ξp1 (point))
+      (setq -p1 (point))
       (forward-symbol 1)
-      (setq ξp2 (point)))
-    (setq ξab-str (buffer-substring-no-properties ξp1 ξp2))
-    (if (abbrev-symbol ξab-str)
+      (setq -p2 (point)))
+    (setq -ab-str (buffer-substring-no-properties -p1 -p2))
+    (if (abbrev-symbol -ab-str)
         (progn
-          (abbrev-insert (abbrev-symbol ξab-str) ξab-str ξp1 ξp2 )
-          (xah-elisp--abbrev-position-cursor ξp1)
+          (abbrev-insert (abbrev-symbol -ab-str) -ab-str -p1 -p2 )
+          (xah-elisp--abbrev-position-cursor -p1)
           t)
       nil)))
 
 (defun xah-elisp-abbrev-enable-function ()
   "Determine whether to expand abbrev.
 This is called by emacs abbrev system."
-  (let ((ξsyntax-state (syntax-ppss)))
-    (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
+  (let ((-syntax-state (syntax-ppss)))
+    (if (or (nth 3 -syntax-state) (nth 4 -syntax-state))
         nil
       t)))
 
-(defun xah-elisp--abbrev-position-cursor (&optional φpos)
+(defun xah-elisp--abbrev-position-cursor (&optional *pos)
   "Move cursor back to ▮ if exist, else put at end.
-Limit backward search to at φpos or at beginning of line.
+Limit backward search to at *pos or at beginning of line.
 Return true if found, else false."
   (interactive)
-  (let ((found-p (search-backward "▮" (if φpos φpos (line-beginning-position)) t )))
+  (let ((found-p (search-backward "▮" (if *pos *pos (line-beginning-position)) t )))
     (when found-p
       ;; (forward-char )
       (search-forward "▮"))
@@ -1481,8 +1481,8 @@ If char before point is letters and char after point is whitespace or punctuatio
   ;; space▮char → do indent
   ;; char▮space → do completion
   ;; char ▮char → do indent
-  (let ( (ξsyntax-state (syntax-ppss)))
-    (if (or (nth 3 ξsyntax-state) (nth 4 ξsyntax-state))
+  (let ( (-syntax-state (syntax-ppss)))
+    (if (or (nth 3 -syntax-state) (nth 4 -syntax-state))
         (progn
           (xah-elisp-prettify-root-sexp))
       (progn (if
@@ -1496,34 +1496,34 @@ If char before point is letters and char after point is whitespace or punctuatio
 Root sexp group is the outmost sexp unit."
   (interactive)
   (save-excursion
-    (let (ξp1 ξp2)
+    (let (-p1 -p2)
       (xah-elisp-goto-outmost-bracket)
-      (setq ξp1 (point))
-      (setq ξp2 (scan-sexps (point) 1))
+      (setq -p1 (point))
+      (setq -p2 (scan-sexps (point) 1))
       (progn
-        (goto-char ξp1)
+        (goto-char -p1)
         (indent-sexp)
-        (xah-elisp-compact-parens-region ξp1 ξp2)))))
+        (xah-elisp-compact-parens-region -p1 -p2)))))
 
-(defun xah-elisp-goto-outmost-bracket (&optional φpos)
-  "Move cursor to the beginning of outer-most bracket, with respect to φpos.
+(defun xah-elisp-goto-outmost-bracket (&optional *pos)
+  "Move cursor to the beginning of outer-most bracket, with respect to *pos.
 Returns true if point is moved, else false."
   (interactive)
-  (let ((ξi 0)
-        (ξp0 (if (number-or-marker-p φpos)
-                 φpos
+  (let ((-i 0)
+        (-p0 (if (number-or-marker-p *pos)
+                 *pos
                (point))))
-    (goto-char ξp0)
+    (goto-char -p0)
     (while
-        (and (< (setq ξi (1+ ξi)) 20)
+        (and (< (setq -i (1+ -i)) 20)
              (not (eq (nth 0 (syntax-ppss (point))) 0)))
       (xah-elisp-up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING"))
-    (if (equal ξp0 (point))
+    (if (equal -p0 (point))
         nil
       t
       )))
 
-(defun xah-elisp-compact-parens (&optional φbegin φend)
+(defun xah-elisp-compact-parens (&optional *begin *end)
   "Remove whitespaces in ending repetition of parenthesises.
 If there's a text selection, act on the region, else, on defun block."
   (interactive
@@ -1532,24 +1532,24 @@ If there's a text selection, act on the region, else, on defun block."
      (save-excursion
        (xah-elisp-goto-outmost-bracket)
        (list (point) (scan-sexps (point) 1)))))
-  (let ((ξp1 φbegin) (ξp2 φend))
-    (when (null φbegin)
+  (let ((-p1 *begin) (-p2 *end))
+    (when (null *begin)
       (save-excursion
         (xah-elisp-goto-outmost-bracket)
-        (setq ξp1 (point))
-        (setq ξp2 (scan-sexps (point) 1))))
-    (xah-elisp-compact-parens-region ξp1 ξp2)))
+        (setq -p1 (point))
+        (setq -p2 (scan-sexps (point) 1))))
+    (xah-elisp-compact-parens-region -p1 -p2)))
 
-(defun xah-elisp-compact-parens-region (φbegin φend)
+(defun xah-elisp-compact-parens-region (*begin *end)
   "Remove whitespaces in ending repetition of parenthesises in region."
   (interactive "r")
-  (let (ξsyntax-state)
+  (let (-syntax-state)
     (save-restriction
-      (narrow-to-region φbegin φend)
+      (narrow-to-region *begin *end)
       (goto-char (point-min))
       (while (search-forward-regexp ")[ \t\n]+)" nil t)
-        (setq ξsyntax-state (syntax-ppss (match-beginning 0)))
-        (if (or (nth 3 ξsyntax-state ) (nth 4 ξsyntax-state))
+        (setq -syntax-state (syntax-ppss (match-beginning 0)))
+        (if (or (nth 3 -syntax-state ) (nth 4 -syntax-state))
             (progn (search-forward ")"))
           (progn (replace-match "))")
                  (search-backward ")")))))))

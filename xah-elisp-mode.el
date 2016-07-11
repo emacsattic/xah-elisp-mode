@@ -1338,7 +1338,7 @@
 ;; emacs 24.4 or 24.3 change fix
 
 (defun xah-elisp-up-list (arg1 &optional arg2 arg3)
-  "Backward compatibility fix for emacs 24.4's up-list.
+  "Backward compatibility fix for emacs 24.4's `up-list'.
 emacs 25.x changed `up-list' to take up to 3 args. Before, only 1."
   (interactive)
   (if (>= emacs-major-version 25)
@@ -1972,15 +1972,41 @@ If there's a text selection, act on the region, else, on defun block."
   "face for function parameters."
   :group 'xah-elisp-mode )
 
+(defface xah-elisp-fun-param
+  '(
+    (t :foreground "red" :background "pink")
+)
+  "face for function parameters."
+  :group 'xah-elisp-mode )
+
+(face-spec-set
+ 'xah-elisp-fun-param
+ '(
+   (t :foreground "red"  :weight bold))
+ 'face-defface-spec
+ )
+
 (defface xah-elisp-global-var
   '(
     (t :foreground "red"))
   "face for global variable."
   :group 'xah-elisp-mode )
 
-(defface xah-elisp-user-variable
+(defface xah-elisp-user-variable1
   '(
     (t :foreground "dark green"))
+   "face for user variables."
+  :group 'xah-elisp-mode )
+
+(defface xah-elisp-user-variable2
+  '(
+    (t :foreground "#ff00ff"))
+  "face for user variables."
+  :group 'xah-elisp-mode )
+
+(defface xah-elisp-cap-variable
+  '(
+    (t :foreground "firebrick"))
   "face for user variables."
   :group 'xah-elisp-mode )
 
@@ -1992,9 +2018,11 @@ If there's a text selection, act on the region, else, on defun block."
             (elispLangWords (regexp-opt xah-elisp-elisp-lang-words 'symbols))
             (elispVars1 (regexp-opt xah-elisp-elisp-vars-1 'symbols))
             (functionParameters "φ[-_?0-9A-Za-z]+" )
-            (globalVar "γ[-_?0-9A-Za-z]+" )
-            (userVars "ξ[-_?0-9A-Za-z]+" )
-            (xVars "\b[A-Z][-_?0-9A-Za-z]+" ))
+            (funParamVar "\\_<\\*[-_?0-9A-Za-z]+" )
+            (globalVar "\\_<γ[-_?0-9A-Za-z]+" )
+            (userVars1 "\\_<ξ[-_?0-9A-Za-z]+" )
+            (userVars2 "\\_<-[-_A-Za-z]+[-_?0-9A-Za-z]*" )
+            (capVars "\\_<[A-Z][-_?0-9A-Za-z]+" ))
         `(
           (,emacsWords . font-lock-function-name-face)
           (,emacsUserWords . font-lock-type-face)
@@ -2002,9 +2030,11 @@ If there's a text selection, act on the region, else, on defun block."
           (,elispLangWords . font-lock-keyword-face)
           (,elispVars1 . font-lock-variable-name-face)
           (,functionParameters . 'xah-elisp-function-param)
+          (,funParamVar . 'xah-elisp-fun-param)
           (,globalVar . 'xah-elisp-global-var)
-          (,userVars . 'xah-elisp-user-variable)
-          (,xVars . 'xah-elisp-user-variable)
+          (,userVars1 . 'xah-elisp-user-variable1)
+          (,userVars2 . 'xah-elisp-user-variable2)
+          (,capVars . 'xah-elisp-cap-variable)
           )))
 
 

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.6.4
+;; Version: 2.6.5
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1766,7 +1766,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("load" "(load FILE▮ &optional NOERROR NOMESSAGE NOSUFFIX MUST-SUFFIX)" nil :system t)
     ("load-file" "(load-file FILE▮)" nil :system t)
     ("looking-at" "(looking-at \"REGEXP▮\")" nil :system t)
-    ("looking-back" "(looking-back \"REGEXP▮\" &optional LIMIT GREEDY)" nil :system t)
+    ("looking-back" "(looking-back \"REGEXP▮\" LIMIT &optional GREEDY)" nil :system t)
     ("make-directory" "(make-directory ▮ &optional PARENTS)" nil :system t)
     ("make-list" "(make-list LENGTH▮ INIT)" nil :system t)
     ("make-local-variable" "(make-local-variable ▮)" nil :system t)
@@ -1812,8 +1812,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("put-text-property" "(put-text-property START▮ END PROP VALUE &optional OBJECT)" nil :system t)
     ("random" "(random ▮)" nil :system t)
     ("rassoc" "(rassoc KEY▮ LIST)" nil :system t)
-    ("re-search-backward" "(re-search-backward \"REGEXP▮\" &optional BOUND NOERROR COUNT)" nil :system t)
-    ("re-search-forward" "(re-search-forward \"REGEXP▮\" &optional BOUND NOERROR COUNT)" nil :system t)
+    ("re-search-backward" "(re-search-backward \"REGEXP▮\" &optional BOUND 'NOERROR COUNT)" nil :system t)
+    ("re-search-forward" "(re-search-forward \"REGEXP▮\" &optional BOUND 'NOERROR COUNT)" nil :system t)
     ("read-directory-name" "(read-directory-name \"▮\" &optional DIR DEFAULT-DIRNAME MUSTMATCH INITIAL)" nil :system t)
     ("read-file-name" "(read-file-name \"▮\" &optional DIR DEFAULT-FILENAME MUSTMATCH INITIAL PREDICATE)" nil :system t)
     ("read-regexp" "(read-regexp \"▮\" &optional DEFAULT-VALUE)" nil :system t)
@@ -1840,10 +1840,10 @@ If there's a text selection, act on the region, else, on defun block."
     ("save-current-buffer" "(save-current-buffer ▮)" nil :system t)
     ("save-excursion" "(save-excursion ▮)" nil :system t)
     ("save-restriction" "(save-restriction ▮)" nil :system t)
-    ("search-backward" "(search-backward \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
-    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
-    ("search-forward" "(search-forward \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
-    ("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND NOERROR COUNT)" nil :system t)
+    ("search-backward" "(search-backward \"▮\" &optional BOUND 'NOERROR COUNT)" nil :system t)
+    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND 'NOERROR COUNT)" nil :system t)
+    ("search-forward" "(search-forward \"▮\" &optional BOUND 'NOERROR COUNT)" nil :system t)
+    ("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND 'NOERROR COUNT)" nil :system t)
     ("set-buffer" "(set-buffer ▮)" nil :system t)
     ("set-file-modes" "(set-file-modes ▮ MODE)" nil :system t)
     ("set-mark" "(set-mark ▮)" nil :system t)
@@ -1975,14 +1975,14 @@ If there's a text selection, act on the region, else, on defun block."
     ;; (t :foreground "dark blue")
     ;; (t :foreground "black" :background "pink")
 )
-  "face for function parameters."
+  "Face for function parameters."
   :group 'xah-elisp-mode )
 
 (defface xah-elisp-fun-param
   '(
     (t :foreground "red" :background "pink")
 )
-  "face for function parameters."
+  "Face for function parameters."
   :group 'xah-elisp-mode )
 
 (face-spec-set
@@ -1992,28 +1992,35 @@ If there's a text selection, act on the region, else, on defun block."
  'face-defface-spec
  )
 
+(face-spec-set
+ 'xah-elisp-ttt
+ '(
+   (t :foreground "blue" :background "pink"))
+ 'face-defface-spec
+ )
+
 (defface xah-elisp-global-var
   '(
     (t :foreground "red"))
-  "face for global variable."
+  "Face for global variable."
   :group 'xah-elisp-mode )
 
 (defface xah-elisp-user-variable1
   '(
     (t :foreground "dark green"))
-   "face for user variables."
+   "Face for user variables."
   :group 'xah-elisp-mode )
 
 (defface xah-elisp-user-variable2
   '(
     (t :foreground "#ff00ff"))
-  "face for user variables."
+  "Face for user variables."
   :group 'xah-elisp-mode )
 
 (defface xah-elisp-cap-variable
   '(
     (t :foreground "firebrick"))
-  "face for user variables."
+  "Face for capitalized word."
   :group 'xah-elisp-mode )
 
 (setq xah-elisp-font-lock-keywords
@@ -2025,6 +2032,7 @@ If there's a text selection, act on the region, else, on defun block."
             (elispVars1 (regexp-opt xah-elisp-elisp-vars-1 'symbols))
             (functionParameters "φ[-_?0-9A-Za-z]+" )
             (funParamVar "\\_<\\*[-_?0-9A-Za-z]+" )
+            (funParamVar-tmp "\\_<_[-_?0-9A-Za-z]+" )
             (globalVar "\\_<γ[-_?0-9A-Za-z]+" )
             (userVars1 "\\_<ξ[-_?0-9A-Za-z]+" )
             (userVars2 "\\_<-[-_A-Za-z]+[-_?0-9A-Za-z]*" )
@@ -2037,6 +2045,7 @@ If there's a text selection, act on the region, else, on defun block."
           (,elispVars1 . font-lock-variable-name-face)
           (,functionParameters . 'xah-elisp-function-param)
           (,funParamVar . 'xah-elisp-fun-param)
+          (,funParamVar-tmp . 'xah-elisp-ttt)
           (,globalVar . 'xah-elisp-global-var)
           (,userVars1 . 'xah-elisp-user-variable1)
           (,userVars2 . 'xah-elisp-user-variable2)

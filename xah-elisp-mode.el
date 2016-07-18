@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.6.5
+;; Version: 2.6.6
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1492,7 +1492,7 @@ If char before point is letters and char after point is whitespace or punctuatio
         (progn
           (xah-elisp-prettify-root-sexp))
       (progn (if
-                 (and (looking-back "[-_a-zA-Z]")
+                 (and (looking-back "[-_a-zA-Z]" 1)
                       (or (eobp) (looking-at "[\n[:blank:][:punct:]]")))
                  (xah-elisp-complete-symbol)
                (xah-elisp-prettify-root-sexp))))))
@@ -1969,7 +1969,7 @@ If there's a text selection, act on the region, else, on defun block."
 
 ;; syntax coloring related
 
-(defface xah-elisp-function-param
+(defface xah-elisp-phi-word
   '(
     (t :foreground "black" :background "aquamarine")
     ;; (t :foreground "dark blue")
@@ -1978,7 +1978,7 @@ If there's a text selection, act on the region, else, on defun block."
   "Face for function parameters."
   :group 'xah-elisp-mode )
 
-(defface xah-elisp-fun-param
+(defface xah-elisp-star-word
   '(
     (t :foreground "red" :background "pink")
 )
@@ -1986,7 +1986,7 @@ If there's a text selection, act on the region, else, on defun block."
   :group 'xah-elisp-mode )
 
 (face-spec-set
- 'xah-elisp-fun-param
+ 'xah-elisp-star-word
  '(
    (t :foreground "red"  :weight bold))
  'face-defface-spec
@@ -1999,19 +1999,19 @@ If there's a text selection, act on the region, else, on defun block."
  'face-defface-spec
  )
 
-(defface xah-elisp-global-var
+(defface xah-elisp-gamma-word
   '(
     (t :foreground "red"))
   "Face for global variable."
   :group 'xah-elisp-mode )
 
-(defface xah-elisp-user-variable1
+(defface xah-elisp-xi-word
   '(
     (t :foreground "dark green"))
    "Face for user variables."
   :group 'xah-elisp-mode )
 
-(defface xah-elisp-user-variable2
+(defface xah-elisp-dash-word
   '(
     (t :foreground "#ff00ff"))
   "Face for user variables."
@@ -2030,8 +2030,8 @@ If there's a text selection, act on the region, else, on defun block."
             (emacsBuiltins (regexp-opt xah-elisp-keyword-builtin 'symbols))
             (elispLangWords (regexp-opt xah-elisp-elisp-lang-words 'symbols))
             (elispVars1 (regexp-opt xah-elisp-elisp-vars-1 'symbols))
-            (functionParameters "φ[-_?0-9A-Za-z]+" )
-            (funParamVar "\\_<\\*[-_?0-9A-Za-z]+" )
+            (phiWord "φ[-_?0-9A-Za-z]+" )
+            (starWord "\\_<\\*[-_?0-9A-Za-z]+" )
             (funParamVar-tmp "\\_<_[-_?0-9A-Za-z]+" )
             (globalVar "\\_<γ[-_?0-9A-Za-z]+" )
             (userVars1 "\\_<ξ[-_?0-9A-Za-z]+" )
@@ -2043,12 +2043,12 @@ If there's a text selection, act on the region, else, on defun block."
           (,emacsBuiltins . font-lock-builtin-face)
           (,elispLangWords . font-lock-keyword-face)
           (,elispVars1 . font-lock-variable-name-face)
-          (,functionParameters . 'xah-elisp-function-param)
-          (,funParamVar . 'xah-elisp-fun-param)
+          (,phiWord . 'xah-elisp-phi-word)
+          (,starWord . 'xah-elisp-star-word)
           (,funParamVar-tmp . 'xah-elisp-ttt)
-          (,globalVar . 'xah-elisp-global-var)
-          (,userVars1 . 'xah-elisp-user-variable1)
-          (,userVars2 . 'xah-elisp-user-variable2)
+          (,globalVar . 'xah-elisp-gamma-word)
+          (,userVars1 . 'xah-elisp-xi-word)
+          (,userVars2 . 'xah-elisp-dash-word)
           (,capVars . 'xah-elisp-cap-variable)
           )))
 

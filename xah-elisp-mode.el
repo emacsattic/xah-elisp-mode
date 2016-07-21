@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.6.6
+;; Version: 2.6.7
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -93,8 +93,17 @@
 "apply"
 "aref"
 "aset"
+
 "assoc"
 "assq"
+"rassoc"
+"alist-get"
+"rassq"
+"assoc-default"
+"copy-alist"
+"assq-delete-all"
+"rassq-delete-all"
+
 "boundp"
 "car"
 "car-safe"
@@ -180,7 +189,6 @@
 "puthash"
 "quote"
 "random"
-"rassoc"
 "read"
 "regexp-opt"
 "regexp-quote"
@@ -1667,8 +1675,17 @@ If there's a text selection, act on the region, else, on defun block."
     ("apply" "(apply ▮)" nil :system t)
     ("aref" "(aref ARRAY▮ INDEX)" nil :system t)
     ("aset" "(aset ARRAY▮ IDX NEWELT)" nil :system t)
+
     ("assoc" "(assoc KEY▮ LIST)" nil :system t)
-    ("assq" "(assq KEY▮ LIST)" nil :system t)
+    ("rassoc" "(rassoc value▮ alist)" nil :system t)
+    ("assq" "(assq key▮ alist)" nil :system t)
+    ("alist-get" "(alist-get key▮ value &optional default)" nil :system t)
+    ("rassq" "(rassq value▮ alist)" nil :system t)
+    ("assoc-default" "(assoc-default key▮ alist &optional test default)" nil :system t)
+    ("copy-alist" "(copy-alist alist▮)" nil :system t)
+    ("assq-delete-all" "(assq-delete-all key▮ alist)" nil :system t)
+    ("rassq-delete-all" "(rassq-delete-all value▮ alist)" nil :system t)
+
     ("autoload" "(autoload 'FUNCNAME▮ \"FILENAME\" &optional \"DOCSTRING\" INTERACTIVE TYPE)" nil :system t)
     ("backward-char" "(backward-char ▮)" nil :system t)
     ("backward-word" "(backward-word ▮)" nil :system t)

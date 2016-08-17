@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.6.7
+;; Version: 2.7.0
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -340,6 +340,10 @@
 "file-directory-p"
 "file-exists-p"
 "file-name-directory"
+"file-name-as-directory"
+"directory-name-p"
+"directory-file-name"
+"abbreviate-file-name"
 "file-name-extension"
 "file-name-nondirectory"
 "file-name-sans-extension"
@@ -1744,6 +1748,10 @@ If there's a text selection, act on the region, else, on defun block."
     ("file-name-directory" "(file-name-directory ▮)" nil :system t)
     ("file-name-extension" "(file-name-extension ▮ &optional PERIOD)" nil :system t)
     ("file-name-nondirectory" "(file-name-nondirectory ▮)" nil :system t)
+    ("file-name-as-directory" "(file-name-as-directory ▮)" nil :system t)
+    ("directory-name-p" "(directory-name-p ▮)" nil :system t)
+    ("directory-file-name" "(directory-file-name ▮)" nil :system t)
+    ("abbreviate-file-name" "(abbreviate-file-name ▮)" nil :system t)
     ("file-name-sans-extension" "(file-name-sans-extension ▮)" nil :system t)
     ("file-regular-p" "(file-regular-p ▮)" nil :system t)
     ("file-relative-name" "(file-relative-name ▮)" nil :system t)

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.7.0
+;; Version: 2.7.1
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -80,13 +80,15 @@
 
 (defvar xah-elisp-mode-hook nil "Standard hook for `xah-elisp-mode'")
 
-(defvar xah-elisp-elisp-lang-words nil "List of elisp keywords more or less the core language.")
+(defvar xah-elisp-elisp-lang-words nil "List of elisp keywords of “core” language. Core is not well defined here, but mostly in C.")
 (setq xah-elisp-elisp-lang-words '(
 "defalias"
 "fset"
 "defconst"
 
 "abs"
+"mod"
+"sqrt"
 "add-to-list"
 "and"
 "append"
@@ -1695,7 +1697,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("backward-word" "(backward-word ▮)" nil :system t)
     ("beginning-of-line" "(beginning-of-line)" nil :system t)
     ("boundp" "(boundp '▮)" nil :system t)
-    ("bounds-of-thing-at-point" "(bounds-of-thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)")
+    ("bounds-of-thing-at-point" "(bounds-of-thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)" :system t)
     ("buffer-file-name" "(buffer-file-name)" nil :system t)
     ("buffer-modified-p" "(buffer-modified-p ▮)" nil :system t)
     ("buffer-name" "(buffer-name BUFFER▮)" nil :system t)
@@ -1891,7 +1893,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("text-properties-at" "(text-properties-at POSITION▮ &optional OBJECT)" nil :system t)
     ("text-property-any" "(text-property-any START END PROP VALUE &optional OBJECT)" nil :system t)
     ("text-property-not-all" "(text-property-not-all START END PROP VALUE &optional OBJECT)" nil :system t)
-    ("thing-at-point" "(thing-at-point 'word▮ 'symbol 'list 'sexp 'defun 'filename 'url 'email 'sentence 'whitespace 'line 'number 'page)")
+    ("thing-at-point" "(thing-at-point 'word▮ 'symbol 'list 'sexp 'defun 'filename 'url 'email 'sentence 'whitespace 'line 'number 'page)" :system t)
     ("throw" "(throw TAG▮ VALUE)" nil :system t)
     ("unless" "(unless ▮)" nil :system t)
     ("use-region-p" "(use-region-p)" nil :system t)

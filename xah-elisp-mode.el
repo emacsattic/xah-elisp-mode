@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.7.2
+;; Version: 2.8.0
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1402,7 +1402,7 @@ This uses `ido-mode' user interface for completion."
 ))))
 
 (defun xah-elisp-completion-function ()
-  "This is the function for the hook `completion-at-point-functions'"
+  "This is the function to be used for the hook `completion-at-point-functions'."
   (interactive)
   (let* (
          (-bds (bounds-of-thing-at-point 'symbol))
@@ -2169,7 +2169,8 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   (add-function :before-until (local 'eldoc-documentation-function)
                 #'elisp-eldoc-documentation-function)
 
-  (add-hook 'completion-at-point-functions 'xah-elisp-completion-function nil 'local)
+  ;; when calling emacs's complete-symbol, follow convention. When pressing TAB, do xah way.
+  (add-hook 'completion-at-point-functions 'elisp-completion-at-point nil 'local)
 
   (make-local-variable abbrev-expand-function)
   (if (or

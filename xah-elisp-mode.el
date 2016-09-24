@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.7.1
+;; Version: 2.7.2
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -82,30 +82,19 @@
 
 (defvar xah-elisp-elisp-lang-words nil "List of elisp keywords of “core” language. Core is not well defined here, but mostly in C.")
 (setq xah-elisp-elisp-lang-words '(
-"defalias"
-"fset"
-"defconst"
 
 "abs"
-"mod"
-"sqrt"
 "add-to-list"
+"alist-get"
 "and"
 "append"
 "apply"
 "aref"
 "aset"
-
 "assoc"
-"assq"
-"rassoc"
-"alist-get"
-"rassq"
 "assoc-default"
-"copy-alist"
+"assq"
 "assq-delete-all"
-"rassq-delete-all"
-
 "boundp"
 "car"
 "car-safe"
@@ -119,7 +108,10 @@
 "condition-case"
 "cons"
 "consp"
+"copy-alist"
 "decode-coding-string"
+"defalias"
+"defconst"
 "defmacro"
 "defun"
 "defvar"
@@ -127,8 +119,8 @@
 "delete-dups"
 "delq"
 "elt"
-"equal"
 "eq"
+"equal"
 "eval"
 "expt"
 "fboundp"
@@ -138,6 +130,7 @@
 "floatp"
 "format"
 "format-time-string"
+"fset"
 "funcall"
 "function"
 "functionp"
@@ -169,6 +162,7 @@
 "memql"
 "message"
 "min"
+"mod"
 "nil"
 "not"
 "nth"
@@ -178,6 +172,9 @@
 "number-to-string"
 "numberp"
 "or"
+"plist-get"
+"plist-member"
+"plist-put"
 "pop"
 "prin1"
 "princ"
@@ -191,6 +188,9 @@
 "puthash"
 "quote"
 "random"
+"rassoc"
+"rassq"
+"rassq-delete-all"
 "read"
 "regexp-opt"
 "regexp-quote"
@@ -201,10 +201,12 @@
 "reverse"
 "round"
 "set"
+"setplist"
 "setq"
 "sleep-for"
 "sort"
 "split-string"
+"sqrt"
 "string"
 "string-equal"
 "string-match"
@@ -231,10 +233,15 @@
 "when"
 "while"
 "zerop"
+
 ))
 
 (defvar xah-elisp-emacs-words nil "List of elisp keywords that's not core lisp language, such as buffer, marker, hook, editing, copy paste, ….")
 (setq xah-elisp-emacs-words '(
+
+"display-completion-list"
+"all-completions"
+"try-completion"
 
 "image-flush"
 "clear-image-cache"
@@ -274,6 +281,7 @@
 "atomic-change-group"
 "autoload"
 "backward-char"
+"backward-sexp"
 "backward-word"
 "backward-up-list"
 "barf-if-buffer-read-only"
@@ -1598,6 +1606,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("cc" "condition-case" nil :system t)
     ("cd" "copy-directory" nil :system t)
     ("cf" "copy-file" nil :system t)
+    ("cw" "current-word" nil :system t)
     ("dc" "delete-char" nil :system t)
     ("dd" "delete-directory" nil :system t)
     ("df" "delete-file" nil :system t)
@@ -1982,7 +1991,6 @@ If there's a text selection, act on the region, else, on defun block."
 
     ("kill-append" "(kill-append STRING▮ BEFORE-P)" nil :system t)
     ("run-with-timer" "(run-with-timer SECS▮ REPEAT FUNCTION &rest ARGS)" nil :system t)
-
     ;;
     )
 

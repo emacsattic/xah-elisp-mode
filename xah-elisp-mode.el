@@ -1401,6 +1401,15 @@ This uses `ido-mode' user interface for completion."
         ;; (when (not (xah-elisp-start-with-left-paren-p)) (xah-elisp-add-paren-around-symbol))
 ))))
 
+(defun xah-elisp-completion-function ()
+  "This is the function for the hook `completion-at-point-functions'"
+  (interactive)
+  (let* (
+         (-bds (bounds-of-thing-at-point 'symbol))
+         (-p1 (car -bds))
+         (-p2 (cdr -bds)))
+    (list -p1 -p2 xah-elisp-elisp-all-keywords nil )))
+
 (defun xah-elisp-start-with-left-paren-p ()
   "Returns t or nil"
   (interactive)
@@ -2160,7 +2169,7 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   (add-function :before-until (local 'eldoc-documentation-function)
                 #'elisp-eldoc-documentation-function)
 
-  (add-hook 'completion-at-point-functions 'xah-elisp-complete-symbol nil 'local)
+  (add-hook 'completion-at-point-functions 'xah-elisp-completion-function nil 'local)
 
   (make-local-variable abbrev-expand-function)
   (if (or

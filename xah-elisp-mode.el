@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.8.0
+;; Version: 2.8.1
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1801,7 +1801,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("kbd" "(kbd \"▮\")" nil :system t)
     ("kill-buffer" "(kill-buffer ▮)" nil :system t)
     ("kill-region" "(kill-region BEG▮ END &optional REGION)" nil :system t)
-    ("lambda" "(lambda (▮) BODY)" nil :system t)
+    ("lambda" "(lambda (x▮) (interactive) BODY)" nil :system t)
     ("length" "(length ▮)" nil :system t)
     ("left-char" "(left-char ▮)" nil :system t)
     ("let" "(let (▮)\n x\n)" nil :system t)
@@ -1915,7 +1915,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("throw" "(throw TAG▮ VALUE)" nil :system t)
     ("unless" "(unless ▮)" nil :system t)
     ("use-region-p" "(use-region-p)" nil :system t)
-    ("user-error" "(user-error FORMAT▮ &rest ARGS)" nil :system t)
+    ("user-error" "(user-error \"%s▮\" &rest ARGS)" nil :system t)
     ("vector" "(vector ▮)" nil :system t)
     ("version<" "(version< \"24.4\" emacs-version)" nil :system t )
     ("version<=" "(version<= \"24.4\" emacs-version)" nil :system t )
@@ -2024,8 +2024,7 @@ If there's a text selection, act on the region, else, on defun block."
 
 (defface xah-elisp-star-word
   '(
-    (t :foreground "red" :background "pink")
-)
+    (t :foreground "red" :background "pink"))
   "Face for function parameters."
   :group 'xah-elisp-mode )
 
@@ -2166,8 +2165,8 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   (setq-local indent-line-function 'lisp-indent-line)
   (setq-local tab-always-indent 'complete)
 
-  (add-function :before-until (local 'eldoc-documentation-function)
-                #'elisp-eldoc-documentation-function)
+  ;; (add-function :before-until (local 'eldoc-documentation-function)
+  ;;               #'elisp-eldoc-documentation-function)
 
   ;; when calling emacs's complete-symbol, follow convention. When pressing TAB, do xah way.
   (add-hook 'completion-at-point-functions 'elisp-completion-at-point nil 'local)

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.8.1
+;; Version: 2.9.0
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1530,17 +1530,47 @@ If char before point is letters and char after point is whitespace or punctuatio
 
 (defun xah-elisp-prettify-root-sexp ()
   "Prettify format current root sexp group.
-Root sexp group is the outmost sexp unit."
+Root sexp group is the outmost sexp unit.
+
+Version 2016-10-13"
   (interactive)
   (save-excursion
     (let (-p1 -p2)
       (xah-elisp-goto-outmost-bracket)
       (setq -p1 (point))
       (setq -p2 (scan-sexps (point) 1))
+      (save-excursion
+        (save-restriction
+          (narrow-to-region -p1 -p2)
+          (progn
+            (goto-char (point-min))
+            (indent-sexp)
+            (xah-elisp-compact-parens-region (point-min) (point-max))
+            (xah-elisp-compact-blank-lines (point-min) (point-max))
+            (delete-trailing-whitespace (point-min) (point-max))))))))
+
+(defun xah-elisp-compact-blank-lines (&optional *begin *end *n)
+  "Replace repeated blank lines to just 1.
+Works on whole buffer or text selection, respects `narrow-to-region'.
+
+*N is the number of newline chars to use in replacement.
+If 0, it means lines will be joined.
+By befault, *N is 2. It means, 1 visible blank line.
+
+Version 2016-10-13"
+  (interactive
+   (if (region-active-p)
+       (list (region-beginning) (region-end))
+     (list (point-min) (point-max))))
+  (when (null *begin)
+    (setq *begin (point-min) *end (point-max)))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region *begin *end)
       (progn
-        (goto-char -p1)
-        (indent-sexp)
-        (xah-elisp-compact-parens-region -p1 -p2)))))
+        (goto-char (point-min))
+        (while (search-forward-regexp "\n\n\n+" nil "noerror")
+          (replace-match (make-string (if (null *n) 2 *n ) 10)))))))
 
 (defun xah-elisp-goto-outmost-bracket (&optional *pos)
   "Move cursor to the beginning of outer-most bracket, with respect to *pos.

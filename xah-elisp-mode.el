@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.10.1
+;; Version: 2.10.2
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1361,7 +1361,6 @@
 (defvar xah-elisp-elisp-all-keywords nil "List of all elisp keywords")
 (setq xah-elisp-elisp-all-keywords (append xah-elisp-elisp-lang-words xah-elisp-emacs-words xah-elisp-emacs-user-commands xah-elisp-keyword-builtin xah-elisp-elisp-vars-1 ))
 
-
 (defun xah-elisp-display-page-break-as-line ()
   "Display the formfeed ^L char as line.
 Version 2016-10-11"
@@ -1410,9 +1409,7 @@ This uses `ido-mode' user interface for completion."
 
     ;; use case of completion
     (when (not (xah-elisp-start-with-left-paren-p))
-      (let ( (-abbrev-expanded-p (xah-elisp-expand-abbrev)))
-        ;; (when (not (xah-elisp-start-with-left-paren-p)) (xah-elisp-add-paren-around-symbol))
-))))
+      (let ( (-abbrev-expanded-p (xah-elisp-expand-abbrev)))))))
 
 (defun xah-elisp-completion-function ()
   "This is the function to be used for the hook `completion-at-point-functions'."
@@ -1510,11 +1507,12 @@ This is called by emacs abbrev system."
 Limit backward search to at *pos or at beginning of line.
 Return true if found, else false."
   (interactive)
-  (let ((found-p (search-backward "▮" (if *pos *pos (line-beginning-position)) t )))
-    (when found-p
-      ;; (forward-char )
-      (search-forward "▮"))
-    found-p
+  (let ((-found-p (search-backward "▮" (if *pos *pos (line-beginning-position)) t )))
+    (when -found-p
+      (forward-char )
+      t
+      )
+    -found-p
     ))
 
 

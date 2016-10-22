@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.10.0
+;; Version: 2.10.1
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2214,7 +2214,7 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   ;; when calling emacs's complete-symbol, follow convention. When pressing TAB, do xah way.
   (add-hook 'completion-at-point-functions 'elisp-completion-at-point nil 'local)
 
-  (make-local-variable abbrev-expand-function)
+  (make-local-variable 'abbrev-expand-function)
   (if (or
        (and (>= emacs-major-version 24)
             (>= emacs-minor-version 4))

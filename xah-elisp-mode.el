@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.10.2
+;; Version: 2.11.0
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1459,6 +1459,14 @@ Call `exchange-point-and-mark' \\[exchange-point-and-mark] to highlight them."
       (goto-char p1)
       (delete-char 1))))
 
+(defun xah-elisp-abbrev-enable-function ()
+  "Determine whether to expand abbrev.
+This is called by emacs abbrev system."
+  (let ((-syntax-state (syntax-ppss)))
+    (if (or (nth 3 -syntax-state) (nth 4 -syntax-state))
+        nil
+      t)))
+
 (defun xah-elisp-expand-abbrev-maybe (&optional *expand-func)
   "Expand emacs lisp function name before cursor into template.
 Returns true if there's a expansion, else nil."
@@ -1471,36 +1479,28 @@ Returns true if there's a expansion, else nil."
         nil
       (xah-elisp-expand-abbrev))))
 
-(put 'xah-elisp-expand-abbrev-maybe 'no-self-insert t)
-
 (defun xah-elisp-expand-abbrev ()
   "Expand the symbol before cursor.
 Returns true if there's a expansion, else nil."
   (interactive)
   (let (
         -p1 -p2
-        -ab-str
+        -abrStr
+        -abrSymbol
         )
     (save-excursion
       (forward-symbol -1)
       (setq -p1 (point))
       (forward-symbol 1)
       (setq -p2 (point)))
-    (setq -ab-str (buffer-substring-no-properties -p1 -p2))
-    (if (abbrev-symbol -ab-str)
+    (setq -abrStr (buffer-substring-no-properties -p1 -p2))
+    (setq -abrSymbol (abbrev-symbol -abrStr))
+    (if -abrSymbol
         (progn
-          (abbrev-insert (abbrev-symbol -ab-str) -ab-str -p1 -p2 )
+          (abbrev-insert -abrSymbol -abrStr -p1 -p2 )
           (xah-elisp--abbrev-position-cursor -p1)
-          t)
+          -abrSymbol)
       nil)))
-
-(defun xah-elisp-abbrev-enable-function ()
-  "Determine whether to expand abbrev.
-This is called by emacs abbrev system."
-  (let ((-syntax-state (syntax-ppss)))
-    (if (or (nth 3 -syntax-state) (nth 4 -syntax-state))
-        nil
-      t)))
 
 (defun xah-elisp--abbrev-position-cursor (&optional *pos)
   "Move cursor back to ▮ if exist, else put at end.
@@ -1845,7 +1845,6 @@ If there's a text selection, act on the region, else, on defun block."
     ("lambda" "(lambda (x▮) (interactive) BODY)" nil :system t)
     ("length" "(length ▮)" nil :system t)
     ("left-char" "(left-char ▮)" nil :system t)
-    ("let" "(let (▮)\n x\n)" nil :system t)
     ("line-beginning-position" "(line-beginning-position)" nil :system t)
     ("line-end-position" "(line-end-position)" nil :system t)
     ("list" "(list ▮)" nil :system t)
@@ -2045,11 +2044,21 @@ If there's a text selection, act on the region, else, on defun block."
     )
 
   "abbrev table for `xah-elisp-mode'"
-  ;; :regexp "\\_<\\([_-0-9A-Za-z]+\\)"
-  :regexp "\\([_-0-9A-Za-z]+\\)"
+  :regexp "\\([_-*0-9A-Za-z]+\\)"
   :case-fixed t
   :enable-function 'xah-elisp-abbrev-enable-function
   )
+
+(defun xah-elisp-abbrev-expand-hook ()
+  "DOCSTRING"
+  (interactive)
+  (message "hook ran 05784" )
+  t)
+
+(put 'xah-elisp-abbrev-expand-hook 'no-self-insert t)
+
+(define-abbrev xah-elisp-mode-abbrev-table "let" "(let* (▮)\n x\n)" 'xah-elisp-abbrev-expand-hook :system t)
+
 
 
 ;; syntax coloring related

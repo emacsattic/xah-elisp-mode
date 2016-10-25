@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.11.1
+;; Version: 2.11.2
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1467,7 +1467,7 @@ Version 2016-10-24"
     (not (or (nth 3 -syntax-state) (nth 4 -syntax-state)))))
 
 (defun xah-elisp-expand-abbrev ()
-  "Expand the symbol before cursor, 
+  "Expand the symbol before cursor,
 if cursor is not in string or comment.
 Returns the abbrev symbol if there's a expansion, else nil.
 Version 2016-10-24"
@@ -1632,8 +1632,8 @@ If there's a text selection, act on the region, else, on defun block."
 
 ;; abbrev
 
-;; wanted to start clean, for development. eventually, prob (not ▮)
-(setq xah-elisp-mode-abbrev-table nil) 
+;; wanted to start clean, for development. eventually, prob not
+(setq xah-elisp-mode-abbrev-table nil)
 
 (define-abbrev-table 'xah-elisp-mode-abbrev-table
   '(
@@ -2042,7 +2042,6 @@ If there's a text selection, act on the region, else, on defun block."
 (abbrev-table-put xah-elisp-mode-abbrev-table :system t)
 (abbrev-table-put xah-elisp-mode-abbrev-table :enable-function 'xah-elisp-abbrev-enable-function)
 
-
 
 ;; syntax coloring related
 
@@ -2159,7 +2158,7 @@ If there's a text selection, act on the region, else, on defun block."
     (define-key xah-elisp-mode-no-chord-map (kbd "h") 'xah-elisp-remove-paren-pair)
     (define-key xah-elisp-mode-no-chord-map (kbd "p") 'xah-elisp-compact-parens)
     (define-key xah-elisp-mode-no-chord-map (kbd "c") 'xah-elisp-complete-symbol)
-    (define-key xah-elisp-mode-no-chord-map (kbd "e") 'xah-elisp-expand-abbrev))
+    )
 
   ;; define separate, so that user can override the lead key
   (define-key xah-elisp-mode-map (kbd "C-c C-c") xah-elisp-mode-no-chord-map)
@@ -2212,6 +2211,8 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
       (progn
         (setq abbrev-expand-function 'xah-elisp-expand-abbrev))
     (progn (add-hook 'abbrev-expand-functions 'xah-elisp-expand-abbrev nil t)))
+
+  (abbrev-mode 1)
 
   (xah-elisp-display-page-break-as-line)
   (setq prettify-symbols-alist '(("lambda" . 955)))

@@ -2,8 +2,8 @@
 
 ;; Copyright © 2013-2015, by Xah Lee
 
-;; Author: Xah Lee ( http://xahlee.org/ )
-;; Version: 2.11.2
+;; Author: Xah Lee ( http://xahlee.info/ )
+;; Version: 2.11.3
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -1497,9 +1497,8 @@ Version 2016-10-24"
 Return true if found, else false.
 Version 2016-10-24"
   (interactive)
-  (message "pos is %s" *pos)
   (let ((-found-p (search-backward "▮" (if *pos *pos (max (point-min) (- (point) 100))) t )))
-    (when -found-p (forward-char ))
+    (when -found-p (delete-char 1))
     -found-p
     ))
 
@@ -1644,8 +1643,10 @@ If there's a text selection, act on the region, else, on defun block."
     ("m" "(message \"%s▮\" ARGS)" xah-elisp--ahf)
     ("p" "(point)" xah-elisp--ahf)
     ("s" "(setq ▮ VAL)" xah-elisp--ahf)
-    ("w" "(when ▮)" xah-elisp--ahf)
-
+    ("w" "(let (i)
+  (when  (< i 9)
+    ▮
+    (1+ i)))" xah-elisp--ahf)
     ("ah" "add-hook" xah-elisp--ahf)
     ("bc" "backward-char" xah-elisp--ahf)
     ("bs" "buffer-substring" xah-elisp--ahf)
@@ -1655,8 +1656,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("cc" "condition-case" xah-elisp--ahf)
     ("cd" "copy-directory" xah-elisp--ahf)
     ("cf" "copy-file" xah-elisp--ahf)
-    ("cw" "current-word" xah-elisp--ahf)
-    ("dc" "delete-char" xah-elisp--ahf)
+    ("cw" "(current-word)" xah-elisp--ahf)
+    ("dc" "(delete-char 1)" xah-elisp--ahf)
     ("dd" "delete-directory" xah-elisp--ahf)
     ("df" "delete-file" xah-elisp--ahf)
     ("dk" "define-key" xah-elisp--ahf)
@@ -1728,7 +1729,6 @@ If there's a text selection, act on the region, else, on defun block."
     ("fnse" "file-name-sans-extension" xah-elisp--ahf)
     ("rris" "replace-regexp-in-string" xah-elisp--ahf)
     ("yonp" "yes-or-no-p" xah-elisp--ahf)
-
     ("botap" "bounds-of-thing-at-point" xah-elisp--ahf)
 
     ("abbreviate-file-name" "(abbreviate-file-name ▮)" xah-elisp--ahf)
@@ -1786,6 +1786,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("copy-directory" "(copy-directory ▮ NEWNAME &optional KEEP-TIME PARENTS)" xah-elisp--ahf)
     ("copy-file" "(copy-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME PRESERVE-UID-GID)" xah-elisp--ahf)
     ("create-image" "(create-image FILE-OR-DATA▮ &optional TYPE DATA-P &rest)" xah-elisp--ahf)
+    ("current-word" "(current-word)" xah-elisp--ahf)
     ("current-buffer" "(current-buffer)" xah-elisp--ahf)
     ("custom-autoload" "(custom-autoload ▮ SYMBOL LOAD &optional NOSET)" xah-elisp--ahf)
     ("defalias" "(defalias 'SYMBOL▮ 'DEFINITION &optional DOCSTRING)" xah-elisp--ahf)
@@ -1932,6 +1933,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("princ" "(princ ▮)" xah-elisp--ahf)
     ("print" "(print ▮)" xah-elisp--ahf)
     ("progn" "(progn\n▮)" xah-elisp--ahf)
+    ("pop" "(pop ▮)" xah-elisp--ahf)
     ("propertize" "(propertize STRING▮ &rest PROPERTIES)" xah-elisp--ahf)
     ("push" "(push NEWELT▮ PLACE)" xah-elisp--ahf)
     ("push-mark" "(push-mark ▮&optional LOCATION NOMSG ACTIVATE)" xah-elisp--ahf)
@@ -1975,7 +1977,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("save-excursion" "(save-excursion ▮)" xah-elisp--ahf)
     ("save-restriction" "(save-restriction ▮)" xah-elisp--ahf)
     ("search-backward" "(search-backward \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
-    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
+    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND  s/['NOERROR COUNT)" xah-elisp--ahf)
     ("search-forward" "(search-forward \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
     ("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
     ("set-buffer" "(set-buffer ▮)" xah-elisp--ahf)
@@ -2018,7 +2020,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("version<=" "(version<= \"24.4\" emacs-version)" nil :system t )
     ("visited-file-modtime" "(visited-file-modtime)" xah-elisp--ahf)
     ("when" "(when ▮)" xah-elisp--ahf)
-    ("while" "(while (< ii▮ 9)\n  (setq ii (1+ ii)))" xah-elisp--ahf)
+    ("while" "(while (< i▮ 9)\n  (setq i (1+ i)))" xah-elisp--ahf)
     ("widen" "(widen)" xah-elisp--ahf)
     ("widget-get" "(widget-get ▮)" xah-elisp--ahf)
     ("with-current-buffer" "(with-current-buffer BUFFER-OR-NAME▮ BODY)" xah-elisp--ahf)
@@ -2216,6 +2218,9 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 
   (xah-elisp-display-page-break-as-line)
   (setq prettify-symbols-alist '(("lambda" . 955)))
+
+  (make-local-variable 'ido-separator)
+  (setq ido-separator "\n")
 
   :group 'xah-elisp-mode
   )

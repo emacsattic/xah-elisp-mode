@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 2.11.4
+;; Version: 2.11.5
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -179,6 +179,8 @@
 "print-length"
 "print-level"
 "progn"
+"prog1"
+"prog2"
 "provide"
 "push"
 "put"
@@ -1642,15 +1644,13 @@ If there's a text selection, act on the region, else, on defun block."
     ("m" "(message \"%s▮\" ARGS)" xah-elisp--ahf)
     ("p" "(point)" xah-elisp--ahf)
     ("s" "(setq ▮ VAL)" xah-elisp--ahf)
-    ("w" "(let (i)
-  (when  (< i 9)
-    ▮
-    (1+ i)))" xah-elisp--ahf)
+    ("o" "&optional " xah-elisp--ahf)
+    ("w" "(when ▮)" xah-elisp--ahf)
     ("ah" "add-hook" xah-elisp--ahf)
     ("bc" "backward-char" xah-elisp--ahf)
     ("bs" "buffer-substring" xah-elisp--ahf)
     ("bw" "backward-word" xah-elisp--ahf)
-    ("ca" "custom-autoload" xah-elisp--ahf)
+    ("ca" "char-after" xah-elisp--ahf)
     ("cb" "current-buffer" xah-elisp--ahf)
     ("cc" "condition-case" xah-elisp--ahf)
     ("cd" "copy-directory" xah-elisp--ahf)
@@ -1933,6 +1933,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("princ" "(princ ▮)" xah-elisp--ahf)
     ("print" "(print ▮)" xah-elisp--ahf)
     ("progn" "(progn\n▮)" xah-elisp--ahf)
+    ("prog1" "(prog1\n▮)" xah-elisp--ahf)
+    ("prog2" "(prog2\n▮)" xah-elisp--ahf)
     ("pop" "(pop ▮)" xah-elisp--ahf)
     ("propertize" "(propertize STRING▮ &rest PROPERTIES)" xah-elisp--ahf)
     ("push" "(push NEWELT▮ PLACE)" xah-elisp--ahf)
@@ -1993,7 +1995,6 @@ If there's a text selection, act on the region, else, on defun block."
     ("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("skip-chars-forward" "(skip-chars-forward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("split-string" "(split-string ▮ &optional SEPARATORS OMIT-NULLS)" xah-elisp--ahf)
-    ("string" "(string ▮)" xah-elisp--ahf)
     ("string-equal" "(string-equal str1▮ str2)" xah-elisp--ahf)
     ("string-match" "(string-match \"REGEXP▮\" \"STRING\" &optional START)" xah-elisp--ahf)
     ("string-match-p" "(string-match-p \"REGEXP▮\" \"STRING\" &optional START)" xah-elisp--ahf)
@@ -2137,7 +2138,7 @@ If there's a text selection, act on the region, else, on defun block."
       (let ((synTable (make-syntax-table emacs-lisp-mode-syntax-table)))
 
         (modify-syntax-entry ?\* "w" synTable)
-        (modify-syntax-entry ?\- "w" synTable)
+        (modify-syntax-entry ?\- "_" synTable)
 
         ;; (modify-syntax-entry ?\; "<" synTable)
         ;; (modify-syntax-entry ?\n ">" synTable)

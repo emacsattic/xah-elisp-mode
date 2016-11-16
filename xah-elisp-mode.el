@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 2.11.5
+;; Version: 2.11.6
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -233,11 +233,21 @@
 "while"
 "zerop"
 
+"string-collate-equalp"
+"string-prefix-p"
+"string-suffix-p"
+"string<"
+"string-lessp"
+"string-greaterp"
+"string-collate-lessp"
+"string-prefix-p"
+"string-suffix-p"
+"compare-strings"
+"assoc-string"
 ))
 
 (defvar xah-elisp-emacs-words nil "List of elisp keywords that's not core lisp language, such as buffer, marker, hook, editing, copy paste, ….")
 (setq xah-elisp-emacs-words '(
-
 
 "make-syntax-table"
 "display-completion-list"
@@ -632,7 +642,7 @@
 (setq xah-elisp-elisp-vars-1 '(
 
 "load-in-progress"
-
+"split-string-default-separators"
 "image-cache-eviction-delay"
 "max-image-size"
 "buffer-access-fontify-functions"
@@ -2034,6 +2044,23 @@ If there's a text selection, act on the region, else, on defun block."
     ("write-region" "(write-region (point-min) (point-max) FILENAME &optional APPEND VISIT LOCKNAME MUSTBENEW)" xah-elisp--ahf)
     ("y-or-n-p" "(y-or-n-p \"PROMPT▮ \")" xah-elisp--ahf)
     ("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" xah-elisp--ahf)
+
+    ("make-string" "(make-string count character)" xah-elisp--ahf)
+    ("string" "(string &rest characters)" xah-elisp--ahf)
+
+    ("char-equal" "(char-equal char1▮ char1)" xah-elisp--ahf)
+
+    ("string-collate-equalp" "(string-collate-equalp string1▮ string2 &optional locale)" xah-elisp--ahf)
+    ("string-prefix-p" "(string-prefix-p prefixstr▮ string2 &optional ignore-case)" xah-elisp--ahf)
+    ("string-suffix-p" "(string-suffix-p suffix▮ string &optional ignore-case)" xah-elisp--ahf)
+    ("string-lessp" "(string-lessp string1▮ string2)" xah-elisp--ahf)
+    ("string-greaterp" "(string-greaterp string1▮ string2)" xah-elisp--ahf)
+    ("string-collate-lessp" "(string-collate-lessp string1▮ string2 &optional locale)" xah-elisp--ahf)
+    ("string-prefix-p" "(string-prefix-p string1▮ string2 &optional ignore-case)" xah-elisp--ahf)
+    ("string-suffix-p" "(string-suffix-p suffix▮ string &optional ignore-case)" xah-elisp--ahf)
+    ("compare-strings" "(compare-strings string1▮ start1 end1 string2 start2 end2)" xah-elisp--ahf)
+    ("assoc-string" "(assoc-string key▮ alist &optional case-fold)" xah-elisp--ahf)
+
     ;;
     )
 

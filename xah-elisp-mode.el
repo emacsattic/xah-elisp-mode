@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 2.11.6
+;; Version: 2.11.7
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -74,12 +74,14 @@
 ;;; Code:
 
 (require 'lisp-mode)
+(require 'elisp-mode)
 
 (defvar xah-elisp-mode-hook nil "Standard hook for `xah-elisp-mode'")
 
 (defvar xah-elisp-elisp-lang-words nil "List of elisp keywords of “core” language. Core is not well defined here, but mostly in C.")
 (setq xah-elisp-elisp-lang-words '(
 
+"make-string"
 "abs"
 "add-to-list"
 "alist-get"
@@ -1399,6 +1401,8 @@ emacs 25.x changed `up-list' to take up to 3 args. Before, only 1."
 
 ;; completion
 
+
+
 (defun xah-elisp-complete-symbol ()
   "Perform keyword completion on current symbol.
 This uses `ido-mode' user interface for completion."
@@ -2047,6 +2051,7 @@ If there's a text selection, act on the region, else, on defun block."
 
     ("make-string" "(make-string count character)" xah-elisp--ahf)
     ("string" "(string &rest characters)" xah-elisp--ahf)
+    ("backward-up-list" "(backward-up-list &optional ARG▮ 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)" xah-elisp--ahf)
 
     ("char-equal" "(char-equal char1▮ char1)" xah-elisp--ahf)
 

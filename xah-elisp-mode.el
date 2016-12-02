@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2015, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 2.11.8
+;; Version: 2.11.9
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2240,9 +2240,9 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   ;;               #'elisp-eldoc-documentation-function)
 
   ;; when calling emacs's complete-symbol, follow convention. When pressing TAB, do xah way.
+
   (if (version< emacs-version "25.1.1")
-      (progn
-        (add-hook 'completion-at-point-functions 'completion-at-point nil 'local))
+      nil
     (progn
       ;; between GNU Emacs 24.5.1 and GNU Emacs 25.1.1, new is a elisp-mode.el at ~/apps/emacs-25.1/lisp/progmodes/elisp-mode.el
       ;; it seems it's extracted from lisp-mode.el at /home/xah/apps/emacs-25.1/lisp/emacs-lisp/lisp-mode.el

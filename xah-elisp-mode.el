@@ -1,9 +1,9 @@
 ;;; xah-elisp-mode.el --- Major mode for editing emacs lisp.
 
-;; Copyright © 2013-2015, by Xah Lee
+;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 2.11.9
+;; Version: 2.12.0
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -52,12 +52,7 @@
 
 ;; If you like the idea, please help fund the project. Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. See home page. Thanks.
 
-;; auto-complete-mode support
-;; if you want also to use auto-complete-mode, add the following to your emacs init.
-
-;; make auto-complete-mode support xah-elisp-mode
-;; (when (boundp 'ac-modes)
-;;   (add-to-list 'ac-modes 'xah-elisp-mode))
+;; 2016-12-02 compatible with company-mode
 
 ;; equires emacs 24.3 because of using setq-local
 
@@ -203,6 +198,7 @@
 "set"
 "setplist"
 "setq"
+"setf"
 "sleep-for"
 "sort"
 "split-string"
@@ -254,6 +250,8 @@
 "display-completion-list"
 "all-completions"
 "try-completion"
+
+"abbrev-table-put"
 
 "image-flush"
 "clear-image-cache"
@@ -1400,8 +1398,6 @@ emacs 25.x changed `up-list' to take up to 3 args. Before, only 1."
 
 ;; completion
 
-
-
 (defun xah-elisp-complete-symbol ()
   "Perform keyword completion on current symbol.
 This uses `ido-mode' user interface for completion."
@@ -1737,6 +1733,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("tap" "thing-at-point" xah-elisp--ahf)
     ("urp" "use-region-p" xah-elisp--ahf)
     ("wcb" "with-current-buffer" xah-elisp--ahf)
+    ("wtb" "with-temp-buffer" xah-elisp--ahf)
 
     ("bsnp" "(buffer-substring-no-properties START▮ END)" xah-elisp--ahf)
     ("fnse" "file-name-sans-extension" xah-elisp--ahf)
@@ -2252,21 +2249,22 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
       (add-hook 'completion-at-point-functions 'elisp-completion-at-point nil 'local)))
 
   (make-local-variable 'abbrev-expand-function)
-  (if (or
-       (and (>= emacs-major-version 24)
-            (>= emacs-minor-version 4))
-       (>= emacs-major-version 25))
-      (progn
-        (setq abbrev-expand-function 'xah-elisp-expand-abbrev))
-    (progn (add-hook 'abbrev-expand-functions 'xah-elisp-expand-abbrev nil t)))
+  (if (version< emacs-version "24.4")
+      (add-hook 'abbrev-expand-functions 'xah-elisp-expand-abbrev nil t)
+    (setq abbrev-expand-function 'xah-elisp-expand-abbrev))
 
   (abbrev-mode 1)
 
   (xah-elisp-display-page-break-as-line)
   (setq prettify-symbols-alist '(("lambda" . 955)))
 
-  (make-local-variable 'ido-separator)
-  (setq ido-separator "\n")
+  (if (version< emacs-version "25")
+      (progn
+        (make-local-variable 'ido-separator)
+        (setq ido-separator "\n"))
+    (progn
+      (make-local-variable 'ido-decorations)
+      (setf (nth 2 ido-decorations) "\n")))
 
   :group 'xah-elisp-mode
   )

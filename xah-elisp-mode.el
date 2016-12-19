@@ -1,9 +1,9 @@
-;;; xah-elisp-mode.el --- Major mode for editing emacs lisp.
+;;; xah-elisp-mode.el --- Major mode for editing emacs lisp. -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 2.12.0
+;; Version: 2.12.2
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -280,7 +280,9 @@
 "defimage"
 "find-image"
 "image-load-path-for-library"
-
+"revert-buffer"
+"kill-word"
+"backward-kill-word"
 "abbrev-insert"
 "abbrev-symbol"
 "add-hook"
@@ -1400,7 +1402,8 @@ emacs 25.x changed `up-list' to take up to 3 args. Before, only 1."
 
 (defun xah-elisp-complete-symbol ()
   "Perform keyword completion on current symbol.
-This uses `ido-mode' user interface for completion."
+This uses `ido-mode' user interface for completion.
+version 2016-12-18"
   (interactive)
   (let* (
          (-bds (bounds-of-thing-at-point 'symbol))
@@ -1415,11 +1418,7 @@ This uses `ido-mode' user interface for completion."
     (setq -result-sym
           (ido-completing-read "" xah-elisp-elisp-all-keywords nil nil -current-sym ))
     (delete-region -p1 -p2)
-    (insert -result-sym)
-
-    ;; use case of completion
-    (when (not (xah-elisp-start-with-left-paren-p))
-      (let ( (-abbrev-expanded-p (xah-elisp-expand-abbrev)))))))
+    (insert -result-sym)))
 
 (defun xah-elisp-completion-function ()
   "This is the function to be used for the hook `completion-at-point-functions'."
@@ -1454,19 +1453,16 @@ becomes
 Cursor is moved to the left deleted paren spot, mark is set to the right deleted paren spot.
 Call `exchange-point-and-mark' \\[exchange-point-and-mark] to highlight them."
   (interactive)
-  (let ((pos (point))
-        p1 p2
-        )
+  (let (-pos)
     (atomic-change-group
       (xah-elisp-up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING")
       (while (not (char-equal (char-after) ?\( ))
         (xah-elisp-up-list -1 "ESCAPE-STRINGS" "NO-SYNTAX-CROSSING"))
-      (setq p1 (point))
+      (setq -pos (point))
       (forward-sexp)
-      (setq p2 (point))
       (delete-char -1)
       (push-mark (point) t t)
-      (goto-char p1)
+      (goto-char -pos)
       (delete-char 1))))
 
 (defun xah-elisp-abbrev-enable-function ()
@@ -1716,6 +1712,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("gsk" "global-set-key" xah-elisp--ahf)
     ("ifc" "insert-file-contents" xah-elisp--ahf)
     ("lbp" "(line-beginning-position)" xah-elisp--ahf)
+    ("lam" "lambda" xah-elisp--ahf)
     ("lep" "(line-end-position)" xah-elisp--ahf)
     ("mlv" "make-local-variable" xah-elisp--ahf)
     ("ntr" "narrow-to-region" xah-elisp--ahf)
@@ -1780,7 +1777,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("call-interactively" "(call-interactively 'FUNCTION▮ &optional RECORD-FLAG KEYS)" xah-elisp--ahf)
     ("called-interactively-p" "(called-interactively-p 'interactive▮)" xah-elisp--ahf)
     ("car" "(car ▮)" xah-elisp--ahf)
-    ("catch" "(catch TAG▮ BODY)" xah-elisp--ahf)
+    ("catch" "(catch 'TAG▮ BODY)" xah-elisp--ahf)
     ("cdr" "(cdr ▮)" xah-elisp--ahf)
     ("char-to-string" "(char-to-string CHAR▮) " xah-elisp--ahf)
     ("clear-image-cache" "(clear-image-cache &optional FILTER▮)" xah-elisp--ahf)
@@ -1989,7 +1986,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("save-excursion" "(save-excursion ▮)" xah-elisp--ahf)
     ("save-restriction" "(save-restriction ▮)" xah-elisp--ahf)
     ("search-backward" "(search-backward \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
-    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND  s/['NOERROR COUNT)" xah-elisp--ahf)
+    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
     ("search-forward" "(search-forward \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
     ("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
     ("set-buffer" "(set-buffer ▮)" xah-elisp--ahf)
@@ -2019,7 +2016,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("text-property-any" "(text-property-any START END PROP VALUE &optional OBJECT)" xah-elisp--ahf)
     ("text-property-not-all" "(text-property-not-all START END PROP VALUE &optional OBJECT)" xah-elisp--ahf)
     ("thing-at-point" "(thing-at-point 'word▮ 'symbol 'list 'sexp 'defun 'filename 'url 'email 'sentence 'whitespace 'line 'number 'page)" :system t)
-    ("throw" "(throw TAG▮ VALUE)" xah-elisp--ahf)
+    ("throw" "(throw 'TAG▮ VALUE)" xah-elisp--ahf)
     ("toggle-read-only" "(toggle-read-only &optional ARG▮)" xah-elisp--ahf)
     ("unbury-buffer" "(unbury-buffer)" xah-elisp--ahf)
     ("unless" "(unless ▮)" xah-elisp--ahf)
@@ -2237,12 +2234,11 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   ;;               #'elisp-eldoc-documentation-function)
 
   ;; when calling emacs's complete-symbol, follow convention. When pressing TAB, do xah way.
-
   (if (version< emacs-version "25.1.1")
       nil
     (progn
       ;; between GNU Emacs 24.5.1 and GNU Emacs 25.1.1, new is a elisp-mode.el at ~/apps/emacs-25.1/lisp/progmodes/elisp-mode.el
-      ;; it seems it's extracted from lisp-mode.el at /home/xah/apps/emacs-25.1/lisp/emacs-lisp/lisp-mode.el
+      ;; it seems it's extracted from lisp-mode.el at ~/apps/emacs-25.1/lisp/emacs-lisp/lisp-mode.el
       ;; however, there's no command named elisp-mode
       ;; 'elisp-completion-at-point is new, not in 24.5.1
       (require 'elisp-mode)
@@ -2272,9 +2268,5 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
 (add-to-list 'auto-mode-alist '("\\.el\\'" . xah-elisp-mode))
 
 (provide 'xah-elisp-mode)
-
-;; Local Variables:
-;; coding: utf-8
-;; End:
 
 ;;; xah-elisp-mode.el ends here

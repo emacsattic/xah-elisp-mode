@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.0.0
+;; Version: 3.0.1
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -22,11 +22,12 @@
 
 ;; Major features different from emacs-lisp-mode:
 
-;; • Syntax coloring of 99% statistically most frequently used elisp functions.
+;; • Syntax coloring of ALL elisp symbols documented in elisp manual.
+;; • Symbols are colored by their technical type: function, special form, macro, command, user option, variable.
 ;; • Completion for function names with `ido-mode' interface. (press TAB after word)
+;; • Command to format entire sexp expression unit. (press TAB before word.)
 ;; • Function param template. (press space after function name.)
-;; • 1 to 4 letters abbrevs for top 50 most used functions. e.g. “bsnp” → “buffer-substring-no-properties”
-;; • Convenient formatting command that formats entire sexp expression unit. (press TAB before word.)
+;; • 1 to 4 letters abbrevs for top 50 most used functions. e.g. “d” → expands full (defun ...) template.
 
 ;; Call `xah-elisp-mode' to activate the mode.
 ;; Files ending in “.el” will also open in `xah-elisp-mode'.
@@ -75,7 +76,7 @@
 (defvar xah-elisp-ampersand-words nil "List of elisp special syntax, just &optional and &rest,")
 (setq xah-elisp-ampersand-words '( "&optional" "&rest"))
 
-(defvar xah-elisp-functions nil "List of elisp keywords that's not core lisp language, such as buffer, marker, hook, editing, copy paste, ….")
+(defvar xah-elisp-functions nil "List of elisp functions, those in elisp doc marked as function. (basically, all functions that's not command, macro, special forms.)")
 (setq xah-elisp-functions '(
 
 "mouse-on-link-p"
@@ -1536,7 +1537,7 @@
 
 ))
 
-(defvar xah-elisp-macros nil "List of elisp keywords that are almost always called by user interactively.")
+(defvar xah-elisp-macros nil "List of elisp macros.")
 (setq xah-elisp-macros '(
 
 "defcustom"
@@ -1628,7 +1629,7 @@
 
 ))
 
-(defvar xah-elisp-commands nil "List of elisp keywords of “core” language. Core is not well defined here, but mostly in C.")
+(defvar xah-elisp-commands nil "List of elisp commands.")
 (setq xah-elisp-commands '(
 
 "debug-on-entry"
@@ -2176,7 +2177,7 @@
 
 ))
 
-(defvar xah-elisp-variables nil "List elisp variables names")
+(defvar xah-elisp-variables nil "List elisp variables names (excluding user options).")
 (setq xah-elisp-variables '(
 
 "buffer-file-name"
@@ -2642,8 +2643,8 @@
 
 ))
 
-(defvar xah-elisp-elisp-all-keywords nil "List of all elisp keywords")
-(setq xah-elisp-elisp-all-keywords
+(defvar xah-elisp-all-symbols nil "List of all elisp symbols.")
+(setq xah-elisp-all-symbols
       (append
        xah-elisp-ampersand-words
        xah-elisp-functions
@@ -2696,7 +2697,7 @@ version 2016-12-18"
          -result-sym)
     (when (not -current-sym) (setq -current-sym ""))
     (setq -result-sym
-          (ido-completing-read "" xah-elisp-elisp-all-keywords nil nil -current-sym ))
+          (ido-completing-read "" xah-elisp-all-symbols nil nil -current-sym ))
     (delete-region -p1 -p2)
     (insert -result-sym)))
 
@@ -2707,7 +2708,7 @@ version 2016-12-18"
          (-bds (bounds-of-thing-at-point 'symbol))
          (-p1 (car -bds))
          (-p2 (cdr -bds)))
-    (list -p1 -p2 xah-elisp-elisp-all-keywords nil )))
+    (list -p1 -p2 xah-elisp-all-symbols nil )))
 
 (defun xah-elisp-start-with-left-paren-p ()
   "Returns t or nil"

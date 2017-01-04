@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.0.1
+;; Version: 3.1.1
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2644,15 +2644,27 @@
 ))
 
 (defvar xah-elisp-all-symbols nil "List of all elisp symbols.")
-(setq xah-elisp-all-symbols
-      (append
-       xah-elisp-ampersand-words
-       xah-elisp-functions
-       xah-elisp-special-forms
-       xah-elisp-macros
-       xah-elisp-commands
-       xah-elisp-user-options
-       xah-elisp-variables ))
+(setq xah-elisp-all-symbols nil)
+
+;; (setq xah-elisp-all-symbols
+;;       (append
+;;        xah-elisp-ampersand-words
+;;        xah-elisp-functions
+;;        xah-elisp-special-forms
+;;        xah-elisp-macros
+;;        xah-elisp-commands
+;;        xah-elisp-user-options
+;;        xah-elisp-variables ))
+
+(mapatoms
+ (lambda (x)
+   (push (symbol-name x)  xah-elisp-all-symbols))
+ obarray
+ )
+
+;; (length xah-elisp-all-symbols )
+;; 46694. on gnu emacs sans init, about 15k
+;; 81516 typical xah session
 
 (defun xah-elisp-display-page-break-as-line ()
   "Display the formfeed ^L char as line.
@@ -3354,6 +3366,32 @@ If there's a text selection, act on the region, else, on defun block."
 
 ;; syntax coloring related
 
+(defface xah-elisp-command-face
+  ;; font-lock-type-face
+  '((((class grayscale) (background light)) :foreground "Gray90" :weight bold)
+    (((class grayscale) (background dark))  :foreground "DimGray" :weight bold)
+    (((class color) (min-colors 88) (background light)) :foreground "ForestGreen")
+    (((class color) (min-colors 88) (background dark))  :foreground "PaleGreen")
+    (((class color) (min-colors 16) (background light)) :foreground "ForestGreen")
+    (((class color) (min-colors 16) (background dark))  :foreground "PaleGreen")
+    (((class color) (min-colors 8)) :foreground "green")
+    (t :weight bold :underline t))
+  "Font Lock mode face used to highlight type and classes."
+  :group 'xah-elisp-mode)
+
+;; (face-spec-set
+;;  'xah-elisp-command-face
+;;  '((((class grayscale) (background light)) :foreground "Gray90" :weight bold)
+;;     (((class grayscale) (background dark))  :foreground "DimGray" :weight bold)
+;;     (((class color) (min-colors 88) (background light)) :foreground "ForestGreen")
+;;     (((class color) (min-colors 88) (background dark))  :foreground "PaleGreen")
+;;     (((class color) (min-colors 16) (background light)) :foreground "ForestGreen")
+;;     (((class color) (min-colors 16) (background dark))  :foreground "PaleGreen")
+;;     (((class color) (min-colors 8)) :foreground "green")
+;;     (t :weight bold :underline t))
+;;  'face-defface-spec
+;;  )
+
 (defface xah-elisp-phi-word
   '(
     (t :foreground "black" :background "aquamarine")
@@ -3421,7 +3459,7 @@ If there's a text selection, act on the region, else, on defun block."
           (,(regexp-opt xah-elisp-functions 'symbols) . font-lock-function-name-face)
           (,(regexp-opt xah-elisp-special-forms 'symbols) . font-lock-keyword-face)
           (,(regexp-opt xah-elisp-macros 'symbols) . font-lock-keyword-face)
-          (,(regexp-opt xah-elisp-commands 'symbols) . font-lock-type-face )
+          (,(regexp-opt xah-elisp-commands 'symbols) . 'xah-elisp-command-face)
           (,(regexp-opt xah-elisp-user-options 'symbols) . font-lock-variable-name-face)
           (,(regexp-opt xah-elisp-variables 'symbols) . font-lock-variable-name-face)
           (,phiWord . 'xah-elisp-phi-word)

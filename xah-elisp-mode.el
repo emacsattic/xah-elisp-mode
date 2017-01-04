@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.1.1
+;; Version: 3.1.2
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -17,20 +17,27 @@
 
 ;;; Commentary:
 
-;; Major mode for editing emacs lisp.
+;; Major mode for editing emacs lisp code.
 ;; This is alternative to GNU Emacs emacs-lisp-mode.
 
 ;; Major features different from emacs-lisp-mode:
 
 ;; • Syntax coloring of ALL elisp symbols documented in elisp manual.
+
 ;; • Symbols are colored by their technical type: function, special form, macro, command, user option, variable.
-;; • Completion for function names with `ido-mode' interface. (press TAB after word)
+
+;; • Completion for function names with `ido-mode' interface, for ALL symbols in obarray. (press TAB after word)
+
 ;; • Command to format entire sexp expression unit. (press TAB before word.)
+
 ;; • Function param template. (press space after function name.)
+
 ;; • 1 to 4 letters abbrevs for top 50 most used functions. e.g. “d” → expands full (defun ...) template.
 
+;; abbrev or template are not expanded when in comment or string.
+
 ;; Call `xah-elisp-mode' to activate the mode.
-;; Files ending in “.el” will also open in `xah-elisp-mode'.
+;; Files ending in “.el” will open in `xah-elisp-mode'.
 
 ;; Single letter abbrevs are:
 ;; d → defun
@@ -3528,6 +3535,7 @@ I also recommend the following setup:
  URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
  URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
  URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
+ URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
 
 home page:
 URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'

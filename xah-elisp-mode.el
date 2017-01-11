@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.1.2
+;; Version: 3.1.3
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -81,11 +81,10 @@
 (defvar xah-elisp-mode-hook nil "Standard hook for `xah-elisp-mode'")
 
 (defvar xah-elisp-ampersand-words nil "List of elisp special syntax, just &optional and &rest,")
-(setq xah-elisp-ampersand-words '( "&optional" "&rest"))
+(setq xah-elisp-ampersand-words '( "&optional" "&rest" "t" "nil"))
 
 (defvar xah-elisp-functions nil "List of elisp functions, those in elisp doc marked as function. (basically, all functions that's not command, macro, special forms.)")
 (setq xah-elisp-functions '(
-
 "mouse-on-link-p"
 "macrop"
 "run-hooks"
@@ -1507,12 +1506,10 @@
 "point-min-marker"
 "point-max-marker"
 "copy-marker"
-
 ))
 
 (defvar xah-elisp-special-forms nil "List of elisp special forms.")
 (setq xah-elisp-special-forms '(
-
 "catch"
 "function"
 "setq"
@@ -1541,12 +1538,10 @@
 "progn"
 "prog1"
 "prog2"
-
 ))
 
 (defvar xah-elisp-macros nil "List of elisp macros.")
 (setq xah-elisp-macros '(
-
 "defcustom"
 "deftheme"
 "provide-theme"
@@ -1633,12 +1628,10 @@
 "with-temp-file"
 "defgroup"
 "with-timeout"
-
 ))
 
 (defvar xah-elisp-commands nil "List of elisp commands.")
 (setq xah-elisp-commands '(
-
 "debug-on-entry"
 "cancel-debug-on-entry"
 "beginning-of-line"
@@ -1929,12 +1922,10 @@
 "split-window-right"
 "split-window-below"
 "set-visited-file-name"
-
 ))
 
 (defvar xah-elisp-user-options nil "List of user options.")
 (setq xah-elisp-user-options '(
-
 "switch-to-buffer-in-dedicated-window"
 "switch-to-buffer-preserve-window-point"
 "transient-mark-mode"
@@ -2181,12 +2172,10 @@
 "window-min-height"
 "window-min-width"
 "split-window-keep-point"
-
 ))
 
 (defvar xah-elisp-variables nil "List elisp variables names (excluding user options).")
 (setq xah-elisp-variables '(
-
 "buffer-file-name"
 "buffer-file-truename"
 "buffer-file-number"
@@ -2647,7 +2636,6 @@
 "syntax-propertize-function"
 "syntax-propertize-extend-region-functions"
 "completion-at-point-functions"
-
 ))
 
 (defvar xah-elisp-all-symbols nil "List of all elisp symbols.")
@@ -2663,11 +2651,7 @@
 ;;        xah-elisp-user-options
 ;;        xah-elisp-variables ))
 
-(mapatoms
- (lambda (x)
-   (push (symbol-name x)  xah-elisp-all-symbols))
- obarray
- )
+(mapatoms (lambda (x) (push (symbol-name x) xah-elisp-all-symbols)) obarray )
 
 ;; (length xah-elisp-all-symbols )
 ;; 46694. on gnu emacs sans init, about 15k
@@ -3093,6 +3077,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("copy-directory" "(copy-directory ▮ NEWNAME &optional KEEP-TIME PARENTS)" xah-elisp--ahf)
     ("copy-file" "(copy-file FILE▮ NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME PRESERVE-UID-GID)" xah-elisp--ahf)
     ("create-image" "(create-image FILE-OR-DATA▮ &optional TYPE DATA-P &rest)" xah-elisp--ahf)
+    ("cts" "(char-to-string CHAR▮) " xah-elisp--ahf)
     ("current-word" "(current-word)" xah-elisp--ahf)
     ("current-buffer" "(current-buffer)" xah-elisp--ahf)
     ("custom-autoload" "(custom-autoload ▮ SYMBOL LOAD &optional NOSET)" xah-elisp--ahf)
@@ -3254,8 +3239,8 @@ If there's a text selection, act on the region, else, on defun block."
     ("rassoc" "(rassoc value▮ alist)" xah-elisp--ahf)
     ("rassq" "(rassq value▮ alist)" xah-elisp--ahf)
     ("rassq-delete-all" "(rassq-delete-all value▮ alist)" xah-elisp--ahf)
-    ("re-search-backward" "(re-search-backward \"REGEXP▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
-    ("re-search-forward" "(re-search-forward \"REGEXP▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
+    ("re-search-backward" "(re-search-backward \"REGEXP▮\" &optional BOUND NOERROR COUNT)" xah-elisp--ahf)
+    ("re-search-forward" "(re-search-forward \"REGEXP▮\" &optional BOUND NOERROR COUNT)" xah-elisp--ahf)
     ("read-directory-name" "(read-directory-name \"▮\" &optional DIR DEFAULT-DIRNAME MUSTMATCH INITIAL)" xah-elisp--ahf)
     ("read-file-name" "(read-file-name \"▮\" &optional DIR DEFAULT-FILENAME MUSTMATCH INITIAL PREDICATE)" xah-elisp--ahf)
     ("read-regexp" "(read-regexp \"▮\" &optional DEFAULT-VALUE)" xah-elisp--ahf)
@@ -3285,10 +3270,10 @@ If there's a text selection, act on the region, else, on defun block."
     ("save-current-buffer" "(save-current-buffer ▮)" xah-elisp--ahf)
     ("save-excursion" "(save-excursion ▮)" xah-elisp--ahf)
     ("save-restriction" "(save-restriction ▮)" xah-elisp--ahf)
-    ("search-backward" "(search-backward \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
-    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
-    ("search-forward" "(search-forward \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
-    ("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND 'NOERROR COUNT)" xah-elisp--ahf)
+    ("search-backward" "(search-backward \"▮\" &optional BOUND NOERROR COUNT)" xah-elisp--ahf)
+    ("search-backward-regexp" "(search-backward-regexp \"▮\" &optional BOUND NOERROR COUNT)" xah-elisp--ahf)
+    ("search-forward" "(search-forward \"▮\" &optional BOUND NOERROR COUNT)" xah-elisp--ahf)
+    ("search-forward-regexp" "(search-forward-regexp \"▮\" &optional BOUND NOERROR COUNT)" xah-elisp--ahf)
     ("set-buffer" "(set-buffer ▮)" xah-elisp--ahf)
     ("set-buffer-modified-p" "(set-buffer-modified-p FLAG▮)" xah-elisp--ahf)
     ("set-file-modes" "(set-file-modes ▮ MODE)" xah-elisp--ahf)
@@ -3302,6 +3287,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("skip-chars-forward" "(skip-chars-forward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("split-string" "(split-string ▮ &optional SEPARATORS OMIT-NULLS)" xah-elisp--ahf)
+    ("stc" "(string-to-char \"▮\")" xah-elisp--ahf)
     ("string-equal" "(string-equal str1▮ str2)" xah-elisp--ahf)
     ("string-match" "(string-match \"REGEXP▮\" \"STRING\" &optional START)" xah-elisp--ahf)
     ("string-match-p" "(string-match-p \"REGEXP▮\" \"STRING\" &optional START)" xah-elisp--ahf)

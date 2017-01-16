@@ -2760,10 +2760,10 @@ Version 2016-10-24"
   "Expand the symbol before cursor,
 if cursor is not in string or comment.
 Returns the abbrev symbol if there's a expansion, else nil.
-Version 2016-10-24"
+Version 2017-01-13"
   (interactive)
   (when (xah-elisp-abbrev-enable-function) ; abbrev property :enable-function doesn't seem to work, so check here instead
-    (let (
+    (let ((-p0 (point))
           -p1 -p2
           -abrStr
           -abrSymbol
@@ -2771,8 +2771,8 @@ Version 2016-10-24"
       (save-excursion
         (forward-symbol -1)
         (setq -p1 (point))
-        (forward-symbol 1)
-        (setq -p2 (point)))
+        (goto-char -p0)
+        (setq -p2 -p0))
       (setq -abrStr (buffer-substring-no-properties -p1 -p2))
       (setq -abrSymbol (abbrev-symbol -abrStr))
       (if -abrSymbol
@@ -2959,6 +2959,7 @@ If there's a text selection, act on the region, else, on defun block."
     ("kr" "kill-region" xah-elisp--ahf)
     ("la" "looking-at" xah-elisp--ahf)
     ("lc" "left-char" xah-elisp--ahf)
+    ("lb" "looking-back" xah-elisp--ahf)
     ("mb" "match-beginning" xah-elisp--ahf)
     ("md" "make-directory" xah-elisp--ahf)
     ("me" "match-end" xah-elisp--ahf)

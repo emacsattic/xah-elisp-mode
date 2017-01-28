@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.1.3
+;; Version: 3.1.4
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2659,11 +2659,11 @@
 
 (defun xah-elisp-display-page-break-as-line ()
   "Display the formfeed ^L char as line.
-Version 2016-10-11"
+Version 2017-01-27"
   (interactive)
   ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
   (progn
-    (when (null buffer-display-table)
+    (when (not buffer-display-table)
       (setq buffer-display-table (make-display-table)))
     (aset buffer-display-table ?\^L
           (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
@@ -2687,14 +2687,14 @@ emacs 25.x changed `up-list' to take up to 3 args. Before, only 1."
 (defun xah-elisp-complete-symbol ()
   "Perform keyword completion on current symbol.
 This uses `ido-mode' user interface for completion.
-version 2016-12-18"
+version 2017-01-27"
   (interactive)
   (let* (
          (-bds (bounds-of-thing-at-point 'symbol))
          (-p1 (car -bds))
          (-p2 (cdr -bds))
          (-current-sym
-          (if  (or (null -p1) (null -p2) (equal -p1 -p2))
+          (if  (or (not -p1) (not -p2) (equal -p1 -p2))
               ""
             (buffer-substring-no-properties -p1 -p2)))
          -result-sym)
@@ -2763,16 +2763,24 @@ Returns the abbrev symbol if there's a expansion, else nil.
 Version 2017-01-13"
   (interactive)
   (when (xah-elisp-abbrev-enable-function) ; abbrev property :enable-function doesn't seem to work, so check here instead
-    (let ((-p0 (point))
-          -p1 -p2
-          -abrStr
-          -abrSymbol
-          )
+    (let ( -p1 -p2
+               -abrStr
+               -abrSymbol
+               )
+
+      ;; (save-excursion
+      ;;   (forward-symbol -1)
+      ;;   (setq -p1 (point))
+      ;;   (goto-char -p0)
+      ;;   (setq -p2 -p0))
+
       (save-excursion
+        ;; 2017-01-16 note: we select the whole symbol to solve a problem. problem is: if “aa”  is a abbrev, and “▮bbcc” is existing word with cursor at beginning, and user wants to type aabbcc. Normally, aa immediately expands. This prevent people editing bbcc to become aabbcc. This happens for example in elisp where “aa” is “re” for “region-end” and user wants to add “re-” to “search-forward” to get “re-search-forward”. The downside of this is that, people cannot type a abbrev when in middle of a word.
         (forward-symbol -1)
         (setq -p1 (point))
-        (goto-char -p0)
-        (setq -p2 -p0))
+        (forward-symbol 1)
+        (setq -p2 (point)))
+
       (setq -abrStr (buffer-substring-no-properties -p1 -p2))
       (setq -abrSymbol (abbrev-symbol -abrStr))
       (if -abrSymbol
@@ -2854,12 +2862,12 @@ Works on whole buffer or text selection, respects `narrow-to-region'.
 If 0, it means lines will be joined.
 By befault, *N is 2. It means, 1 visible blank line.
 
-Version 2016-10-13"
+Version 2017-01-27"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
      (list (point-min) (point-max))))
-  (when (null *begin)
+  (when (not *begin)
     (setq *begin (point-min) *end (point-max)))
   (save-excursion
     (save-restriction
@@ -2867,7 +2875,7 @@ Version 2016-10-13"
       (progn
         (goto-char (point-min))
         (while (search-forward-regexp "\n\n\n+" nil "noerror")
-          (replace-match (make-string (if (null *n) 2 *n ) 10)))))))
+          (replace-match (make-string (if *n *n 2) 10)))))))
 
 (defun xah-elisp-goto-outmost-bracket (&optional *pos)
   "Move cursor to the beginning of outer-most bracket, with respect to *pos.
@@ -2889,7 +2897,8 @@ Returns true if point is moved, else false."
 
 (defun xah-elisp-compact-parens (&optional *begin *end)
   "Remove whitespaces in ending repetition of parenthesises.
-If there's a text selection, act on the region, else, on defun block."
+If there's a text selection, act on the region, else, on defun block.
+Version 2017-01-27"
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
@@ -2897,7 +2906,7 @@ If there's a text selection, act on the region, else, on defun block."
        (xah-elisp-goto-outmost-bracket)
        (list (point) (scan-sexps (point) 1)))))
   (let ((-p1 *begin) (-p2 *end))
-    (when (null *begin)
+    (when (not *begin)
       (save-excursion
         (xah-elisp-goto-outmost-bracket)
         (setq -p1 (point))

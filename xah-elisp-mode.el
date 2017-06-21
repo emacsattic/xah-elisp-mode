@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.1.5
+;; Version: 3.1.6
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3009,6 +3009,7 @@ Version 2017-01-27"
     ("ifc" "insert-file-contents" xah-elisp--ahf)
     ("lbp" "(line-beginning-position)" xah-elisp--ahf)
     ("lam" "lambda" xah-elisp--ahf)
+    ("len" "length" xah-elisp--ahf)
     ("lep" "(line-end-position)" xah-elisp--ahf)
     ("mlv" "make-local-variable" xah-elisp--ahf)
     ("ntr" "narrow-to-region" xah-elisp--ahf)
@@ -3027,6 +3028,7 @@ Version 2017-01-27"
     ("urp" "use-region-p" xah-elisp--ahf)
     ("wcb" "with-current-buffer" xah-elisp--ahf)
     ("wtb" "with-temp-buffer" xah-elisp--ahf)
+
 
     ("bsnp" "(buffer-substring-no-properties START▮ END)" xah-elisp--ahf)
     ("fnse" "file-name-sans-extension" xah-elisp--ahf)
@@ -3114,8 +3116,8 @@ Version 2017-01-27"
     ("directory-file-name" "(directory-file-name ▮)" xah-elisp--ahf)
     ("directory-files" "(directory-files ▮ &optional FULL MATCH NOSORT)" xah-elisp--ahf)
     ("directory-name-p" "(directory-name-p ▮)" xah-elisp--ahf)
-    ("dolist" "(dolist (VAR▮ LIST [RESULT]) BODY)" xah-elisp--ahf)
-    ("dotimes" "(dotimes (VAR▮ COUNT [RESULT]) BODY)" xah-elisp--ahf)
+    ("dolist" "(dolist (x LIST▮ [RESULT]) BODY)" xah-elisp--ahf)
+    ("dotimes" "(dotimes (i COUNT▮ [RESULT]) BODY)" xah-elisp--ahf)
     ("elt" "(elt SEQUENCE▮ N)" xah-elisp--ahf)
     ("end-of-line" "(end-of-line ▮&optional N)" xah-elisp--ahf)
     ("eq" "(eq ▮)" xah-elisp--ahf)
@@ -3326,7 +3328,8 @@ Version 2017-01-27"
     ("version<=" "(version<= \"24.4\" emacs-version)" nil :system t )
     ("visited-file-modtime" "(visited-file-modtime)" xah-elisp--ahf)
     ("when" "(when ▮)" xah-elisp--ahf)
-    ("while" "(while (< i▮ 9)\n  (setq i (1+ i)))" xah-elisp--ahf)
+    ("while" "(while (search-forward STRING &optional BOUND NOERROR COUNT)\n (replace-match NEWTEXT &optional FIXEDCASE LITERAL \"STRING\" SUBEXP))" xah-elisp--ahf)
+    ;; ("while" "(while (< i▮ 9)\n  (setq i (1+ i)))" xah-elisp--ahf)
     ("widen" "(widen)" xah-elisp--ahf)
     ("widget-get" "(widget-get ▮)" xah-elisp--ahf)
     ("with-current-buffer" "(with-current-buffer BUFFER-OR-NAME▮ BODY)" xah-elisp--ahf)

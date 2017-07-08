@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.1.6
+;; Version: 3.1.7
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3523,7 +3523,7 @@ Version 2017-01-27"
 
 
 ;;;###autoload
-(define-derived-mode xah-elisp-mode prog-mode "∑lisp"
+(define-derived-mode xah-elisp-mode prog-mode "∑elisp"
   "A major mode for emacs lisp.
 
 Most useful command is `xah-elisp-complete-or-indent'.

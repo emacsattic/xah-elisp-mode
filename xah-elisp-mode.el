@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.1.7
+;; Version: 3.1.8
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2931,6 +2931,7 @@ Version 2017-01-27"
 
 ;; abbrev
 
+(defvar xah-elisp-mode-abbrev-table nil "abbrev table" )
 ;; wanted to start clean, for development. eventually, prob not
 (setq xah-elisp-mode-abbrev-table nil)
 
@@ -3461,6 +3462,7 @@ Version 2017-01-27"
             (globalVar "\\_<γ[-_?0-9A-Za-z]+" )
             (userVars1 "\\_<ξ[-_?0-9A-Za-z]+" )
             (userVars2 "\\_<-[-_A-Za-z]+[-_?0-9A-Za-z]*" )
+            (userVars3 "\\_<$[-_?0-9A-Za-z]+" )
             (capVars "\\_<[A-Z][-_?0-9A-Za-z]+" ))
         `(
           (,(regexp-opt xah-elisp-ampersand-words 'symbols) . font-lock-builtin-face)
@@ -3475,6 +3477,7 @@ Version 2017-01-27"
           (,funParamVar-tmp . 'xah-elisp-ttt)
           (,globalVar . 'xah-elisp-gamma-word)
           (,userVars1 . 'xah-elisp-xi-word)
+          (,userVars3 . 'xah-elisp-xi-word)
           (,userVars2 . 'xah-elisp-dash-word)
           (,capVars . 'xah-elisp-cap-variable))))
 

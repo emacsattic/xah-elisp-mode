@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.1.9
+;; Version: 3.1.10
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2936,7 +2936,7 @@ Version 2017-01-27"
 (setq xah-elisp-mode-abbrev-table nil)
 
 (define-abbrev-table 'xah-elisp-mode-abbrev-table
-  '(
+'(
 
     ("d" "(defun f▮ ()\n  \"DOCSTRING\"\n  (interactive)\n  (let (VAR)\n\n  ))" xah-elisp--ahf)
     ("i" "(insert ▮)" xah-elisp--ahf)
@@ -3042,7 +3042,7 @@ Version 2017-01-27"
     ("add-text-properties" "(add-text-properties START▮ END PROPS &optional OBJECT)" xah-elisp--ahf)
     ("add-to-list" "(add-to-list LIST-VAR▮ ELEMENT &optional APPEND COMPARE-FN)" xah-elisp--ahf)
     ("alist-get" "(alist-get key▮ value &optional default)" xah-elisp--ahf)
-    ("and" "(and ▮)" nil :system t )
+    ("and" "(and ▮)" xah-elisp--ahf )
     ("append" "(append ▮)" xah-elisp--ahf)
     ("apply" "(apply ▮)" xah-elisp--ahf)
     ("aref" "(aref ARRAY▮ INDEX)" xah-elisp--ahf)
@@ -3058,7 +3058,7 @@ Version 2017-01-27"
     ("barf-if-buffer-read-only" "(barf-if-buffer-read-only)" xah-elisp--ahf)
     ("beginning-of-line" "(beginning-of-line)" xah-elisp--ahf)
     ("boundp" "(boundp '▮)" xah-elisp--ahf)
-    ("bounds-of-thing-at-point" "(bounds-of-thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)" :system t)
+    ("bounds-of-thing-at-point" "(bounds-of-thing-at-point 'symbol▮ 'filename 'word 'whitespace 'line)" xah-elisp--ahf)
     ("buffer-base-buffer" "(buffer-base-buffer &optional BUFFER▮)" xah-elisp--ahf)
     ("buffer-chars-modified-tick" "(buffer-chars-modified-tick &optional BUFFER▮)" xah-elisp--ahf)
     ("buffer-file-name" "(buffer-file-name)" xah-elisp--ahf)
@@ -3316,7 +3316,7 @@ Version 2017-01-27"
     ("text-properties-at" "(text-properties-at POSITION▮ &optional OBJECT)" xah-elisp--ahf)
     ("text-property-any" "(text-property-any START END PROP VALUE &optional OBJECT)" xah-elisp--ahf)
     ("text-property-not-all" "(text-property-not-all START END PROP VALUE &optional OBJECT)" xah-elisp--ahf)
-    ("thing-at-point" "(thing-at-point 'word▮ 'symbol 'list 'sexp 'defun 'filename 'url 'email 'sentence 'whitespace 'line 'number 'page)" :system t)
+    ("thing-at-point" "(thing-at-point 'word▮ 'symbol 'list 'sexp 'defun 'filename 'url 'email 'sentence 'whitespace 'line 'number 'page)" xah-elisp--ahf)
     ("throw" "(throw 'TAG▮ VALUE)" xah-elisp--ahf)
     ("toggle-read-only" "(toggle-read-only &optional ARG▮)" xah-elisp--ahf)
     ("unbury-buffer" "(unbury-buffer)" xah-elisp--ahf)
@@ -3325,8 +3325,8 @@ Version 2017-01-27"
     ("user-error" "(user-error \"%s▮\" &rest ARGS)" xah-elisp--ahf)
     ("vector" "(vector ▮)" xah-elisp--ahf)
     ("verify-visited-file-modtime" "(verify-visited-file-modtime BUFFER▮)" xah-elisp--ahf)
-    ("version<" "(version< \"24.4\" emacs-version)" nil :system t )
-    ("version<=" "(version<= \"24.4\" emacs-version)" nil :system t )
+    ("version<" "(version< \"24.4\" emacs-version)" xah-elisp--ahf )
+    ("version<=" "(version<= \"24.4\" emacs-version)" xah-elisp--ahf )
     ("visited-file-modtime" "(visited-file-modtime)" xah-elisp--ahf)
     ("when" "(when ▮)" xah-elisp--ahf)
     ("while" "(while (search-forward STRING &optional BOUND NOERROR COUNT)\n (replace-match NEWTEXT &optional FIXEDCASE LITERAL \"STRING\" SUBEXP))" xah-elisp--ahf)
@@ -3362,7 +3362,7 @@ Version 2017-01-27"
     ("assoc-string" "(assoc-string key▮ alist &optional case-fold)" xah-elisp--ahf)
 
     ;;
-    )
+    )  
 
   "Abbrev table for `xah-elisp-mode'"
   )

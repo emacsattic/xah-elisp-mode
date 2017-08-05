@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2016, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.1.10
+;; Version: 3.2.0
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3030,7 +3030,6 @@ Version 2017-01-27"
     ("wcb" "with-current-buffer" xah-elisp--ahf)
     ("wtb" "with-temp-buffer" xah-elisp--ahf)
 
-
     ("bsnp" "(buffer-substring-no-properties START▮ END)" xah-elisp--ahf)
     ("fnse" "file-name-sans-extension" xah-elisp--ahf)
     ("rris" "replace-regexp-in-string" xah-elisp--ahf)
@@ -3362,7 +3361,7 @@ Version 2017-01-27"
     ("assoc-string" "(assoc-string key▮ alist &optional case-fold)" xah-elisp--ahf)
 
     ;;
-    )  
+    )
 
   "Abbrev table for `xah-elisp-mode'"
   )
@@ -3401,75 +3400,37 @@ Version 2017-01-27"
 ;;  'face-defface-spec
 ;;  )
 
-(defface xah-elisp-phi-word
-  '(
-    (t :foreground "black" :background "aquamarine")
-    ;; (t :foreground "dark blue")
-    ;; (t :foreground "black" :background "pink")
-)
-  "Face for function parameters."
-  :group 'xah-elisp-mode )
-
-(defface xah-elisp-star-word
-  '(
-    (t :foreground "red" :background "pink"))
-  "Face for function parameters."
+(defface xah-elisp-at-symbol
+  '((t :foreground "red" :weight bold))
+  "Face for @word."
   :group 'xah-elisp-mode )
 
 (face-spec-set
- 'xah-elisp-star-word
- '(
-   (t :foreground "red" :weight bold))
+ 'xah-elisp-at-symbol
+ '((t :foreground "red" :weight bold))
  'face-defface-spec
  )
 
-(face-spec-set
- 'xah-elisp-ttt
- '(
-   (t :foreground "blue" :background "pink"))
- 'face-defface-spec
- )
-
-(defface xah-elisp-gamma-word
-  '(
-    (t :foreground "red"))
-  "Face for global variable."
-  :group 'xah-elisp-mode )
-
-(defface xah-elisp-xi-word
-  '(
-    (t :foreground "dark green" :weight bold))
-   "Face for user variables."
+(defface xah-elisp-dollar-symbol
+  '((t :foreground "dark green" :weight bold))
+   "Face for ξsymbol."
   :group 'xah-elisp-mode )
 
 (face-spec-set
- 'xah-elisp-xi-word
- '(
-    (t :foreground "dark green" :weight bold))
+ 'xah-elisp-dollar-symbol
+ '((t :foreground "dark green" :weight bold))
  'face-defface-spec
  )
-
-(defface xah-elisp-dash-word
-  '(
-    (t :foreground "#ff00ff"))
-  "Face for user variables."
-  :group 'xah-elisp-mode )
 
 (defface xah-elisp-cap-variable
-  '(
-    (t :foreground "firebrick"))
+  '((t :foreground "firebrick" :weight bold))
   "Face for capitalized word."
   :group 'xah-elisp-mode )
 
 (setq xah-elisp-font-lock-keywords
       (let (
-            (phiWord "φ[-_?0-9A-Za-z]+" )
-            (starWord "\\_<\\*[-_?0-9A-Za-z]+" )
-            (funParamVar-tmp "\\_<_[-_?0-9A-Za-z]+" )
-            (globalVar "\\_<γ[-_?0-9A-Za-z]+" )
-            (userVars1 "\\_<ξ[-_?0-9A-Za-z]+" )
-            (userVars2 "\\_<-[-_A-Za-z]+[-_?0-9A-Za-z]*" )
-            (userVars3 "\\_<$[-_?0-9A-Za-z]+" )
+            (dollarSymbol "\\_<$[-_?0-9A-Za-z]+" )
+            (atSymbol "\\_<@[-_?0-9A-Za-z]+" )
             (capVars "\\_<[A-Z][-_?0-9A-Za-z]+" ))
         `(
           (,(regexp-opt xah-elisp-ampersand-words 'symbols) . font-lock-builtin-face)
@@ -3479,13 +3440,8 @@ Version 2017-01-27"
           (,(regexp-opt xah-elisp-commands 'symbols) . 'xah-elisp-command-face)
           (,(regexp-opt xah-elisp-user-options 'symbols) . font-lock-variable-name-face)
           (,(regexp-opt xah-elisp-variables 'symbols) . font-lock-variable-name-face)
-          (,phiWord . 'xah-elisp-phi-word)
-          (,starWord . 'xah-elisp-star-word)
-          (,funParamVar-tmp . 'xah-elisp-ttt)
-          (,globalVar . 'xah-elisp-gamma-word)
-          (,userVars1 . 'xah-elisp-xi-word)
-          (,userVars3 . 'xah-elisp-xi-word)
-          (,userVars2 . 'xah-elisp-dash-word)
+          (,dollarSymbol . 'xah-elisp-dollar-symbol)
+          (,atSymbol . 'xah-elisp-at-symbol)
           (,capVars . 'xah-elisp-cap-variable))))
 
 

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.2.20170811
+;; Version: 3.2.20170820
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -13,7 +13,7 @@
 
 ;;; License:
 
-;; You can redistribute this program and/or modify it under the terms of the GNU General Public License version 2.
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License version 3.
 
 ;;; Commentary:
 

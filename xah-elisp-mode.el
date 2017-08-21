@@ -7,13 +7,10 @@
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
+;; License: GPL v3
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
 ;; This file is not part of GNU Emacs.
-
-;;; License:
-
-;; You can redistribute this program and/or modify it under the terms of the GNU General Public License version 3.
 
 ;;; Commentary:
 
@@ -2936,7 +2933,7 @@ Version 2017-01-27"
 (setq xah-elisp-mode-abbrev-table nil)
 
 (define-abbrev-table 'xah-elisp-mode-abbrev-table
-'(
+  '(
 
     ("d" "(defun f▮ ()\n  \"DOCSTRING\"\n  (interactive)\n  (let (VAR)\n\n  ))" xah-elisp--ahf)
     ("i" "(insert ▮)" xah-elisp--ahf)
@@ -2961,6 +2958,7 @@ Version 2017-01-27"
     ("df" "delete-file" xah-elisp--ahf)
     ("dk" "define-key" xah-elisp--ahf)
     ("dr" "delete-region" xah-elisp--ahf)
+    ("dv" "defvar" xah-elisp--ahf)
     ("fc" "forward-char" xah-elisp--ahf)
     ("fw" "forward-word" xah-elisp--ahf)
     ("ff" "find-file" xah-elisp--ahf)
@@ -2994,6 +2992,7 @@ Version 2017-01-27"
     ("sr" "save-restriction" xah-elisp--ahf)
     ("ss" "split-string" xah-elisp--ahf)
     ("wg" "widget-get" xah-elisp--ahf)
+
 
     ("bfn" "buffer-file-name" xah-elisp--ahf)
     ("bmp" "buffer-modified-p" xah-elisp--ahf)

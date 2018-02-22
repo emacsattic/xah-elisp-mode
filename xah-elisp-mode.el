@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.2.20170828
+;; Version: 3.2.20180221
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2934,15 +2934,16 @@ Version 2017-01-27"
 
 (define-abbrev-table 'xah-elisp-mode-abbrev-table
   '(
-
-    ("d" "(defun f▮ ()\n  \"DOCSTRING\"\n  (interactive)\n  (let (VAR)\n\n  ))" xah-elisp--ahf)
-    ("i" "(insert ▮)" xah-elisp--ahf)
-    ("l" "(let (x▮)\n x\n)" xah-elisp--ahf)
-    ("m" "(message \"%s▮\" ARGS)" xah-elisp--ahf)
-    ("p" "(point)" xah-elisp--ahf)
-    ("s" "(setq ▮ VAL)" xah-elisp--ahf)
+ 
+    ("d" "defun" xah-elisp--ahf)
+    ("f" "format" xah-elisp--ahf)
+    ("i" "insert" xah-elisp--ahf)
+    ("l" "let" xah-elisp--ahf)
+    ("m" "message" xah-elisp--ahf)
+    ("p" "point" xah-elisp--ahf)
+    ("s" "setq" xah-elisp--ahf)
     ("o" "&optional " xah-elisp--ahf)
-    ("w" "(when ▮)" xah-elisp--ahf)
+    ("w" "when" xah-elisp--ahf)
     ("ah" "add-hook" xah-elisp--ahf)
     ("bc" "backward-char" xah-elisp--ahf)
     ("bs" "buffer-substring" xah-elisp--ahf)
@@ -2993,6 +2994,8 @@ Version 2017-01-27"
     ("ss" "split-string" xah-elisp--ahf)
     ("wg" "widget-get" xah-elisp--ahf)
 
+
+
     ("bfn" "buffer-file-name" xah-elisp--ahf)
     ("bmp" "buffer-modified-p" xah-elisp--ahf)
     ("bol" "beginning-of-line" xah-elisp--ahf)
@@ -3006,8 +3009,8 @@ Version 2017-01-27"
     ("gnb" "generate-new-buffer" xah-elisp--ahf)
     ("gsk" "global-set-key" xah-elisp--ahf)
     ("ifc" "insert-file-contents" xah-elisp--ahf)
-    ("lbp" "(line-beginning-position)" xah-elisp--ahf)
     ("lam" "lambda" xah-elisp--ahf)
+    ("lbp" "(line-beginning-position)" xah-elisp--ahf)
     ("len" "length" xah-elisp--ahf)
     ("lep" "(line-end-position)" xah-elisp--ahf)
     ("mlv" "make-local-variable" xah-elisp--ahf)
@@ -3022,6 +3025,7 @@ Version 2017-01-27"
     ("scf" "skip-chars-forward" xah-elisp--ahf)
     ("sfm" "set-file-modes" xah-elisp--ahf)
     ("sfr" "search-forward-regexp" xah-elisp--ahf)
+    ("sqa" "shell-quote-argument" xah-elisp--ahf)
     ("ste" "(string-equal str1▮ str2)" xah-elisp--ahf)
     ("tap" "thing-at-point" xah-elisp--ahf)
     ("urp" "use-region-p" xah-elisp--ahf)
@@ -3187,7 +3191,8 @@ Version 2017-01-27"
     ("last-buffer" "(last-buffer &optional BUFFER▮ VISIBLE-OK FRAME)" xah-elisp--ahf)
     ("left-char" "(left-char ▮)" xah-elisp--ahf)
     ("length" "(length ▮)" xah-elisp--ahf)
-    ("let" "(let* (▮)\n x\n)" 'xah-elisp--ahf)
+    ("let" "(let (▮)\n x\n)" xah-elisp--ahf)
+    ("let*" "(let* (▮)\n x\n)" xah-elisp--ahf)
     ("line-beginning-position" "(line-beginning-position)" xah-elisp--ahf)
     ("line-end-position" "(line-end-position)" xah-elisp--ahf)
     ("list" "(list ▮)" xah-elisp--ahf)
@@ -3294,8 +3299,10 @@ Version 2017-01-27"
     ("set-text-properties" "(set-text-properties START▮ END PROPS &optional OBJECT)" xah-elisp--ahf)
     ("set-visited-file-modtime" "(set-visited-file-modtime &optional TIME▮)" xah-elisp--ahf)
     ("set-visited-file-name" "(set-visited-file-name FILENAME▮ &optional NO-QUERY ALONG-WITH-FILE)" xah-elisp--ahf)
-    ("setq" "(setq ▮)" xah-elisp--ahf)
+    ("setq" "(setq ▮ VAL)" xah-elisp--ahf)
     ("shell-command" "(shell-command ▮ &optional OUTPUT-BUFFER ERROR-BUFFER)" xah-elisp--ahf)
+
+    ("shell-quote-argument" "(shell-quote-argument ▮)" xah-elisp--ahf)
     ("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("skip-chars-forward" "(skip-chars-forward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("split-string" "(split-string ▮ &optional SEPARATORS OMIT-NULLS)" xah-elisp--ahf)

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.2.20180228
+;; Version: 3.3.20180328
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2955,8 +2955,8 @@ Version 2017-01-27"
     ("cc" "condition-case" xah-elisp--ahf)
     ("cd" "copy-directory" xah-elisp--ahf)
     ("cf" "copy-file" xah-elisp--ahf)
-    ("cw" "(current-word)" xah-elisp--ahf)
-    ("dc" "(delete-char 1)" xah-elisp--ahf)
+    ("cw" "current-word" xah-elisp--ahf)
+    ("dc" "delete-char" xah-elisp--ahf)
     ("dd" "delete-directory" xah-elisp--ahf)
     ("df" "delete-file" xah-elisp--ahf)
     ("dk" "define-key" xah-elisp--ahf)
@@ -2979,6 +2979,7 @@ Version 2017-01-27"
     ("md" "make-directory" xah-elisp--ahf)
     ("me" "match-end" xah-elisp--ahf)
     ("ms" "match-string" xah-elisp--ahf)
+    ("ns" "number-sequence" xah-elisp--ahf)
     ("pm" "point-min" xah-elisp--ahf)
     ("pn" "progn" xah-elisp--ahf)
     ("px" "point-max" xah-elisp--ahf)
@@ -3032,6 +3033,7 @@ Version 2017-01-27"
     ("sqa" "shell-quote-argument" xah-elisp--ahf)
     ("stb" "switch-to-buffer" xah-elisp--ahf)
     ("ste" "(string-equal str1▮ str2)" xah-elisp--ahf)
+    ("stn" "string-to-number" xah-elisp--ahf)
     ("tap" "thing-at-point" xah-elisp--ahf)
     ("urp" "use-region-p" xah-elisp--ahf)
     ("wcb" "with-current-buffer" xah-elisp--ahf)

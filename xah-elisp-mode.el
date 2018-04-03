@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.3.20180328
+;; Version: 3.3.20180402
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3087,6 +3087,8 @@ Version 2017-01-27"
     ("car" "(car ▮)" xah-elisp--ahf)
     ("catch" "(catch 'TAG▮ BODY)" xah-elisp--ahf)
     ("cdr" "(cdr ▮)" xah-elisp--ahf)
+    ("char-after" "(char-after &optional ▮POS)" xah-elisp--ahf)
+    ("char-before" "(char-before &optional ▮POS)" xah-elisp--ahf)
     ("char-to-string" "(char-to-string CHAR▮) " xah-elisp--ahf)
     ("clear-image-cache" "(clear-image-cache &optional FILTER▮)" xah-elisp--ahf)
     ("clear-visited-file-modtime" "(clear-visited-file-modtime)" xah-elisp--ahf)
@@ -3210,6 +3212,8 @@ Version 2017-01-27"
     ("load-file" "(load-file FILE▮)" xah-elisp--ahf)
     ("looking-at" "(looking-at \"REGEXP▮\")" xah-elisp--ahf)
     ("looking-back" "(looking-back \"REGEXP▮\" LIMIT &optional GREEDY)" xah-elisp--ahf)
+
+
     ("make-directory" "(make-directory ▮ &optional PARENTS)" xah-elisp--ahf)
     ("make-indirect-buffer" "(make-indirect-buffer BASE-BUFFER▮ NAME &optional CLONE)" xah-elisp--ahf)
     ("make-list" "(make-list LENGTH▮ INIT)" xah-elisp--ahf)

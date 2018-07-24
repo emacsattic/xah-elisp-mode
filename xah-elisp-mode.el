@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.4.20180710012420
+;; Version: 3.4.20180724161310
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3023,6 +3023,8 @@ Version 2017-01-27"
     ("nts" "number-to-string" xah-elisp--ahf)
     ("pmi" "point-min" xah-elisp--ahf)
     ("rap" "region-active-p" xah-elisp--ahf)
+    ("rdn" "read-directory-name" xah-elisp--ahf)
+    ("rfn" "read-file-name" xah-elisp--ahf)
     ("rsb" "re-search-backward" xah-elisp--ahf)
     ("rsf" "re-search-forward" xah-elisp--ahf)
     ("sbr" "search-backward-regexp" xah-elisp--ahf)

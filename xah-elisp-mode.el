@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.4.20180724161310
+;; Version: 3.4.20180825010347
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2773,7 +2773,7 @@ Version 2017-01-13"
       ;;   (setq $p2 $p0))
 
       (save-excursion
-        ;; 2017-01-16 note: we select the whole symbol to solve a problem. problem is: if “aa”  is a abbrev, and “▮bbcc” is existing word with cursor at beginning, and user wants to type aabbcc. Normally, aa immediately expands. This prevent people editing bbcc to become aabbcc. This happens for example in elisp where “aa” is “re” for “region-end” and user wants to add “re-” to “search-forward” to get “re-search-forward”. The downside of this is that, people cannot type a abbrev when in middle of a word.
+        ;; 2017-01-16 note: we select the whole symbol to solve a problem. problem is: if “aa”  is a abbrev, and “▮bbcc” is existing word with cursor at beginning, and user wants to type aa-bbcc. Normally, aa immediately expands. This prevent people editing bbcc to become aa-bbcc. This happens for example in elisp “search-forward” to get “re-search-forward”. The downside of this is that, people cannot type a abbrev when in middle of a word.
         (forward-symbol -1)
         (setq $p1 (point))
         (forward-symbol 1)
@@ -3471,7 +3471,8 @@ Version 2017-01-27"
           (,(regexp-opt xah-elisp-variables 'symbols) . font-lock-variable-name-face)
           (,dollarSymbol . 'xah-elisp-dollar-symbol)
           (,atSymbol . 'xah-elisp-at-symbol)
-          (,capVars . 'xah-elisp-cap-variable))))
+          (,capVars . 'xah-elisp-cap-variable)
+          (":[a-z]+\\b" . font-lock-builtin-face))))
 
 
 ;; syntax table

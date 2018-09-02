@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.4.20180825010347
+;; Version: 3.4.20180902100821
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -19,17 +19,17 @@
 
 ;; Major features different from emacs-lisp-mode:
 
-;; • Syntax coloring of ALL elisp symbols documented in elisp manual.
+;; • Syntax coloring of ALL elisp symbols documented in elisp manual, and ONLY those. If a symbol is not colored, it's either a typo or not documented in elisp manual.
 
 ;; • Symbols are colored by their technical type: function, special form, macro, command, user option, variable.
 
-;; • Completion for function names with `ido-mode' interface, for ALL symbols in obarray. (press TAB after word)
+;; • Completion for function names with `ido-mode' interface, for ALL symbols in obarray (this means, including any package you've loaded.). (press TAB after word)
 
-;; • Command to format entire sexp expression unit. (press TAB before word.)
+;; • Function param template for 340+ functions. (press space after function name.)
 
-;; • Function param template. (press space after function name.)
+;; • Command to format entire sexp expression unit. (press TAB before a word or paren.)
 
-;; • 1 to 4 letters abbrevs for top 50 most used functions. e.g. “d” → expands full (defun ...) template.
+;; • 1 to 4 letters abbrevs for top 100 most used functions. e.g. “d” → expands to defun.
 
 ;; abbrev or template are not expanded when in comment or string.
 

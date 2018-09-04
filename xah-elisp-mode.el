@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.4.20180902100821
+;; Version: 3.4.20180904124943
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3003,6 +3003,7 @@ Version 2017-01-27"
     ("bmp" "buffer-modified-p" xah-elisp--ahf)
     ("bol" "beginning-of-line" xah-elisp--ahf)
     ("cdr" "cdr" xah-elisp--ahf)
+    ("dfr" "directory-files-recursively" xah-elisp--ahf)
     ("efn" "expand-file-name" xah-elisp--ahf)
     ("eol" "end-of-line" xah-elisp--ahf)
     ("fep" "file-exists-p" xah-elisp--ahf)
@@ -3130,6 +3131,7 @@ Version 2017-01-27"
     ("delq" "(delq ELT▮ LIST)" xah-elisp--ahf)
     ("directory-file-name" "(directory-file-name ▮)" xah-elisp--ahf)
     ("directory-files" "(directory-files ▮ &optional FULL MATCH NOSORT)" xah-elisp--ahf)
+    ("directory-files-recursively" "(directory-files-recursively DIR▮ REGEXP &optional INCLUDE-DIRECTORIES)" xah-elisp--ahf)
     ("directory-name-p" "(directory-name-p ▮)" xah-elisp--ahf)
     ("dolist" "(dolist (x LIST▮ [RESULT]) BODY)" xah-elisp--ahf)
     ("dotimes" "(dotimes (i COUNT▮ [RESULT]) BODY)" xah-elisp--ahf)
@@ -3380,7 +3382,6 @@ Version 2017-01-27"
     ("string-suffix-p" "(string-suffix-p suffix▮ string &optional ignore-case)" xah-elisp--ahf)
     ("compare-strings" "(compare-strings string1▮ start1 end1 string2 start2 end2)" xah-elisp--ahf)
     ("assoc-string" "(assoc-string key▮ alist &optional case-fold)" xah-elisp--ahf)
-
 
     ("clrhash" "(clrhash ▮)" xah-elisp--ahf)
     ("gethash" "(gethash KEY▮ TABLE &optional DFLT)" xah-elisp--ahf)

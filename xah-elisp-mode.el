@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2017, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.4.20180914165821
+;; Version: 3.4.20180924170701
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2946,7 +2946,6 @@ Version 2017-01-27"
     ("s" "setq" xah-elisp--ahf)
     ("w" "when" xah-elisp--ahf)
 
-
     ("ah" "add-hook" xah-elisp--ahf)
     ("bc" "backward-char" xah-elisp--ahf)
     ("bs" "buffer-substring" xah-elisp--ahf)
@@ -2964,6 +2963,7 @@ Version 2017-01-27"
     ("dr" "delete-region" xah-elisp--ahf)
     ("dv" "defvar" xah-elisp--ahf)
     ("eb" "erase-buffer" xah-elisp--ahf)
+    ("fa" "fillarray" xah-elisp--ahf)
     ("fc" "forward-char" xah-elisp--ahf)
     ("ff" "find-file" xah-elisp--ahf)
     ("fl" "forward-line" xah-elisp--ahf)
@@ -2979,6 +2979,7 @@ Version 2017-01-27"
     ("mc" "mapcar" xah-elisp--ahf)
     ("md" "make-directory" xah-elisp--ahf)
     ("me" "match-end" xah-elisp--ahf)
+    ("ml" "make-list" xah-elisp--ahf)
     ("ms" "match-string" xah-elisp--ahf)
     ("mv" "make-vector" xah-elisp--ahf)
     ("ns" "number-sequence" xah-elisp--ahf)
@@ -2992,6 +2993,7 @@ Version 2017-01-27"
     ("rm" "replace-match" xah-elisp--ahf)
     ("rq" "regexp-quote" xah-elisp--ahf)
     ("rr" "replace-regexp" xah-elisp--ahf)
+    ("rs" "read-string" xah-elisp--ahf)
     ("sb" "search-backward" xah-elisp--ahf)
     ("sc" "shell-command" xah-elisp--ahf)
     ("se" "save-excursion" xah-elisp--ahf)
@@ -2999,11 +3001,9 @@ Version 2017-01-27"
     ("sm" "string-match" xah-elisp--ahf)
     ("sr" "save-restriction" xah-elisp--ahf)
     ("ss" "split-string" xah-elisp--ahf)
+    ("vc" "vconcat" xah-elisp--ahf)
     ("wg" "widget-get" xah-elisp--ahf)
     ("wr" "write-region" xah-elisp--ahf)
-    ("vc" "vconcat" xah-elisp--ahf)
-    ("fa" "fillarray" xah-elisp--ahf)
-    ("ml" "make-list" xah-elisp--ahf)
 
     ("bfn" "buffer-file-name" xah-elisp--ahf)
     ("bmp" "buffer-modified-p" xah-elisp--ahf)
@@ -3335,7 +3335,7 @@ Version 2017-01-27"
     ("set-text-properties" "(set-text-properties START▮ END PROPS &optional OBJECT)" xah-elisp--ahf)
     ("set-visited-file-modtime" "(set-visited-file-modtime &optional TIME▮)" xah-elisp--ahf)
     ("set-visited-file-name" "(set-visited-file-name FILENAME▮ &optional NO-QUERY ALONG-WITH-FILE)" xah-elisp--ahf)
-    ("setq" "(setq ▮ VAL)" xah-elisp--ahf)
+    ("setq" "(setq xx▮ VAL)" xah-elisp--ahf)
     ("shell-command" "(shell-command ▮ &optional OUTPUT-BUFFER ERROR-BUFFER)" xah-elisp--ahf)
     ("shell-quote-argument" "(shell-quote-argument ▮)" xah-elisp--ahf)
     ("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" xah-elisp--ahf)

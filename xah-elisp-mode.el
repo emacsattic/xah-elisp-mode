@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2018, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.4.20180924170701
+;; Version: 3.4.20181028074409
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2946,6 +2946,7 @@ Version 2017-01-27"
     ("s" "setq" xah-elisp--ahf)
     ("w" "when" xah-elisp--ahf)
 
+
     ("ah" "add-hook" xah-elisp--ahf)
     ("bc" "backward-char" xah-elisp--ahf)
     ("bs" "buffer-substring" xah-elisp--ahf)
@@ -2991,6 +2992,7 @@ Version 2017-01-27"
     ("re" "region-end" xah-elisp--ahf)
     ("rf" "rename-file" xah-elisp--ahf)
     ("rm" "replace-match" xah-elisp--ahf)
+    ("rn" "read-number" xah-elisp--ahf)
     ("rq" "regexp-quote" xah-elisp--ahf)
     ("rr" "replace-regexp" xah-elisp--ahf)
     ("rs" "read-string" xah-elisp--ahf)
@@ -3293,10 +3295,11 @@ Version 2017-01-27"
     ("rassq-delete-all" "(rassq-delete-all value▮ alist)" xah-elisp--ahf)
     ("re-search-backward" "(re-search-backward \"REGEXP▮\" &optional BOUND NOERROR COUNT)" xah-elisp--ahf)
     ("re-search-forward" "(re-search-forward \"REGEXP▮\" &optional BOUND NOERROR COUNT)" xah-elisp--ahf)
-    ("read-directory-name" "(read-directory-name \"▮\" &optional DIR DEFAULT-DIRNAME MUSTMATCH INITIAL)" xah-elisp--ahf)
+    ("read-directory-name" "(read-directory-name \"Dir▮:\" &optional DIR DEFAULT-DIRNAME MUSTMATCH INITIAL)" xah-elisp--ahf)
     ("read-file-name" "(read-file-name \"▮\" &optional DIR DEFAULT-FILENAME MUSTMATCH INITIAL PREDICATE)" xah-elisp--ahf)
-    ("read-regexp" "(read-regexp \"▮\" &optional DEFAULT-VALUE)" xah-elisp--ahf)
-    ("read-string" "(read-string \"▮\" &optional INITIAL-INPUT HISTORY DEFAULT-VALUE INHERIT-INPUT-METHOD)" xah-elisp--ahf)
+    ("read-regexp" "(read-regexp \"Type regex▮:\" &optional DEFAULT-VALUE)" xah-elisp--ahf)
+    ("read-string" "(read-string \"What▮:\" &optional INITIAL-INPUT HISTORY DEFAULT-VALUE INHERIT-INPUT-METHOD)" xah-elisp--ahf)
+    ("read-number" "(read-number \"Number▮:\" DEFAULT?)" xah-elisp--ahf)
     ("regexp-opt" "(regexp-opt STRINGS▮ &optional PAREN)" xah-elisp--ahf)
     ("regexp-quote" "(regexp-quote ▮)" xah-elisp--ahf)
     ("region-active-p" "(region-active-p)" xah-elisp--ahf)
@@ -3395,7 +3398,6 @@ Version 2017-01-27"
     ("make-vector" "(make-vector 5▮ 0)" xah-elisp--ahf)
     ("vconcat" "(vconcat SEQUENCES▮)" xah-elisp--ahf)
     ("fillarray" "(fillarray ARRAY▮ 0)" xah-elisp--ahf)
-
 
 ;;
     )

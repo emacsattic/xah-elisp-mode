@@ -3527,6 +3527,72 @@ Version 2017-01-27"
   )
 
 
+;; imenu
+(defvar xah-elisp-imenu-generic-expression
+  (list
+   (list nil
+	 (purecopy (concat "^\\s-*("
+			   (eval-when-compile
+			     (regexp-opt
+			      '("defun" "defmacro"
+                                ;; Elisp.
+                                "defun*" "defsubst" "define-inline"
+				"define-advice" "defadvice" "define-skeleton"
+				"define-compilation-mode" "define-minor-mode"
+				"define-global-minor-mode"
+				"define-globalized-minor-mode"
+				"define-derived-mode" "define-generic-mode"
+				"ert-deftest"
+				"cl-defun" "cl-defsubst" "cl-defmacro"
+				"cl-define-compiler-macro" "cl-defgeneric"
+				"cl-defmethod"
+                                ;; CL.
+				"define-compiler-macro" "define-modify-macro"
+				"defsetf" "define-setf-expander"
+				"define-method-combination"
+                                ;; CLOS and EIEIO
+				"defgeneric" "defmethod")
+                              t))
+			   "\\s-+\\(" lisp-mode-symbol-regexp "\\)"))
+	 2)
+   (list (purecopy "Variables")
+	 (purecopy (concat "^\\s-*("
+			   (eval-when-compile
+			     (regexp-opt
+			      '(;; Elisp
+                                "defconst" "defcustom"
+                                ;; CL
+                                "defconstant"
+				"defparameter" "define-symbol-macro")
+                              t))
+			   "\\s-+\\(" lisp-mode-symbol-regexp "\\)"))
+	 2)
+   ;; For `defvar'/`defvar-local', we ignore (defvar FOO) constructs.
+   (list (purecopy "Variables")
+	 (purecopy (concat "^\\s-*(defvar\\(?:-local\\)?\\s-+\\("
+                           lisp-mode-symbol-regexp "\\)"
+			   "[[:space:]\n]+[^)]"))
+	 1)
+   (list (purecopy "Types")
+	 (purecopy (concat "^\\s-*("
+			   (eval-when-compile
+			     (regexp-opt
+			      '(;; Elisp
+                                "defgroup" "deftheme"
+                                "define-widget" "define-error"
+				"defface" "cl-deftype" "cl-defstruct"
+                                ;; CL
+                                "deftype" "defstruct"
+				"define-condition" "defpackage"
+                                ;; CLOS and EIEIO
+                                "defclass")
+                              t))
+			   "\\s-+'?\\(" lisp-mode-symbol-regexp "\\)"))
+	 2))
+
+  "Imenu generic expression for Xah lisp mode.  See `imenu-generic-expression'.")
+
+
 
 ;;;###autoload
 (define-derived-mode xah-elisp-mode prog-mode "∑elisp"
@@ -3556,7 +3622,8 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   (setq-local comment-start-skip ";+ *")
   (setq-local comment-add 1) ;default to `;;' in comment-region
   (setq-local comment-column 2)
-
+  (setq-local imenu-generic-expression xah-elisp-imenu-generic-expression)
+  
   (setq-local indent-line-function 'lisp-indent-line)
   (setq-local tab-always-indent 'complete)
 

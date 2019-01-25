@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2018, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.4.20181028074409
+;; Version: 3.4.20190124224629
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3051,6 +3051,7 @@ Version 2017-01-27"
     ("wtb" "with-temp-buffer" xah-elisp--ahf)
     ("wtf" "with-temp-file" xah-elisp--ahf)
     ("atf" "append-to-file" xah-elisp--ahf)
+    ("cpa" "current-prefix-arg" xah-elisp--ahf)
 
     ("botap" "bounds-of-thing-at-point" xah-elisp--ahf)
     ("bsnp" "(buffer-substring-no-properties START▮ END)" xah-elisp--ahf)

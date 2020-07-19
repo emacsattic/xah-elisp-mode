@@ -1,9 +1,9 @@
 ;;; xah-elisp-mode.el --- Major mode for editing emacs lisp. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013-2018, by Xah Lee
+;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.4.20190124224629
+;; Version: 3.5.20200719094744
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2934,7 +2934,6 @@ Version 2017-01-27"
 
 (define-abbrev-table 'xah-elisp-mode-abbrev-table
   '(
-
     ("c" "concat" xah-elisp--ahf)
     ("d" "defun" xah-elisp--ahf)
     ("f" "format" xah-elisp--ahf)
@@ -2945,7 +2944,6 @@ Version 2017-01-27"
     ("p" "point" xah-elisp--ahf)
     ("s" "setq" xah-elisp--ahf)
     ("w" "when" xah-elisp--ahf)
-
 
     ("ah" "add-hook" xah-elisp--ahf)
     ("bc" "backward-char" xah-elisp--ahf)
@@ -2984,7 +2982,7 @@ Version 2017-01-27"
     ("ms" "match-string" xah-elisp--ahf)
     ("mv" "make-vector" xah-elisp--ahf)
     ("ns" "number-sequence" xah-elisp--ahf)
-    ("pm" "point-min" xah-elisp--ahf)
+    ("pm" "point-max" xah-elisp--ahf)
     ("pn" "progn" xah-elisp--ahf)
     ("px" "point-max" xah-elisp--ahf)
     ("rb" "region-beginning" xah-elisp--ahf)
@@ -2998,6 +2996,7 @@ Version 2017-01-27"
     ("rs" "read-string" xah-elisp--ahf)
     ("sb" "search-backward" xah-elisp--ahf)
     ("sc" "shell-command" xah-elisp--ahf)
+    ("sd" "setq-default" xah-elisp--ahf)
     ("se" "save-excursion" xah-elisp--ahf)
     ("sf" "search-forward" xah-elisp--ahf)
     ("sm" "string-match" xah-elisp--ahf)
@@ -3030,7 +3029,7 @@ Version 2017-01-27"
     ("mlv" "make-local-variable" xah-elisp--ahf)
     ("ntr" "narrow-to-region" xah-elisp--ahf)
     ("nts" "number-to-string" xah-elisp--ahf)
-    ("pmi" "point-min" xah-elisp--ahf)
+    ("opt" "&optional " xah-elisp--ahf)
     ("rap" "region-active-p" xah-elisp--ahf)
     ("rdn" "read-directory-name" xah-elisp--ahf)
     ("rfn" "read-file-name" xah-elisp--ahf)
@@ -3340,6 +3339,7 @@ Version 2017-01-27"
     ("set-visited-file-modtime" "(set-visited-file-modtime &optional TIME▮)" xah-elisp--ahf)
     ("set-visited-file-name" "(set-visited-file-name FILENAME▮ &optional NO-QUERY ALONG-WITH-FILE)" xah-elisp--ahf)
     ("setq" "(setq x▮ VAL)" xah-elisp--ahf)
+    ("setq-default" "(setq-default x▮ VAL)" xah-elisp--ahf)
     ("max" "(max ▮)" xah-elisp--ahf)
     ("shell-command" "(shell-command ▮ &optional OUTPUT-BUFFER ERROR-BUFFER)" xah-elisp--ahf)
     ("shell-quote-argument" "(shell-quote-argument ▮)" xah-elisp--ahf)
@@ -3400,7 +3400,7 @@ Version 2017-01-27"
     ("vconcat" "(vconcat SEQUENCES▮)" xah-elisp--ahf)
     ("fillarray" "(fillarray ARRAY▮ 0)" xah-elisp--ahf)
 
-;;
+    ;;
     )
 
   "Abbrev table for `xah-elisp-mode'"
@@ -3624,7 +3624,7 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   (setq-local comment-add 1) ;default to `;;' in comment-region
   (setq-local comment-column 2)
   (setq-local imenu-generic-expression xah-elisp-imenu-generic-expression)
-  
+
   (setq-local indent-line-function 'lisp-indent-line)
   (setq-local tab-always-indent 'complete)
 

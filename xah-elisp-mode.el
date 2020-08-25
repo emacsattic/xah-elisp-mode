@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.5.20200719094744
+;; Version: 3.5.20200825100315
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3338,7 +3338,7 @@ Version 2017-01-27"
     ("set-text-properties" "(set-text-properties START▮ END PROPS &optional OBJECT)" xah-elisp--ahf)
     ("set-visited-file-modtime" "(set-visited-file-modtime &optional TIME▮)" xah-elisp--ahf)
     ("set-visited-file-name" "(set-visited-file-name FILENAME▮ &optional NO-QUERY ALONG-WITH-FILE)" xah-elisp--ahf)
-    ("setq" "(setq x▮ VAL)" xah-elisp--ahf)
+    ("setq" "(setq ▮)" xah-elisp--ahf)
     ("setq-default" "(setq-default x▮ VAL)" xah-elisp--ahf)
     ("max" "(max ▮)" xah-elisp--ahf)
     ("shell-command" "(shell-command ▮ &optional OUTPUT-BUFFER ERROR-BUFFER)" xah-elisp--ahf)

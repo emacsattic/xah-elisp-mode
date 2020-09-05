@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.5.20200825100315
+;; Version: 3.5.20200905063534
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2982,7 +2982,7 @@ Version 2017-01-27"
     ("ms" "match-string" xah-elisp--ahf)
     ("mv" "make-vector" xah-elisp--ahf)
     ("ns" "number-sequence" xah-elisp--ahf)
-    ("pm" "point-max" xah-elisp--ahf)
+    ("pm" "point-min" xah-elisp--ahf)
     ("pn" "progn" xah-elisp--ahf)
     ("px" "point-max" xah-elisp--ahf)
     ("rb" "region-beginning" xah-elisp--ahf)

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2020, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.6.20200908070333
+;; Version: 3.6.20200908162828
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -421,6 +421,7 @@
 "tty-top-frame"
 "font-family-list"
 "bitmap-spec-p"
+"region-active-p"
 "region-beginning"
 "region-end"
 "use-region-p"

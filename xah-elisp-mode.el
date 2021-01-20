@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.8.20210111170855
+;; Version: 3.8.20210120082408
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3191,7 +3191,6 @@ Version 2017-01-27"
     ("font-lock-add-keywords" "(font-lock-add-keywords MODE▮ KEYWORDS &optional HOW)" xah-elisp--ahf)
     ("font-lock-fontify-buffer" "(font-lock-fontify-buffer ▮)" xah-elisp--ahf)
     ("format" "(format \"%s\" ▮)" xah-elisp--ahf)
-    ("format" "(format \"▮\" &optional OBJECTS)" xah-elisp--ahf)
     ("forward-char" "(forward-char ▮)" xah-elisp--ahf)
     ("forward-line" "(forward-line ▮)" xah-elisp--ahf)
     ("forward-word" "(forward-word ▮)" xah-elisp--ahf)
@@ -3253,7 +3252,7 @@ Version 2017-01-27"
     ("make-local-variable" "(make-local-variable ▮)" xah-elisp--ahf)
     ("make-string" "(make-string count character)" xah-elisp--ahf)
     ("make-vector" "(make-vector 5▮ 0)" xah-elisp--ahf)
-    ("mapc" "(mapc '▮ SEQUENCE)" xah-elisp--ahf)
+    ("mapc" "(mapc \n(lambda (x▮) BODY)\n SEQUENCE)" xah-elisp--ahf)
     ("mapcar" "(mapcar '▮ SEQUENCE)" xah-elisp--ahf)
     ("mapconcat" "(mapconcat FUNCTION▮ SEQUENCE SEPARATOR)" xah-elisp--ahf)
     ("maphash" "(maphash FUNCTION▮ TABLE)" xah-elisp--ahf)

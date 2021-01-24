@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.8.20210120082408
+;; Version: 3.9.20210123171811
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -2958,6 +2958,7 @@ Version 2017-01-27"
     ("cd" "copy-directory" xah-elisp--ahf)
     ("ce" "char-equal" xah-elisp--ahf)
     ("cf" "copy-file" xah-elisp--ahf)
+    ("cp" "call-process" xah-elisp--ahf)
     ("cw" "current-word" xah-elisp--ahf)
     ("dc" "delete-char" xah-elisp--ahf)
     ("dd" "delete-directory" xah-elisp--ahf)
@@ -3004,6 +3005,7 @@ Version 2017-01-27"
     ("se" "save-excursion" xah-elisp--ahf)
     ("sf" "search-forward" xah-elisp--ahf)
     ("sm" "string-match" xah-elisp--ahf)
+    ("sp" "start-process" xah-elisp--ahf)
     ("sr" "save-restriction" xah-elisp--ahf)
     ("ss" "split-string" xah-elisp--ahf)
     ("vc" "vconcat" xah-elisp--ahf)
@@ -3105,6 +3107,7 @@ Version 2017-01-27"
     ("bufferp" "(bufferp ▮)" xah-elisp--ahf)
     ("bury-buffer" "(bury-buffer &optional BUFFER-OR-NAME▮)" xah-elisp--ahf)
     ("call-interactively" "(call-interactively 'FUNCTION▮ &optional RECORD-FLAG KEYS)" xah-elisp--ahf)
+    ("call-process" "(call-process PROGRAM▮ &optional INFILE DESTINATION DISPLAY &rest ARGS)" xah-elisp--ahf)
     ("called-interactively-p" "(called-interactively-p 'interactive▮)" xah-elisp--ahf)
     ("car" "(car ▮)" xah-elisp--ahf)
     ("catch" "(catch 'TAG▮ BODY)" xah-elisp--ahf)
@@ -3360,6 +3363,7 @@ Version 2017-01-27"
     ("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("skip-chars-forward" "(skip-chars-forward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("split-string" "(split-string ▮ &optional SEPARATORS OMIT-NULLS)" xah-elisp--ahf)
+    ("start-process" "(start-process "NAME" "BUFFER" PROGRAM▮ &rest PROGRAM-ARGS)" xah-elisp--ahf)
     ("stc" "(string-to-char \"▮\")" xah-elisp--ahf)
     ("string-collate-equalp" "(string-collate-equalp string1▮ string2 &optional locale)" xah-elisp--ahf)
     ("string-collate-lessp" "(string-collate-lessp string1▮ string2 &optional locale)" xah-elisp--ahf)
@@ -3412,7 +3416,6 @@ Version 2017-01-27"
     ("write-region" "(write-region (point-min) (point-max) FILENAME▮ &optional APPEND VISIT LOCKNAME MUSTBENEW)" xah-elisp--ahf)
     ("y-or-n-p" "(y-or-n-p \"PROMPT▮ \")" xah-elisp--ahf)
     ("yes-or-no-p" "(yes-or-no-p \"PROMPT▮ \")" xah-elisp--ahf)
-
     ;;
     )
 

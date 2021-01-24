@@ -3363,7 +3363,7 @@ Version 2017-01-27"
     ("skip-chars-backward" "(skip-chars-backward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("skip-chars-forward" "(skip-chars-forward \"▮\" &optional LIM)" xah-elisp--ahf)
     ("split-string" "(split-string ▮ &optional SEPARATORS OMIT-NULLS)" xah-elisp--ahf)
-    ("start-process" "(start-process "NAME" "BUFFER" PROGRAM▮ &rest PROGRAM-ARGS)" xah-elisp--ahf)
+    ("start-process" "(start-process NAME BUFFER PROGRAM▮ &rest PROGRAM-ARGS)" xah-elisp--ahf)
     ("stc" "(string-to-char \"▮\")" xah-elisp--ahf)
     ("string-collate-equalp" "(string-collate-equalp string1▮ string2 &optional locale)" xah-elisp--ahf)
     ("string-collate-lessp" "(string-collate-lessp string1▮ string2 &optional locale)" xah-elisp--ahf)

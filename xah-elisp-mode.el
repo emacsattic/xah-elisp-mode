@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.9.20210123171811
+;; Version: 3.9.20210202050207
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3256,7 +3256,7 @@ Version 2017-01-27"
     ("make-string" "(make-string count character)" xah-elisp--ahf)
     ("make-vector" "(make-vector 5▮ 0)" xah-elisp--ahf)
     ("mapc" "(mapc \n(lambda (x▮) BODY)\n SEQUENCE)" xah-elisp--ahf)
-    ("mapcar" "(mapcar '▮ SEQUENCE)" xah-elisp--ahf)
+    ("mapcar" "(mapcar \n(lambda (x▮) BODY)\n SEQUENCE)" xah-elisp--ahf)
     ("mapconcat" "(mapconcat FUNCTION▮ SEQUENCE SEPARATOR)" xah-elisp--ahf)
     ("maphash" "(maphash FUNCTION▮ TABLE)" xah-elisp--ahf)
     ("match-beginning" "(match-beginning N▮)" xah-elisp--ahf)

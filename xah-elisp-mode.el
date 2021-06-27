@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.10.20210208125542
+;; Version: 3.11.20210626220812
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: lisp, languages
@@ -3533,22 +3533,14 @@ Version 2017-01-27"
 (defvar xah-elisp-mode-map nil "Keybinding for `xah-elisp-mode'")
 (progn
   (setq xah-elisp-mode-map (make-sparse-keymap))
-
-  ;; painful to stick with emacs convention of not defining the key and get what i want
+  (define-prefix-command 'xah-elisp-leader-map)
   (define-key xah-elisp-mode-map (kbd "TAB") 'xah-elisp-complete-or-indent)
-
-  (progn
-    (define-prefix-command 'xah-elisp-mode-no-chord-map)
-    (define-key xah-elisp-mode-no-chord-map (kbd "u") 'xah-elisp-add-paren-around-symbol)
-    (define-key xah-elisp-mode-no-chord-map (kbd "t") 'xah-elisp-prettify-root-sexp)
-    (define-key xah-elisp-mode-no-chord-map (kbd "h") 'xah-elisp-remove-paren-pair)
-    (define-key xah-elisp-mode-no-chord-map (kbd "p") 'xah-elisp-compact-parens)
-    (define-key xah-elisp-mode-no-chord-map (kbd "c") 'xah-elisp-complete-symbol)
-    )
-
-  ;; define separate, so that user can override the lead key
-  (define-key xah-elisp-mode-map (kbd "C-c C-c") xah-elisp-mode-no-chord-map)
-  )
+  (define-key xah-elisp-mode-map (kbd "<f9>") xah-elisp-leader-map)
+  (define-key xah-elisp-leader-map (kbd "u") 'xah-elisp-add-paren-around-symbol)
+  (define-key xah-elisp-leader-map (kbd "t") 'xah-elisp-prettify-root-sexp)
+  (define-key xah-elisp-leader-map (kbd "h") 'xah-elisp-remove-paren-pair)
+  (define-key xah-elisp-leader-map (kbd "p") 'xah-elisp-compact-parens)
+  (define-key xah-elisp-leader-map (kbd "c") 'xah-elisp-complete-symbol))
 
 
 ;; imenu

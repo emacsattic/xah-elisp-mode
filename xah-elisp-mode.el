@@ -3,9 +3,9 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.11.20210626220812
+;; Version: 3.14.20210731142252
 ;; Created: 23 Mar 2013
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;; Keywords: lisp, languages
 ;; License: GPL v3
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -2646,17 +2646,17 @@
 (defvar xah-elisp-all-symbols nil "List of all elisp symbols.")
 (setq xah-elisp-all-symbols nil)
 
-;; (setq xah-elisp-all-symbols
-;;       (append
-;;        xah-elisp-ampersand-words
-;;        xah-elisp-functions
-;;        xah-elisp-special-forms
-;;        xah-elisp-macros
-;;        xah-elisp-commands
-;;        xah-elisp-user-options
-;;        xah-elisp-variables ))
+(setq xah-elisp-all-symbols
+      (append
+       xah-elisp-ampersand-words
+       xah-elisp-functions
+       xah-elisp-special-forms
+       xah-elisp-macros
+       xah-elisp-commands
+       xah-elisp-user-options
+       xah-elisp-variables ))
 
-(mapatoms (lambda (x) (push (symbol-name x) xah-elisp-all-symbols)) obarray )
+;; (mapatoms (lambda (x) (push (symbol-name x) xah-elisp-all-symbols)) obarray )
 
 ;; (length xah-elisp-all-symbols )
 ;; 46694. on gnu emacs sans init, about 15k
@@ -3013,6 +3013,7 @@ Version 2017-01-27"
     ("sp" "start-process" xah-elisp--ahf)
     ("sr" "save-restriction" xah-elisp--ahf)
     ("ss" "split-string" xah-elisp--ahf)
+    ("ue" "user-error" xah-elisp--ahf)
     ("vc" "vconcat" xah-elisp--ahf)
     ("wg" "widget-get" xah-elisp--ahf)
     ("wr" "write-region" xah-elisp--ahf)
@@ -3658,9 +3659,7 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
       (add-hook 'completion-at-point-functions 'elisp-completion-at-point nil 'local)))
 
   (make-local-variable 'abbrev-expand-function)
-  (if (version< emacs-version "24.4")
-      (add-hook 'abbrev-expand-functions 'xah-elisp-expand-abbrev nil t)
-    (setq abbrev-expand-function 'xah-elisp-expand-abbrev))
+  (setq abbrev-expand-function 'xah-elisp-expand-abbrev)
 
   (abbrev-mode 1)
 

@@ -3,9 +3,9 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.14.20210731142252
+;; Version: 3.15.20210731171103
 ;; Created: 23 Mar 2013
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
 ;; License: GPL v3
 ;; Homepage: http://ergoemacs.org/emacs/xah-elisp-mode.html
@@ -3666,13 +3666,9 @@ URL `http://ergoemacs.org/emacs/xah-elisp-mode.html'
   (xah-elisp-display-page-break-as-line)
   (setq prettify-symbols-alist '(("lambda" . 955)))
 
-  (if (version< emacs-version "25")
-      (progn
-        (make-local-variable 'ido-separator)
-        (setq ido-separator "\n"))
-    (progn
-      (make-local-variable 'ido-decorations)
-      (setf (nth 2 ido-decorations) "\n")))
+  (progn
+    (make-local-variable 'ido-decorations)
+    (setf (nth 2 ido-decorations) "\n"))
 
   :group 'xah-elisp-mode
   )

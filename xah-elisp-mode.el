@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.17.20210804212652
+;; Version: 3.18.20210804232442
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -3020,6 +3020,9 @@ Version 2017-01-27"
 
     ("gt" "(> ▮)" xah-elisp--ahf)
     ("lt" "(< ▮)" xah-elisp--ahf)
+    ("minus" "(- ▮)" xah-elisp--ahf)
+    ("add" "(+ ▮)" xah-elisp--ahf)
+    ("add1" "(1+ ▮)" xah-elisp--ahf)
 
     ("atf" "append-to-file" xah-elisp--ahf)
     ("bfn" "buffer-file-name" xah-elisp--ahf)

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.18.20210804232442
+;; Version: 3.18.20210808211958
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -2867,7 +2867,7 @@ Works on whole buffer or text selection, respects `narrow-to-region'.
 If 0, it means lines will be joined.
 By befault, @N is 2. It means, 1 visible blank line.
 
-Version 2017-01-27"
+Version 2017-01-27 2021-08-08"
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))
@@ -2879,7 +2879,7 @@ Version 2017-01-27"
       (narrow-to-region @begin @end)
       (progn
         (goto-char (point-min))
-        (while (search-forward-regexp "\n\n\n+" nil "noerror")
+        (while (search-forward-regexp "\n\n\n+" nil t)
           (replace-match (make-string (if @n @n 2) 10)))))))
 
 (defun xah-elisp-goto-outmost-bracket (&optional @pos)

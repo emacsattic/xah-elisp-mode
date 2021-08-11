@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.18.20210808211958
+;; Version: 3.19.20210811100935
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -2646,17 +2646,9 @@
 (defvar xah-elisp-all-symbols nil "List of all elisp symbols.")
 (setq xah-elisp-all-symbols nil)
 
-(setq xah-elisp-all-symbols
-      (append
-       xah-elisp-ampersand-words
-       xah-elisp-functions
-       xah-elisp-special-forms
-       xah-elisp-macros
-       xah-elisp-commands
-       xah-elisp-user-options
-       xah-elisp-variables ))
+;; (setq xah-elisp-all-symbols (append xah-elisp-ampersand-words xah-elisp-functions xah-elisp-special-forms xah-elisp-macros xah-elisp-commands xah-elisp-user-options xah-elisp-variables ))
 
-;; (mapatoms (lambda (x) (push (symbol-name x) xah-elisp-all-symbols)) obarray )
+(mapatoms (lambda (x) (push (symbol-name x) xah-elisp-all-symbols)) obarray )
 
 ;; (length xah-elisp-all-symbols )
 ;; 46694. on gnu emacs sans init, about 15k

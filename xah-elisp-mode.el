@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.19.20210811100935
+;; Version: 3.20.20210811223441
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -3013,8 +3013,9 @@ Version 2017-01-27"
     ("gt" "(> ▮)" xah-elisp--ahf)
     ("lt" "(< ▮)" xah-elisp--ahf)
     ("minus" "(- ▮)" xah-elisp--ahf)
-    ("add" "(+ ▮)" xah-elisp--ahf)
-    ("add1" "(1+ ▮)" xah-elisp--ahf)
+    ("plus" "(+ ▮)" xah-elisp--ahf)
+    ("inc" "(1+ ▮)" xah-elisp--ahf)
+    ("dec" "(1- ▮)" xah-elisp--ahf)
 
     ("atf" "append-to-file" xah-elisp--ahf)
     ("bfn" "buffer-file-name" xah-elisp--ahf)
@@ -3263,10 +3264,10 @@ Version 2017-01-27"
     ("mapcar" "(mapcar \n(lambda (x▮) BODY)\n SEQUENCE)" xah-elisp--ahf)
     ("mapconcat" "(mapconcat FUNCTION▮ SEQUENCE SEPARATOR)" xah-elisp--ahf)
     ("maphash" "(maphash FUNCTION▮ TABLE)" xah-elisp--ahf)
-    ("match-beginning" "(match-beginning N▮)" xah-elisp--ahf)
+    ("match-beginning" "(match-beginning 0▮)" xah-elisp--ahf)
     ("match-data" "(match-data &optional INTEGERS▮ REUSE RESEAT)" xah-elisp--ahf)
-    ("match-end" "(match-end N▮)" xah-elisp--ahf)
-    ("match-string" "(match-string NUM▮ &optional STRING)" xah-elisp--ahf)
+    ("match-end" "(match-end 0▮)" xah-elisp--ahf)
+    ("match-string" "(match-string 1▮ &optional STRING)" xah-elisp--ahf)
     ("max" "(max ▮)" xah-elisp--ahf)
     ("member" "(member ELT▮ LIST)" xah-elisp--ahf)
     ("member" "(member OBJECT▮ LIST)" xah-elisp--ahf)

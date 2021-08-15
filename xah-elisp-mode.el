@@ -3017,6 +3017,7 @@ Version 2017-01-27"
     ("inc" "(1+ ▮)" xah-elisp--ahf)
     ("dec" "(1- ▮)" xah-elisp--ahf)
 
+
     ("atf" "append-to-file" xah-elisp--ahf)
     ("bfn" "buffer-file-name" xah-elisp--ahf)
     ("bmp" "buffer-modified-p" xah-elisp--ahf)
@@ -3045,6 +3046,7 @@ Version 2017-01-27"
     ("len" "length" xah-elisp--ahf)
     ("lep" "(line-end-position)" xah-elisp--ahf)
     ("mlv" "make-local-variable" xah-elisp--ahf)
+    ("msnp" "match-string-no-properties" xah-elisp--ahf)
     ("ntr" "narrow-to-region" xah-elisp--ahf)
     ("nts" "number-to-string" xah-elisp--ahf)
     ("opt" "&optional " xah-elisp--ahf)
@@ -3268,6 +3270,7 @@ Version 2017-01-27"
     ("match-data" "(match-data &optional INTEGERS▮ REUSE RESEAT)" xah-elisp--ahf)
     ("match-end" "(match-end 0▮)" xah-elisp--ahf)
     ("match-string" "(match-string 1▮ &optional STRING)" xah-elisp--ahf)
+    ("match-string-no-properties" "(match-string-no-properties 1▮ &optional STRING)" xah-elisp--ahf)
     ("max" "(max ▮)" xah-elisp--ahf)
     ("member" "(member ELT▮ LIST)" xah-elisp--ahf)
     ("member" "(member OBJECT▮ LIST)" xah-elisp--ahf)

@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.20.20210811223441
+;; Version: 3.21.20210815223625
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -3073,6 +3073,9 @@ Version 2017-01-27"
     ("wtb" "with-temp-buffer" xah-elisp--ahf)
     ("wtf" "with-temp-file" xah-elisp--ahf)
     ("yonp" "yes-or-no-p" xah-elisp--ahf)
+    ("subs" "substring" xah-elisp--ahf)
+    ("snp" "substring-no-properties" xah-elisp--ahf)
+    ("ssnp" "substring-no-properties" xah-elisp--ahf)
 
     ("abbreviate-file-name" "(abbreviate-file-name ▮)" xah-elisp--ahf)
     ("add-hook" "(add-hook 'HOOK▮ 'FUNCTION)" xah-elisp--ahf)

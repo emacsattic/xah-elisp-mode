@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.21.20210815223625
+;; Version: 3.21.20210818042100
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -3064,7 +3064,7 @@ Version 2017-01-27"
     ("sfr" "search-forward-regexp" xah-elisp--ahf)
     ("sqa" "shell-quote-argument" xah-elisp--ahf)
     ("stb" "switch-to-buffer" xah-elisp--ahf)
-    ("ste" "(string-equal str1▮ str2)" xah-elisp--ahf)
+    ("ste" "string-equal" xah-elisp--ahf)
     ("stn" "string-to-number" xah-elisp--ahf)
     ("tap" "thing-at-point" xah-elisp--ahf)
     ("urp" "use-region-p" xah-elisp--ahf)

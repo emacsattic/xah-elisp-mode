@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.21.20210818042100
+;; Version: 3.22.20210823182115
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -3541,7 +3541,7 @@ Version 2017-01-27"
   (setq xah-elisp-mode-map (make-sparse-keymap))
   (define-prefix-command 'xah-elisp-leader-map)
   (define-key xah-elisp-mode-map (kbd "TAB") 'xah-elisp-complete-or-indent)
-  (define-key xah-elisp-mode-map (kbd "<f9>") xah-elisp-leader-map)
+  (define-key xah-elisp-mode-map (if (boundp 'xahemacs-major-mode-leader-key) xahemacs-major-mode-leader-key (kbd "<f9>")) xah-elisp-leader-map)
   (define-key xah-elisp-leader-map (kbd "u") 'xah-elisp-add-paren-around-symbol)
   (define-key xah-elisp-leader-map (kbd "t") 'xah-elisp-prettify-root-sexp)
   (define-key xah-elisp-leader-map (kbd "h") 'xah-elisp-remove-paren-pair)

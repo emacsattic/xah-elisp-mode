@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.22.20210829182609
+;; Version: 3.22.20210901152259
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -3031,6 +3031,7 @@ Version 2017-01-27"
     ("botap" "bounds-of-thing-at-point" xah-elisp--ahf)
     ("bsnp" "buffer-substring-no-properties" xah-elisp--ahf)
     ("cdr" "cdr" xah-elisp--ahf)
+    ("cfs" "case-fold-search" xah-elisp--ahf)
     ("cpa" "current-prefix-arg" xah-elisp--ahf)
     ("daer" "delete-and-extract-region" xah-elisp--ahf)
     ("dfr" "directory-files-recursively" xah-elisp--ahf)
@@ -3067,10 +3068,13 @@ Version 2017-01-27"
     ("scf" "skip-chars-forward" xah-elisp--ahf)
     ("sfm" "set-file-modes" xah-elisp--ahf)
     ("sfr" "search-forward-regexp" xah-elisp--ahf)
+    ("snp" "substring-no-properties" xah-elisp--ahf)
     ("sqa" "shell-quote-argument" xah-elisp--ahf)
+    ("ssnp" "substring-no-properties" xah-elisp--ahf)
     ("stb" "switch-to-buffer" xah-elisp--ahf)
     ("ste" "string-equal" xah-elisp--ahf)
     ("stn" "string-to-number" xah-elisp--ahf)
+    ("subs" "substring" xah-elisp--ahf)
     ("tap" "thing-at-point" xah-elisp--ahf)
     ("urp" "use-region-p" xah-elisp--ahf)
     ("wcb" "with-current-buffer" xah-elisp--ahf)
@@ -3078,9 +3082,6 @@ Version 2017-01-27"
     ("wtb" "with-temp-buffer" xah-elisp--ahf)
     ("wtf" "with-temp-file" xah-elisp--ahf)
     ("yonp" "yes-or-no-p" xah-elisp--ahf)
-    ("subs" "substring" xah-elisp--ahf)
-    ("snp" "substring-no-properties" xah-elisp--ahf)
-    ("ssnp" "substring-no-properties" xah-elisp--ahf)
 
     ("abbreviate-file-name" "(abbreviate-file-name ▮)" xah-elisp--ahf)
     ("add-hook" "(add-hook 'HOOK▮ 'FUNCTION)" xah-elisp--ahf)
@@ -3125,6 +3126,7 @@ Version 2017-01-27"
     ("call-process" "(call-process PROGRAM▮ &optional INFILE DESTINATION DISPLAY &rest ARGS)" xah-elisp--ahf)
     ("called-interactively-p" "(called-interactively-p 'interactive▮)" xah-elisp--ahf)
     ("car" "(car ▮)" xah-elisp--ahf)
+    ("case-fold-search" "(case-fold-search nil)" xah-elisp--ahf)
     ("catch" "(catch 'TAG▮ BODY)" xah-elisp--ahf)
     ("cdr" "(cdr ▮)" xah-elisp--ahf)
     ("ceiling" "(ceiling ▮)" xah-elisp--ahf)

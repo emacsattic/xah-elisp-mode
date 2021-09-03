@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.22.20210901152259
+;; Version: 3.23.20210903035702
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -70,7 +70,7 @@
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (autoload 'xah-elisp-mode "xah-elisp-mode" "xah emacs lisp major mode." t)
 
-
+;; HHH___________________________________________________________________
 ;;; Code:
 
 (require 'lisp-mode)
@@ -2668,7 +2668,7 @@ Version 2017-01-27"
           (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
     (redraw-frame)))
 
-
+;; HHH___________________________________________________________________
 
 ;; emacs 24.4 or 24.3 change fix
 
@@ -2680,7 +2680,7 @@ emacs 25.x changed `up-list' to take up to 3 args. Before, only 1."
       (up-list arg1 arg2 arg3)
     (up-list arg1)))
 
-
+;; HHH___________________________________________________________________
 ;; completion
 
 (defun xah-elisp-complete-symbol ()
@@ -2808,7 +2808,7 @@ Version 2016-10-24"
 
 (put 'xah-elisp--ahf 'no-self-insert t)
 
-
+;; HHH___________________________________________________________________
 ;; indent/reformat related
 
 (defun xah-elisp-goto-outmost-bracket (&optional Pos)
@@ -2827,47 +2827,101 @@ Version 2021-09-01"
 
 (defun xah-elisp-compact-parens-region (Begin End)
   "Remove whitespaces that occure between left/right parenthesises, in region.
-Version 2021-09-01"
+Version 2021-09-01 2021-09-03"
   (interactive "r")
   (let ($syntaxState)
     (save-restriction
       (narrow-to-region Begin End)
-      (goto-char (point-min))
 
-      (while (re-search-forward ")[ \t\n]+)" nil t)
-        (setq $syntaxState (syntax-ppss (match-beginning 0)))
-        (if (or (nth 3 $syntaxState ) (nth 4 $syntaxState))
-            (search-forward ")")
+      ;; tab to space
+      (goto-char (point-min))
+      (while (search-forward "\t" nil 1)
+        (setq $syntaxState (syntax-ppss))
+        (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
+            nil
+          (replace-match " ")))
+
+      ;; blank lines to 1
+      (goto-char (point-min))
+      (while (re-search-forward "\n\n\n+" nil 1)
+        (replace-match "\n\n"))
+
+      ;; compact spaces to just 1, except if it begins line
+      (goto-char (point-min))
+      (while (re-search-forward "\\([^ \n]\\)  +" nil 1)
+        (setq $syntaxState (syntax-ppss))
+        (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
+            nil
+          (replace-match "\\1 ")))
+
+      ;; whitespace between right parens
+      (goto-char (point-min))
+      (while (re-search-forward ")[ \n]+)" nil 1)
+        (setq $syntaxState (syntax-ppss))
+        (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
+            nil
           (progn (replace-match "))")
-                 (search-backward ")"))))
+                 (backward-char))))
+
+      ;;  ;; space after right paren
+      ;; (goto-char (point-min))
+      ;; (while (search-forward ")  " nil 1)
+      ;;   (setq $syntaxState (syntax-ppss ))
+      ;;   (if (or (nth 3 $syntaxState ) (nth 4 $syntaxState))
+      ;;       nil
+      ;;     (replace-match ") ")))
+
+      ;; space before right paren
+      (goto-char (point-min))
+      (while (search-forward " )" nil 1)
+        (setq $syntaxState (syntax-ppss))
+        (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
+            nil
+          (replace-match ")")))
+
+      ;; whitespace between left parens
+      (goto-char (point-min))
+      (while (re-search-forward "([ \n]+(" nil 1)
+        (setq $syntaxState (syntax-ppss))
+        (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
+            nil
+          (replace-match "(("))
+        (backward-char))
+
+      ;; space after left paren
+      (goto-char (point-min))
+      (while (search-forward "( " nil 1)
+        (setq $syntaxState (syntax-ppss))
+        (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
+            nil
+          (replace-match "(")))
+
+      ;; space before left paren
+      (goto-char (point-min))
+      (while (re-search-forward "\\([)A-Za-z0-9]+\\)  +(" nil 1)
+        (setq $syntaxState (syntax-ppss))
+        (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
+            nil
+          (progn (replace-match "\\1 ("))))
 
       (goto-char (point-min))
-      (while (re-search-forward "([ \t\n]+(" nil t)
-        (setq $syntaxState (syntax-ppss (match-beginning 0)))
-        (if (or (nth 3 $syntaxState ) (nth 4 $syntaxState))
-            (search-forward "(")
-          (progn (replace-match "((")
-                 (search-backward "(")))))))
+      (while (re-search-forward " +\n" nil 1) (replace-match "\n")))))
 
 (defun xah-elisp-prettify-root-sexp ()
   "Prettify format current root sexp group.
 Root sexp group is the outmost sexp unit.
-Version 2016-10-13 2021-09-01"
+Version 2016-10-13 2021-09-03"
   (interactive)
   (save-excursion
     (let ($p1 $p2)
       (xah-elisp-goto-outmost-bracket)
       (setq $p1 (point))
       (setq $p2 (scan-sexps (point) 1))
-      (save-excursion
-        (save-restriction
-          (narrow-to-region $p1 $p2)
-          (progn
-            (xah-elisp-compact-parens-region (point-min) (point-max))
-            (goto-char (point-min))
-            (indent-sexp)
-            (xah-elisp-compact-blank-lines (point-min) (point-max))
-            (delete-trailing-whitespace (point-min) (point-max))))))))
+      (save-restriction
+        (narrow-to-region $p1 $p2)
+        (xah-elisp-compact-parens-region (point-min) (point-max))
+        (goto-char (point-min))
+        (indent-sexp)))))
 
 (defun xah-elisp-complete-or-indent ()
   "Do keyword completion or indent/prettify-format.
@@ -2890,29 +2944,6 @@ Version 2021-09-01"
                  (xah-elisp-complete-symbol)
                (xah-elisp-prettify-root-sexp))))))
 
-(defun xah-elisp-compact-blank-lines (&optional Begin End N)
-  "Replace repeated blank lines to just 1.
-Works on whole buffer or text selection, respects `narrow-to-region'.
-
-N is the number of newline chars to use in replacement.
-If 0, it means lines will be joined.
-By befault, N is 2. It means, 1 visible blank line.
-
-Version 2017-01-27 2021-08-08"
-  (interactive
-   (if (region-active-p)
-       (list (region-beginning) (region-end))
-     (list (point-min) (point-max))))
-  (when (not Begin)
-    (setq Begin (point-min) End (point-max)))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region Begin End)
-      (progn
-        (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil t)
-          (replace-match (make-string (if N N 2) 10)))))))
-
 (defun xah-elisp-compact-parens (&optional Begin End)
   "Remove whitespaces in ending repetition of parenthesises.
 If there's a text selection, act on the region, else, on defun block.
@@ -2931,7 +2962,7 @@ Version 2017-01-27"
         (setq $p2 (scan-sexps (point) 1))))
     (xah-elisp-compact-parens-region $p1 $p2)))
 
-
+;; HHH___________________________________________________________________
 ;; abbrev
 
 (defvar xah-elisp-mode-abbrev-table nil "abbrev table" )
@@ -3057,6 +3088,7 @@ Version 2017-01-27"
     ("lbp" "(line-beginning-position)" xah-elisp--ahf)
     ("len" "length" xah-elisp--ahf)
     ("lep" "(line-end-position)" xah-elisp--ahf)
+    ("lsk" "local-set-key" xah-elisp--ahf)
     ("mlv" "make-local-variable" xah-elisp--ahf)
     ("msnp" "match-string-no-properties" xah-elisp--ahf)
     ("ntr" "narrow-to-region" xah-elisp--ahf)
@@ -3268,6 +3300,7 @@ Version 2017-01-27"
     ("list" "(list ▮)" xah-elisp--ahf)
     ("load" "(load FILE▮ &optional NOERROR NOMESSAGE NOSUFFIX MUST-SUFFIX)" xah-elisp--ahf)
     ("load-file" "(load-file FILE▮)" xah-elisp--ahf)
+    ("local-set-key" "(local-set-key (kbd \"C-▮\") 'COMMAND)" xah-elisp--ahf)
     ("looking-at" "(looking-at \"REGEXP▮\")" xah-elisp--ahf)
     ("looking-back" "(looking-back \"REGEXP▮\" LIMIT &optional GREEDY)" xah-elisp--ahf)
     ("make-directory" "(make-directory ▮ &optional PARENTS)" xah-elisp--ahf)
@@ -3457,7 +3490,7 @@ Version 2017-01-27"
 (abbrev-table-put xah-elisp-mode-abbrev-table :system t)
 (abbrev-table-put xah-elisp-mode-abbrev-table :enable-function 'xah-elisp-abbrev-enable-function)
 
-
+;; HHH___________________________________________________________________
 ;; syntax coloring related
 
 (defface xah-elisp-command-face
@@ -3531,7 +3564,7 @@ Version 2017-01-27"
           (,capVars . 'xah-elisp-cap-variable)
           (":[a-z]+\\b" . font-lock-builtin-face))))
 
-
+;; HHH___________________________________________________________________
 ;; syntax table
 (defvar xah-elisp-mode-syntax-table nil "Syntax table for `xah-elisp-mode'.")
 
@@ -3550,7 +3583,7 @@ Version 2017-01-27"
 
         synTable))
 
-
+;; HHH___________________________________________________________________
 ;; keybinding
 
 (defvar xah-elisp-mode-map nil "Keybinding for `xah-elisp-mode'")
@@ -3565,7 +3598,7 @@ Version 2017-01-27"
   (define-key xah-elisp-leader-map (kbd "p") 'xah-elisp-compact-parens)
   (define-key xah-elisp-leader-map (kbd "c") 'xah-elisp-complete-symbol))
 
-
+;; HHH___________________________________________________________________
 ;; imenu
 (defvar xah-elisp-imenu-generic-expression
   (list
@@ -3631,7 +3664,7 @@ Version 2017-01-27"
 
   "Imenu generic expression for Xah lisp mode.  See `imenu-generic-expression'.")
 
-
+;; HHH___________________________________________________________________
 
 ;;;###autoload
 (define-derived-mode xah-elisp-mode prog-mode "∑elisp"

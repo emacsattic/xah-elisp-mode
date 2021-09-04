@@ -2849,17 +2849,17 @@ Version 2021-09-01 2021-09-03"
       ;; compact spaces to just 1, except if it begins line
       (goto-char (point-min))
       (while (re-search-forward "\\([^ \n]\\)  +" nil 1)
-        (setq $syntaxState (syntax-ppss))
+        (setq $syntaxState (syntax-ppss (match-beginning 0)))
         (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
-            nil
+            (goto-char (match-end 0))
           (replace-match "\\1 ")))
 
       ;; whitespace between right parens
       (goto-char (point-min))
       (while (re-search-forward ")[ \n]+)" nil 1)
-        (setq $syntaxState (syntax-ppss))
+        (setq $syntaxState (syntax-ppss (match-beginning 0)))
         (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
-            nil
+            (goto-char (match-end 0))
           (progn (replace-match "))")
                  (backward-char))))
 
@@ -2868,7 +2868,7 @@ Version 2021-09-01 2021-09-03"
       ;; (while (search-forward ")  " nil 1)
       ;;   (setq $syntaxState (syntax-ppss ))
       ;;   (if (or (nth 3 $syntaxState ) (nth 4 $syntaxState))
-      ;;       nil
+      ;;       (goto-char (match-end 0))
       ;;     (replace-match ") ")))
 
       ;; space before right paren
@@ -2882,9 +2882,9 @@ Version 2021-09-01 2021-09-03"
       ;; whitespace between left parens
       (goto-char (point-min))
       (while (re-search-forward "([ \n]+(" nil 1)
-        (setq $syntaxState (syntax-ppss))
+        (setq $syntaxState (syntax-ppss (match-beginning 0)))
         (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
-            nil
+            (goto-char (match-end 0))
           (replace-match "(("))
         (backward-char))
 

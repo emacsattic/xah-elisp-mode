@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.23.20210903035702
+;; Version: 3.24.20210919094357
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -2692,16 +2692,16 @@ version 2017-01-27"
          ($bds (bounds-of-thing-at-point 'symbol))
          ($p1 (car $bds))
          ($p2 (cdr $bds))
-         ($current-sym
+         ($thisSym
           (if  (or (not $p1) (not $p2) (equal $p1 $p2))
               ""
             (buffer-substring-no-properties $p1 $p2)))
-         $result-sym)
-    (when (not $current-sym) (setq $current-sym ""))
-    (setq $result-sym
-          (ido-completing-read "" xah-elisp-all-symbols nil nil $current-sym ))
+         $resultSym)
+    (when (not $thisSym) (setq $thisSym ""))
+    (setq $resultSym
+          (ido-completing-read "" xah-elisp-all-symbols nil nil $thisSym ))
     (delete-region $p1 $p2)
-    (insert $result-sym)))
+    (insert $resultSym)))
 
 (defun xah-elisp-completion-function ()
   "This is the function to be used for the hook `completion-at-point-functions'."
@@ -2970,8 +2970,7 @@ Version 2017-01-27"
 (setq xah-elisp-mode-abbrev-table nil)
 
 (define-abbrev-table 'xah-elisp-mode-abbrev-table
-  '(
-    ("c" "concat" xah-elisp--ahf)
+  '(("c" "concat" xah-elisp--ahf)
     ("d" "defun" xah-elisp--ahf)
     ("f" "format" xah-elisp--ahf)
     ("i" "insert" xah-elisp--ahf)
@@ -3125,7 +3124,7 @@ Version 2017-01-27"
     ("add-text-properties" "(add-text-properties p1▮ p2 PROPS &optional OBJECT)" xah-elisp--ahf)
     ("add-to-list" "(add-to-list LIST-VAR▮ ELEMENT &optional APPEND COMPARE-FN)" xah-elisp--ahf)
     ("alist-get" "(alist-get key▮ value &optional default)" xah-elisp--ahf)
-    ("and" "(and ▮)" xah-elisp--ahf )
+    ("and" "(and ▮)" xah-elisp--ahf)
     ("append" "(append ▮)" xah-elisp--ahf)
     ("append-to-file" "(append-to-file p1▮ p2 FILENAME)" xah-elisp--ahf)
     ("apply" "(apply ▮)" xah-elisp--ahf)
@@ -3461,11 +3460,11 @@ Version 2017-01-27"
     ("vconcat" "(vconcat SEQUENCES▮)" xah-elisp--ahf)
     ("vector" "(vector ▮)" xah-elisp--ahf)
     ("verify-visited-file-modtime" "(verify-visited-file-modtime BUFFER▮)" xah-elisp--ahf)
-    ("version<" "(version< \"27.1\" emacs-version)" xah-elisp--ahf )
-    ("version<=" "(version<= \"27.1\" emacs-version)" xah-elisp--ahf )
+    ("version<" "(version< \"27.1\" emacs-version)" xah-elisp--ahf)
+    ("version<=" "(version<= \"27.1\" emacs-version)" xah-elisp--ahf)
     ("visited-file-modtime" "(visited-file-modtime)" xah-elisp--ahf)
     ("when" "(when ▮)" xah-elisp--ahf)
-    ("while" "(while (< i▮ 9)\n  (setq i (1+ i)))" xah-elisp--ahf)
+    ("while" "(while (search-forward ▮ &optional BOUND NOERROR COUNT)\n(replace-match NEWTEXT &optional FIXEDCASE LITERAL STRING SUBEXP))" xah-elisp--ahf)
     ("widen" "(widen)" xah-elisp--ahf)
     ("widget-get" "(widget-get ▮)" xah-elisp--ahf)
     ("with-current-buffer" "(with-current-buffer BUFFER-OR-NAME▮ BODY)" xah-elisp--ahf)
@@ -3546,6 +3545,24 @@ Version 2017-01-27"
   "Face for capitalized word."
   :group 'xah-elisp-mode )
 
+;; (setq xah-elisp-font-lock-keywords
+;;       (let ((dollarSymbol "\\_<$[-_?0-9A-Za-z]+" )
+;;             (atSymbol "\\_<@[-_?0-9A-Za-z]+" )
+;;             (capVars "\\_<[A-Z][-_?0-9A-Za-z]*" ))
+;;         `(
+;;           (,(regexp-opt xah-elisp-ampersand-words 'symbols) . font-lock-builtin-face)
+;;           (,(regexp-opt xah-elisp-functions 'symbols) . font-lock-function-name-face)
+;;           (,(regexp-opt xah-elisp-special-forms 'symbols) . font-lock-keyword-face)
+;;           (,(regexp-opt xah-elisp-macros 'symbols) . font-lock-keyword-face)
+;;           (,(regexp-opt xah-elisp-commands 'symbols) . 'xah-elisp-command-face)
+;;           (,(regexp-opt xah-elisp-user-options 'symbols) . font-lock-variable-name-face)
+;;           (,(regexp-opt xah-elisp-variables 'symbols) . font-lock-variable-name-face)
+;;           ;; (,dollarSymbol . 'xah-elisp-dollar-symbol)
+;;           (,dollarSymbol . 'bold)
+;;           (,atSymbol . 'xah-elisp-at-symbol)
+;;           (,capVars . 'xah-elisp-cap-variable)
+;;           (":[a-z]+\\b" . font-lock-builtin-face))))
+
 (setq xah-elisp-font-lock-keywords
       (let ((dollarSymbol "\\_<$[-_?0-9A-Za-z]+" )
             (atSymbol "\\_<@[-_?0-9A-Za-z]+" )
@@ -3553,9 +3570,9 @@ Version 2017-01-27"
         `(
           (,(regexp-opt xah-elisp-ampersand-words 'symbols) . font-lock-builtin-face)
           (,(regexp-opt xah-elisp-functions 'symbols) . font-lock-function-name-face)
-          (,(regexp-opt xah-elisp-special-forms 'symbols) . font-lock-keyword-face)
-          (,(regexp-opt xah-elisp-macros 'symbols) . font-lock-keyword-face)
-          (,(regexp-opt xah-elisp-commands 'symbols) . 'xah-elisp-command-face)
+          (,(regexp-opt xah-elisp-special-forms 'symbols) . font-lock-function-name-face)
+          (,(regexp-opt xah-elisp-macros 'symbols) . font-lock-function-name-face)
+          (,(regexp-opt xah-elisp-commands 'symbols) . 'font-lock-function-name-face)
           (,(regexp-opt xah-elisp-user-options 'symbols) . font-lock-variable-name-face)
           (,(regexp-opt xah-elisp-variables 'symbols) . font-lock-variable-name-face)
           ;; (,dollarSymbol . 'xah-elisp-dollar-symbol)

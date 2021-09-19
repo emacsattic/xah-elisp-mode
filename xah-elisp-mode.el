@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.24.20210919094357
+;; Version: 3.24.20210919100354
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -3545,24 +3545,6 @@ Version 2017-01-27"
   "Face for capitalized word."
   :group 'xah-elisp-mode )
 
-;; (setq xah-elisp-font-lock-keywords
-;;       (let ((dollarSymbol "\\_<$[-_?0-9A-Za-z]+" )
-;;             (atSymbol "\\_<@[-_?0-9A-Za-z]+" )
-;;             (capVars "\\_<[A-Z][-_?0-9A-Za-z]*" ))
-;;         `(
-;;           (,(regexp-opt xah-elisp-ampersand-words 'symbols) . font-lock-builtin-face)
-;;           (,(regexp-opt xah-elisp-functions 'symbols) . font-lock-function-name-face)
-;;           (,(regexp-opt xah-elisp-special-forms 'symbols) . font-lock-keyword-face)
-;;           (,(regexp-opt xah-elisp-macros 'symbols) . font-lock-keyword-face)
-;;           (,(regexp-opt xah-elisp-commands 'symbols) . 'xah-elisp-command-face)
-;;           (,(regexp-opt xah-elisp-user-options 'symbols) . font-lock-variable-name-face)
-;;           (,(regexp-opt xah-elisp-variables 'symbols) . font-lock-variable-name-face)
-;;           ;; (,dollarSymbol . 'xah-elisp-dollar-symbol)
-;;           (,dollarSymbol . 'bold)
-;;           (,atSymbol . 'xah-elisp-at-symbol)
-;;           (,capVars . 'xah-elisp-cap-variable)
-;;           (":[a-z]+\\b" . font-lock-builtin-face))))
-
 (setq xah-elisp-font-lock-keywords
       (let ((dollarSymbol "\\_<$[-_?0-9A-Za-z]+" )
             (atSymbol "\\_<@[-_?0-9A-Za-z]+" )
@@ -3570,9 +3552,9 @@ Version 2017-01-27"
         `(
           (,(regexp-opt xah-elisp-ampersand-words 'symbols) . font-lock-builtin-face)
           (,(regexp-opt xah-elisp-functions 'symbols) . font-lock-function-name-face)
-          (,(regexp-opt xah-elisp-special-forms 'symbols) . font-lock-function-name-face)
-          (,(regexp-opt xah-elisp-macros 'symbols) . font-lock-function-name-face)
-          (,(regexp-opt xah-elisp-commands 'symbols) . 'font-lock-function-name-face)
+          (,(regexp-opt xah-elisp-special-forms 'symbols) . font-lock-keyword-face)
+          (,(regexp-opt xah-elisp-macros 'symbols) . font-lock-keyword-face)
+          (,(regexp-opt xah-elisp-commands 'symbols) . 'xah-elisp-command-face)
           (,(regexp-opt xah-elisp-user-options 'symbols) . font-lock-variable-name-face)
           (,(regexp-opt xah-elisp-variables 'symbols) . font-lock-variable-name-face)
           ;; (,dollarSymbol . 'xah-elisp-dollar-symbol)

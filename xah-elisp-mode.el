@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.24.20210919100354
+;; Version: 3.24.20210923114642
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -2827,7 +2827,7 @@ Version 2021-09-01"
 
 (defun xah-elisp-compact-parens-region (Begin End)
   "Remove whitespaces that occure between left/right parenthesises, in region.
-Version 2021-09-01 2021-09-03"
+Version 2021-09-01 2021-09-03 2021-09-23"
   (interactive "r")
   (let ($syntaxState)
     (save-restriction
@@ -2846,13 +2846,14 @@ Version 2021-09-01 2021-09-03"
       (while (re-search-forward "\n\n\n+" nil 1)
         (replace-match "\n\n"))
 
-      ;; compact spaces to just 1, except if it begins line
-      (goto-char (point-min))
-      (while (re-search-forward "\\([^ \n]\\)  +" nil 1)
-        (setq $syntaxState (syntax-ppss (match-beginning 0)))
-        (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
-            (goto-char (match-end 0))
-          (replace-match "\\1 ")))
+      ;; ;; 2021-09-22 todo. bug. it change 2 spaces in string to 1
+      ;; ;; compact spaces to just 1, except if it begins line
+      ;; (goto-char (point-min))
+      ;; (while (re-search-forward "\\([^ \n]\\)  +" nil 1)
+      ;;   (setq $syntaxState (syntax-ppss (match-beginning 0)))
+      ;;   (if (or (nth 3 $syntaxState) (nth 4 $syntaxState))
+      ;;       (goto-char (match-end 0))
+      ;;     (replace-match "\\1 ")))
 
       ;; whitespace between right parens
       (goto-char (point-min))
@@ -3221,6 +3222,7 @@ Version 2017-01-27"
     ("erase-buffer" "(erase-buffer)" xah-elisp--ahf)
     ("error" "(error \"%s\" ▮)" xah-elisp--ahf)
     ("expand-file-name" "(expand-file-name ▮ &optional relativedir)" xah-elisp--ahf)
+    ("expt" "(expt ▮ y)" xah-elisp--ahf)
     ("fboundp" "(fboundp '▮)" xah-elisp--ahf)
     ("fceiling" "(fceiling ▮)" xah-elisp--ahf)
     ("featurep" "(featurep 'FEATURE▮)" xah-elisp--ahf)

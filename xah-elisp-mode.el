@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 3.24.20210923114642
+;; Version: 3.24.20210925094407
 ;; Created: 23 Mar 2013
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: lisp, languages
@@ -2950,7 +2950,7 @@ Version 2021-09-01"
 If there's a text selection, act on the region, else, on defun block.
 Version 2017-01-27"
   (interactive
-   (if (use-region-p)
+   (if (region-active-p)
        (list (region-beginning) (region-end))
      (save-excursion
        (xah-elisp-goto-outmost-bracket)
